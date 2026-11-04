@@ -1,0 +1,49 @@
+{{status}}
+<header class="appbar">
+  <button class="icon-btn" aria-label="Close report">{{i:close}}</button>
+  <h1>Report for Wed 4 Nov</h1>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<nav class="stepper" aria-label="Report steps">
+  <div class="label"><b>Step 1 of 5 · Sales</b><span class="muted">Next: Payments</span></div>
+  <ol>
+    <li class="current"><button class="seg" aria-current="step" aria-label="Step 1, Sales, current"></button></li>
+    <li><button class="seg" aria-label="Step 2, Payments and adjustments"></button></li>
+    <li><button class="seg" aria-label="Step 3, Customers and operations"></button></li>
+    <li><button class="seg" aria-label="Step 4, Conditions and notes"></button></li>
+    <li><button class="seg" aria-label="Step 5, Review and submit"></button></li>
+  </ol>
+</nav>
+<main class="body" style="gap:16px">
+  <div class="banner info" role="status">{{i:info}}<p>Draft restored · last edited 21:42</p></div>
+  <div class="field"><label for="d">Business date <span class="req" aria-hidden="true">*</span></label>
+    <div class="input" id="d">{{i:calendar}}<span class="val" style="font-family:var(--font-sans)">Wed 4 Nov 2026</span><span class="link" style="min-height:auto;font-size:var(--fs-14)">Change</span></div></div>
+  <div class="pair">
+    <div class="field"><label for="t">Total net sales <span class="req" aria-hidden="true">*</span></label>
+      <div class="input" id="t"><span class="prefix">Rs</span><span class="val">148,320.00</span></div></div>
+    <div class="field"><label for="b">Bills <span class="req" aria-hidden="true">*</span></label>
+      <div class="input" id="b"><span class="val">52</span></div></div>
+  </div>
+  <div class="strip" aria-live="polite">
+    <div><span class="k">Avg bill</span><span class="v">2,852.31</span></div>
+    <div><span class="k">Delivery</span><span class="v">6.1%</span></div>
+    <div><span class="k">Walk-in</span><span class="v">139,280.00</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="field"><label for="di">Dine-in</label><div class="input" id="di"><span class="prefix">Rs</span><span class="val">96,500.00</span></div></div>
+    <div class="field"><label for="ta">Takeaway</label><div class="input" id="ta"><span class="prefix">Rs</span><span class="val">42,780.00</span></div></div>
+  </div>
+  <div class="pair">
+    <div class="field"><label for="u">Uber Eats sales <span class="req" aria-hidden="true">*</span></label><div class="input" id="u"><span class="prefix">Rs</span><span class="val">4,640.00</span></div></div>
+    <div class="field"><label for="uo">Orders</label><div class="input" id="uo"><span class="val">3</span></div></div>
+  </div>
+  <div class="pair">
+    <div class="field"><label for="p">PickMe Food sales <span class="req" aria-hidden="true">*</span></label><div class="input is-focus" id="p"><span class="prefix">Rs</span><span class="val">4400</span></div><span class="hint">Enter 0 if none</span></div>
+    <div class="field"><label for="po">Orders</label><div class="input" id="po"><span class="val placeholder">Optional</span></div></div>
+  </div>
+</main>
+<div class="actionbar">
+  <button class="btn btn-secondary">Save draft</button>
+  <button class="btn btn-primary">Next</button>
+</div>
+<div class="gesture"></div>

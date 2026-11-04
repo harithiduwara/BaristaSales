@@ -1,0 +1,20 @@
+{{status}}
+<main class="body" style="justify-content:space-between;padding-top:48px">
+  <div class="stack" style="align-items:center;text-align:center;gap:8px">
+    <div class="badge" style="min-height:28px">Aluthgama Daily Report</div>
+    <h2 class="h2" style="margin-top:16px">Enter your PIN</h2>
+    <p class="muted" style="font-size:var(--fs-14)">Outlet phone</p>
+  </div>
+  <div class="stack" style="gap:24px">
+    <div class="pin-dots" role="img" aria-label="No digits entered"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="banner error" role="alert">{{i:lock}}<div><p class="title">Too many attempts. Try again in 15 minutes.</p><p>Your drafts and unsent reports are safe on this phone.</p></div></div>
+    <div class="keypad" aria-label="PIN keypad" aria-disabled="true" style="opacity:.45">
+      <button class="key" disabled>1</button><button class="key" disabled>2</button><button class="key" disabled>3</button>
+      <button class="key" disabled>4</button><button class="key" disabled>5</button><button class="key" disabled>6</button>
+      <button class="key" disabled>7</button><button class="key" disabled>8</button><button class="key" disabled>9</button>
+      <span class="key ghost" aria-hidden="true"></span><button class="key" disabled>0</button><button class="key ghost" disabled aria-label="Delete last digit">{{i:backspace}}</button>
+    </div>
+  </div>
+  <p class="hint" style="text-align:center">Version 1.0.0</p>
+</main>
+<div class="gesture"></div>

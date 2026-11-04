@@ -1,0 +1,11 @@
+{
+  "name": "@aluthgama/mock-api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "In-memory mock of the Apps Script API (REQUIREMENTS.md Section 7, ADR-0007)",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

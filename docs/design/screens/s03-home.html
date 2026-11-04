@@ -1,0 +1,34 @@
+{{status}}
+<header class="appbar">
+  <h1>Aluthgama Daily<span class="sub">Wed 4 Nov 2026</span></h1>
+  <span class="badge">Owner</span>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<main class="body">
+  <h2 class="h2">Good evening</h2>
+  <section class="card stack" aria-labelledby="today-h" style="gap:12px">
+    <div class="row" style="justify-content:space-between">
+      <h3 class="h3" id="today-h">Today's report</h3>
+      <span class="state" style="color:var(--text-muted)">Not started</span>
+    </div>
+    <p class="muted" style="font-size:var(--fs-14)">Business date Wed 4 Nov. Takes about 90 seconds for the required figures.</p>
+    <a class="btn btn-primary btn-block" href="#">Start report</a>
+  </section>
+  <section class="stack-sm" aria-labelledby="mtd-h">
+    <div class="row" style="justify-content:space-between"><h3 class="section-title" id="mtd-h">November so far</h3><a class="link" style="min-height:32px;font-size:var(--fs-14)" href="#">Dashboard</a></div>
+    <div class="grid-2" style="grid-template-columns:1.3fr 1fr 0.8fr;gap:8px">
+      <div class="kpi"><span class="k">Sales</span><span class="v" style="font-size:var(--fs-16)">361,724.75</span></div>
+      <div class="kpi"><span class="k">Avg bill</span><span class="v" style="font-size:var(--fs-16)">2,825.97</span></div>
+      <div class="kpi"><span class="k">Bills</span><span class="v" style="font-size:var(--fs-16)">128</span></div>
+    </div>
+  </section>
+  <section class="stack-sm" aria-labelledby="last7-h">
+    <h3 class="section-title" id="last7-h">Last 7 days</h3>
+    <div class="list">
+      <a class="list-row" href="#"><span class="date">Tue 3 Nov</span><span class="amt">Rs 129,849.85</span><span class="meta">46 bills · avg 2,822.82</span><span class="icons"><span class="state ok">{{i:check-sm}}Sent</span></span></a>
+      <a class="list-row" href="#"><span class="date">Mon 2 Nov</span><span class="amt">Rs 231,874.90</span><span class="meta">82 bills · avg 2,827.74</span><span class="icons"><span class="state ok">{{i:check-sm}}Sent</span></span></a>
+    </div>
+  </section>
+</main>
+{{nav:home}}
+<div class="gesture"></div>

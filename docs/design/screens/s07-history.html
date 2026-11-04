@@ -1,0 +1,27 @@
+{{status}}
+<header class="appbar">
+  <h1>History</h1>
+  <span class="badge">Owner</span>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<main class="body">
+  <div class="stack-sm">
+    <div class="row" style="justify-content:space-between">
+      <button class="icon-btn" style="margin:0" aria-label="Previous month">{{i:back}}</button>
+      <span class="h3">November 2026</span>
+      <button class="icon-btn" style="margin:0" aria-label="Next month" disabled>{{i:chevron}}</button>
+    </div>
+    <div class="chips" role="group" aria-label="Filter by condition" style="flex-wrap:nowrap;overflow-x:auto">
+      <button class="chip" aria-pressed="true">All days</button><button class="chip" aria-pressed="false">Poya day</button><button class="chip" aria-pressed="false">Public holiday</button><button class="chip" aria-pressed="false">Power cut</button>
+    </div>
+  </div>
+  <p class="hint">3 reports · pull down to refresh</p>
+  <div class="list">
+    <a class="list-row" href="#"><span class="date">Wed 4 Nov</span><span class="amt">Rs 148,320.00</span><span class="meta">52 bills · avg 2,852.31</span><span class="icons"><span title="Weather arrives the next morning">Weather tomorrow</span><span class="state ok">{{i:check-sm}}Sent</span></span></a>
+    <a class="list-row" href="#"><span class="date">Tue 3 Nov</span><span class="amt">Rs 129,849.85</span><span class="meta">46 bills · avg 2,822.82</span><span class="icons">{{i:rain-sm}}<span class="num">6.8 mm</span><span class="state ok">{{i:check-sm}}Sent</span></span></a>
+    <a class="list-row" href="#"><span class="date">Mon 2 Nov</span><span class="amt">Rs 231,874.90</span><span class="meta">82 bills · avg 2,827.74</span><span class="icons">{{i:sun-sm}}<span class="num">0.4 mm</span><span class="state ok">{{i:check-sm}}Sent</span></span></a>
+  </div>
+  <p class="hint" style="text-align:center">The outlet opened on Mon 2 Nov 2026.</p>
+</main>
+{{nav:history}}
+<div class="gesture"></div>

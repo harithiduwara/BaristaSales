@@ -1,0 +1,45 @@
+{{status}}
+<header class="appbar">
+  <h1>Dashboard<span class="sub">Updated 21:42</span></h1>
+  <button class="btn btn-ghost" style="min-height:48px">{{i:refresh}}Refresh</button>
+</header>
+<main class="body">
+  <div class="row" style="justify-content:space-between">
+    <button class="icon-btn" style="margin:0" aria-label="Previous month">{{i:back}}</button>
+    <span class="h3">November 2026</span>
+    <button class="icon-btn" style="margin:0" aria-label="Next month" disabled>{{i:chevron}}</button>
+  </div>
+  <section class="grid-2" aria-label="Month to date">
+    <div class="kpi" style="grid-column:1/-1"><span class="k">Sales this month</span><span class="v" style="font-size:var(--fs-28)">Rs 510,044.75</span><span class="d">3 days reported · 2–4 Nov</span></div>
+    <div class="kpi empty"><span class="k">Monthly target</span><span class="v">Not set</span><a class="link" href="#">Set a monthly target in Settings</a></div>
+    <div class="kpi empty"><span class="k">Needed per day</span><span class="v">Needs a target</span></div>
+    <div class="kpi"><span class="k">Projected month end</span><span class="v">4,930,432.58</span><span class="d">at the current daily average</span></div>
+    <div class="kpi"><span class="k">Average bill</span><span class="v">2,833.58</span></div>
+    <div class="kpi"><span class="k">Bills</span><span class="v">180</span></div>
+    <div class="kpi"><span class="k">Delivery share</span><span class="v">2.1%</span><span class="d">Uber + PickMe</span></div>
+  </section>
+  <section class="card chart-card" aria-labelledby="dc-h">
+    <div class="row" style="justify-content:space-between"><h3 class="h3" id="dc-h">Daily sales</h3><a class="link" style="min-height:32px;font-size:var(--fs-14)" href="#">Show as table</a></div>
+    <div class="legend"><span><i style="background:var(--chart-bar)"></i>Daily total</span><span><i class="line" style="background:var(--chart-line)"></i>7-day average</span><span><i class="dash"></i>Chain average</span></div>
+    <svg viewBox="0 0 340 176" role="img" aria-labelledby="dc-t"><title id="dc-t">Daily sales, 2 to 4 November, with 7-day average and chain benchmark</title><line x1="40" x2="330" y1="150.0" y2="150.0" stroke="var(--chart-grid)"/><text x="34" y="154.0" text-anchor="end">0k</text><line x1="40" x2="330" y1="123.2" y2="123.2" stroke="var(--chart-grid)"/><text x="34" y="127.2" text-anchor="end">50k</text><line x1="40" x2="330" y1="96.4" y2="96.4" stroke="var(--chart-grid)"/><text x="34" y="100.4" text-anchor="end">100k</text><line x1="40" x2="330" y1="69.6" y2="69.6" stroke="var(--chart-grid)"/><text x="34" y="73.6" text-anchor="end">150k</text><line x1="40" x2="330" y1="42.8" y2="42.8" stroke="var(--chart-grid)"/><text x="34" y="46.8" text-anchor="end">200k</text><line x1="40" x2="330" y1="16.0" y2="16.0" stroke="var(--chart-grid)"/><text x="34" y="20.0" text-anchor="end">250k</text><line x1="40" x2="330" y1="47.8" y2="47.8" stroke="var(--chart-ref)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="330" y="42.8" text-anchor="end">Chain avg 190.7k/day</text><rect x="41.5" y="25.7" width="7" height="124.3" rx="1.5" fill="var(--chart-bar)"><title>2 Nov: Rs 231,874.90</title></rect><rect x="51.5" y="80.4" width="7" height="69.6" rx="1.5" fill="var(--chart-bar)"><title>3 Nov: Rs 129,849.85</title></rect><rect x="61.5" y="70.5" width="7" height="79.5" rx="1.5" fill="var(--chart-bar)"><title>4 Nov: Rs 148,320.00</title></rect><polyline points="45,25.7 55,53.1 65,58.9" fill="none" stroke="var(--chart-line)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="45" cy="25.7" r="3" fill="var(--chart-line)"/><circle cx="55" cy="53.1" r="3" fill="var(--chart-line)"/><circle cx="65" cy="58.9" r="3" fill="var(--chart-line)"/><text x="45" y="166" text-anchor="middle">2</text><text x="115" y="166" text-anchor="middle">9</text><text x="185" y="166" text-anchor="middle">16</text><text x="255" y="166" text-anchor="middle">23</text><text x="325" y="166" text-anchor="middle">30</text></svg>
+    <p class="hint">Target line appears once a monthly target is set.</p>
+  </section>
+  <section class="card stack-sm" aria-labelledby="wd-h">
+    <h3 class="h3" id="wd-h">By day of week</h3>
+    <div class="table-wrap"><table class="table"><thead><tr><th scope="col">Day</th><th scope="col" class="r">Avg sales</th><th scope="col" class="r">Bills</th><th scope="col" class="r">Avg bill</th></tr></thead>
+    <tbody><tr><td>Mon</td><td class="r">231,874.90</td><td class="r">82</td><td class="r">2,827.74</td></tr><tr><td>Tue</td><td class="r">129,849.85</td><td class="r">46</td><td class="r">2,822.82</td></tr><tr><td>Wed</td><td class="r">148,320.00</td><td class="r">52</td><td class="r">2,852.31</td></tr></tbody></table></div>
+  </section>
+  <section class="card chart-card" aria-labelledby="cm-h">
+    <h3 class="h3" id="cm-h">Channel mix</h3>
+    <div class="legend"><span><i style="background:var(--chart-dine)"></i>Dine-in</span><span><i style="background:var(--chart-take)"></i>Takeaway</span><span><i style="background:var(--chart-uber)"></i>Uber</span><span><i style="background:var(--chart-pickme)"></i>PickMe</span><span><i style="background:var(--surface);border:1.5px solid var(--chart-ref)"></i>Unsplit</span></div>
+    <svg viewBox="0 0 340 84" role="img" aria-labelledby="cm-t"><title id="cm-t">Channel mix per day</title><defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--surface)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--chart-ref)" stroke-width="1.5"/></pattern></defs><g transform="translate(0 0)"><text x="0" y="13">Mon 2</text><rect x="56.0" y="0.75" width="211.8" height="16.5" fill="url(#hatch)" stroke="var(--chart-ref)" stroke-width="1.5"><title>Unsplit Rs 231,874.90</title></rect></g><g transform="translate(0 30)"><text x="0" y="13">Tue 3</text><rect x="56.0" y="0.75" width="116.2" height="16.5" fill="url(#hatch)" stroke="var(--chart-ref)" stroke-width="1.5"><title>Unsplit Rs 127,949.85</title></rect><rect x="173.7" y="0" width="1.7" height="18" fill="var(--chart-pickme)" stroke="var(--surface)" stroke-width="1.5"><title>PickMe Rs 1,900.00</title></rect></g><g transform="translate(0 60)"><text x="0" y="13">Wed 4</text><rect x="56.0" y="0" width="88.8" height="18" fill="var(--chart-dine)" stroke="var(--surface)" stroke-width="1.5"><title>Dine-in Rs 96,500.00</title></rect><rect x="144.8" y="0" width="39.4" height="18" fill="var(--chart-take)" stroke="var(--surface)" stroke-width="1.5"><title>Takeaway Rs 42,780.00</title></rect><rect x="184.1" y="0" width="4.3" height="18" fill="var(--chart-uber)" stroke="var(--surface)" stroke-width="1.5"><title>Uber Rs 4,640.00</title></rect><rect x="188.4" y="0" width="4.0" height="18" fill="var(--chart-pickme)" stroke="var(--surface)" stroke-width="1.5"><title>PickMe Rs 4,400.00</title></rect></g></svg>
+  </section>
+  <section class="card chart-card" aria-labelledby="sc-h">
+    <div class="row" style="justify-content:space-between"><h3 class="h3" id="sc-h">Weather and sales</h3></div>
+    <div class="chips" role="radiogroup" aria-label="Weather measure"><button class="chip" role="radio" aria-checked="true" style="min-height:40px">Rain</button><button class="chip" role="radio" aria-checked="false" style="min-height:40px">Temperature</button></div>
+    <svg viewBox="0 0 340 180" role="img" aria-labelledby="sc-t"><title id="sc-t">Daily sales against rain during trading hours</title><line x1="40" x2="330" y1="150.0" y2="150.0" stroke="var(--chart-grid)"/><text x="34" y="154.0" text-anchor="end">0k</text><line x1="40" x2="330" y1="96.4" y2="96.4" stroke="var(--chart-grid)"/><text x="34" y="100.4" text-anchor="end">100k</text><line x1="40" x2="330" y1="42.8" y2="42.8" stroke="var(--chart-grid)"/><text x="34" y="46.8" text-anchor="end">200k</text><text x="40.0" y="166" text-anchor="middle">0</text><text x="98.0" y="166" text-anchor="middle">2</text><text x="156.0" y="166" text-anchor="middle">4</text><text x="214.0" y="166" text-anchor="middle">6</text><text x="272.0" y="166" text-anchor="middle">8</text><text x="330.0" y="166" text-anchor="middle">10</text><text x="330" y="10" text-anchor="end">x: rain 07:00–22:00 (mm)</text><circle cx="51.6" cy="25.7" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="1.5"><title>2 Nov: 0.4 mm, Rs 231,874.90</title></circle><text x="59.6" y="29.7">2 Nov</text><circle cx="237.2" cy="80.4" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="1.5"><title>3 Nov: 6.8 mm, Rs 129,849.85</title></circle><text x="245.2" y="84.4">3 Nov</text></svg>
+    <p class="hint">Wed 4 Nov is added after tomorrow's 06:00 weather update.</p>
+  </section>
+</main>
+{{nav:dashboard}}
+<div class="gesture"></div>

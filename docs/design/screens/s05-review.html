@@ -1,0 +1,62 @@
+{{status}}
+<header class="appbar">
+  <button class="icon-btn" aria-label="Back to step 4">{{i:back}}</button>
+  <h1>Review and submit<span class="sub">Report for Wed 4 Nov 2026</span></h1>
+</header>
+<nav class="stepper" aria-label="Report steps">
+  <ol>
+    <li class="done"><button class="seg" aria-label="Step 1, Sales, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 2, Payments, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 3, Customers, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 4, Conditions, complete"></button></li>
+    <li class="current"><button class="seg" aria-current="step" aria-label="Step 5, Review, current"></button></li>
+  </ol>
+</nav>
+<main class="body">
+  <section class="banner warning" aria-labelledby="w-h" role="status">{{i:alert}}
+    <div class="stack-sm" style="gap:4px;flex:1">
+      <p class="title" id="w-h">Check 1 figure before submitting</p>
+      <p>Payments (cash + card + QR) are <b class="num">Rs 500.00 less</b> than total net sales.</p>
+      <label class="check"><span class="box on">{{i:check-sm}}</span>I've checked these figures.</label>
+    </div>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r1">
+    <div class="review-head"><h3 class="h3" id="r1">Sales</h3><a class="link" href="#">Edit <span class="sr-only">sales</span></a></div>
+    <dl class="dl">
+      <dt>Total net sales</dt><dd>Rs 148,320.00</dd>
+      <dt>Bills</dt><dd>52</dd>
+      <dt>Dine-in / Takeaway</dt><dd>96,500.00 / 42,780.00</dd>
+      <dt>Uber Eats (3 orders)</dt><dd>4,640.00</dd>
+      <dt>PickMe Food</dt><dd>4,400.00</dd>
+    </dl>
+    <div class="strip" style="margin-top:8px">
+      <div><span class="k">Avg bill</span><span class="v">2,852.31</span></div>
+      <div><span class="k">Delivery</span><span class="v">6.1%</span></div>
+      <div><span class="k">Walk-in</span><span class="v">139,280.00</span></div>
+    </div>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r2">
+    <div class="review-head"><h3 class="h3" id="r2">Payments and adjustments</h3><a class="link" href="#">Edit <span class="sr-only">payments</span></a></div>
+    <dl class="dl">
+      <dt>Cash / Card / QR</dt><dd>61,200 / 72,620 / 14,000</dd>
+      <dt>Discounts</dt><dd>1,850.00</dd>
+      <dt>Comps / Voids</dt><dd>960.00 / 0.00</dd>
+    </dl>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r3">
+    <div class="review-head"><h3 class="h3" id="r3">Customers and operations</h3><a class="link" href="#">Edit <span class="sr-only">customers and operations</span></a></div>
+    <dl class="dl">
+      <dt>Busiest</dt><dd class="txt">6pm–9pm</dd>
+      <dt>Quietest</dt><dd class="txt">3pm–6pm</dd>
+      <dt>Staff on duty</dt><dd>6</dd>
+      <dt>Open / Close</dt><dd>07:00 / 22:10</dd>
+    </dl>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r4">
+    <div class="review-head"><h3 class="h3" id="r4">Conditions and notes</h3><a class="link" href="#">Edit <span class="sr-only">conditions and notes</span></a></div>
+    <dl class="dl"><dt>Weather</dt><dd class="txt">Sunny, Cloudy, Cloudy, Light rain</dd><dt>Conditions</dt><dd class="txt">Normal day</dd></dl>
+    <p style="font-size:var(--fs-14)">Steady day. Uber Eats started taking orders from 4pm.</p>
+  </section>
+</main>
+<div class="actionbar"><button class="btn btn-primary btn-block">Submit report</button></div>
+<div class="gesture"></div>

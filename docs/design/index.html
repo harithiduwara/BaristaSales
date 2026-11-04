@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aluthgama Daily Prototypes</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<style>
+:root { --gal-max: 880px; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 400 16px/1.55 var(--font-sans); }
+.gal { max-width: var(--gal-max); margin: 0 auto; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 48px; }
+.gal > header { display: flex; flex-direction: column; gap: 12px; max-width: 64ch; }
+.gal .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); }
+.gal > header h1 { margin: 0; font-size: 28px; line-height: 1.2; font-weight: 600; text-wrap: balance; }
+.scr-head h2 { margin: 0; font-size: 22px; font-weight: 600; text-wrap: balance; }
+.tok-group h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.scr-head p, .gal > header p, .tok-group p { margin: 0; }
+.gal .lede { color: var(--text-muted); }
+.gal .toc { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.gal .toc a { display: inline-flex; min-height: 40px; align-items: center; gap: 8px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 999px; color: var(--text); text-decoration: none; font-size: 14px; }
+.gal .toc a b { font-family: var(--font-mono); font-weight: 500; color: var(--primary); }
+.gal .toc a:focus-visible, .gal a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.scr { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 16px; }
+.scr-head { display: flex; flex-direction: column; gap: 6px; max-width: 64ch; }
+.scr-head .id { font-family: var(--font-mono); font-size: 14px; color: var(--primary); font-weight: 500; }
+.scr-head .reqs { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); }
+.pair-ph { display: flex; flex-wrap: wrap; gap: 24px; }
+.pair-ph .phone { height: auto; min-height: 844px; }
+.pair-ph .phone .body { overflow: visible; flex: 1 0 auto; }
+.pair-ph figure { margin: 0; display: flex; flex-direction: column; gap: 8px; width: min(390px, 100%); }
+.pair-ph figcaption { font-size: 13px; color: var(--text-muted); }
+.tok-group { display: flex; flex-direction: column; gap: 12px; }
+.swatches { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.swatches li { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 10px; align-items: center; font-size: 13px; min-width: 0; }
+.swatches .sw { grid-row: span 2; display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.swatches .sw i { width: 24px; height: 40px; display: block; }
+.swatches code, .gal code { font-family: var(--font-mono); font-size: 13px; }
+.swatches .hx { color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; overflow-wrap: anywhere; }
+.type-scale, .space { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.type-scale li { display: flex; gap: 12px; align-items: baseline; overflow-wrap: anywhere; min-width: 0; }
+.tk { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); width: 2.5em; flex: none; }
+.space li { display: flex; gap: 12px; align-items: center; }
+.space i { display: block; height: 12px; background: var(--primary); border-radius: 2px; }
+.note { font-size: 14px; color: var(--text-muted); max-width: 64ch; }
+.tw { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+.tw table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+.tw th, .tw td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.tw th { font-size: 12px; color: var(--text-muted); font-weight: 600; background: var(--surface); }
+.tw .n { text-align: right; font-family: var(--font-mono); }
+.gal footer { font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 16px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-8"/></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol><symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol><symbol id="i-back" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5L22 20H2z"/><path d="M12 10v4.5M12 17.5v.01"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol><symbol id="i-rain" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 8.5 3.3 3.3 0 0 0 7 15z"/><path d="M8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5"/></symbol><symbol id="i-share" viewBox="0 0 24 24"><path d="M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6"/><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol><symbol id="i-backspace" viewBox="0 0 24 24"><path d="M21 5H9l-6 7 6 7h12a0 0 0 0 0 0 0z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol></svg>
+<div class="gal">
+  <header>
+    <span class="eyebrow">Phase 1 design · for Owner approval</span>
+    <h1>Aluthgama Daily Report: screen prototypes</h1>
+    <p class="lede">Static prototypes at 390 px in light and dark, the design tokens and their contrast checks. Figures are the two real reports (2 and 3 Nov) plus an example report for Wed 4 Nov. The approved design is the basis for Phase 2.</p>
+    <ul class="toc"><li><a href="#s02-pin"><b>S-02</b>PIN sign-in</a></li><li><a href="#s02-pin-locked"><b>S-02</b>PIN sign-in, locked out</a></li><li><a href="#s03-home"><b>S-03</b>Home (Owner)</a></li><li><a href="#s04-wizard-sales"><b>S-04</b>Report wizard, step 1: Sales</a></li><li><a href="#s05-review"><b>S-05</b>Review and submit</a></li><li><a href="#s06-success"><b>S-06</b>Success and share</a></li><li><a href="#s07-history"><b>S-07</b>History (Owner)</a></li><li><a href="#s10-dashboard"><b>S-10</b>Dashboard (Owner)</a></li><li><a href="#tokens"><b>10.2</b>Design tokens</a></li></ul>
+  </header>
+  <section class="scr" id="s02-pin" aria-labelledby="s02-pin-h">
+  <div class="scr-head"><span class="id">S-02</span><h2 id="s02-pin-h">PIN sign-in</h2><p>Six-digit masked PIN pad with 64 px keys. Version shown per AND-05. No PIN hint or recovery in the app; PINs are reset by the Administrator (OPS-03).</p><p class="reqs">FR-AUTH-02, NFR-A11Y-01</p></div>
+  <div class="pair-ph"><figure><figcaption>Light · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="light"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<main class="body" style="justify-content:space-between;padding-top:48px">
+  <div class="stack" style="align-items:center;text-align:center;gap:8px">
+    <div class="badge" style="min-height:28px">Aluthgama Daily Report</div>
+    <h2 class="h2" style="margin-top:16px">Enter your PIN</h2>
+    <p class="muted" style="font-size:var(--fs-14)">Outlet phone</p>
+  </div>
+  <div class="stack" style="gap:24px">
+    <div class="pin-dots" role="img" aria-label="3 of 6 digits entered"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+    <p class="hint" style="text-align:center;min-height:20px" aria-live="polite">&nbsp;</p>
+    <div class="keypad" aria-label="PIN keypad">
+      <button class="key">1</button><button class="key">2</button><button class="key">3</button>
+      <button class="key">4</button><button class="key">5</button><button class="key">6</button>
+      <button class="key">7</button><button class="key">8</button><button class="key">9</button>
+      <span class="key ghost" aria-hidden="true"></span><button class="key">0</button><button class="key ghost" aria-label="Delete last digit"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-backspace"/></svg></button>
+    </div>
+  </div>
+  <p class="hint" style="text-align:center">Version 1.0.0</p>
+</main>
+<div class="gesture"></div>
+</div></figure><figure><figcaption>Dark · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="dark"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<main class="body" style="justify-content:space-between;padding-top:48px">
+  <div class="stack" style="align-items:center;text-align:center;gap:8px">
+    <div class="badge" style="min-height:28px">Aluthgama Daily Report</div>
+    <h2 class="h2" style="margin-top:16px">Enter your PIN</h2>
+    <p class="muted" style="font-size:var(--fs-14)">Outlet phone</p>
+  </div>
+  <div class="stack" style="gap:24px">
+    <div class="pin-dots" role="img" aria-label="3 of 6 digits entered"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+    <p class="hint" style="text-align:center;min-height:20px" aria-live="polite">&nbsp;</p>
+    <div class="keypad" aria-label="PIN keypad">
+      <button class="key">1</button><button class="key">2</button><button class="key">3</button>
+      <button class="key">4</button><button class="key">5</button><button class="key">6</button>
+      <button class="key">7</button><button class="key">8</button><button class="key">9</button>
+      <span class="key ghost" aria-hidden="true"></span><button class="key">0</button><button class="key ghost" aria-label="Delete last digit"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-backspace"/></svg></button>
+    </div>
+  </div>
+  <p class="hint" style="text-align:center">Version 1.0.0</p>
+</main>
+<div class="gesture"></div>
+</div></figure></div></section><section class="scr" id="s02-pin-locked" aria-labelledby="s02-pin-locked-h">
+  <div class="scr-head"><span class="id">S-02</span><h2 id="s02-pin-locked-h">PIN sign-in, locked out</h2><p>Shown after five wrong PINs in 15 minutes. Uses the exact SRS wording and reassures the user that drafts are safe.</p><p class="reqs">FR-AUTH-03, 10.6</p></div>
+  <div class="pair-ph"><figure><figcaption>Light · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="light"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<main class="body" style="justify-content:space-between;padding-top:48px">
+  <div class="stack" style="align-items:center;text-align:center;gap:8px">
+    <div class="badge" style="min-height:28px">Aluthgama Daily Report</div>
+    <h2 class="h2" style="margin-top:16px">Enter your PIN</h2>
+    <p class="muted" style="font-size:var(--fs-14)">Outlet phone</p>
+  </div>
+  <div class="stack" style="gap:24px">
+    <div class="pin-dots" role="img" aria-label="No digits entered"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="banner error" role="alert"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lock"/></svg><div><p class="title">Too many attempts. Try again in 15 minutes.</p><p>Your drafts and unsent reports are safe on this phone.</p></div></div>
+    <div class="keypad" aria-label="PIN keypad" aria-disabled="true" style="opacity:.45">
+      <button class="key" disabled>1</button><button class="key" disabled>2</button><button class="key" disabled>3</button>
+      <button class="key" disabled>4</button><button class="key" disabled>5</button><button class="key" disabled>6</button>
+      <button class="key" disabled>7</button><button class="key" disabled>8</button><button class="key" disabled>9</button>
+      <span class="key ghost" aria-hidden="true"></span><button class="key" disabled>0</button><button class="key ghost" disabled aria-label="Delete last digit"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-backspace"/></svg></button>
+    </div>
+  </div>
+  <p class="hint" style="text-align:center">Version 1.0.0</p>
+</main>
+<div class="gesture"></div>
+</div></figure><figure><figcaption>Dark · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="dark"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<main class="body" style="justify-content:space-between;padding-top:48px">
+  <div class="stack" style="align-items:center;text-align:center;gap:8px">
+    <div class="badge" style="min-height:28px">Aluthgama Daily Report</div>
+    <h2 class="h2" style="margin-top:16px">Enter your PIN</h2>
+    <p class="muted" style="font-size:var(--fs-14)">Outlet phone</p>
+  </div>
+  <div class="stack" style="gap:24px">
+    <div class="pin-dots" role="img" aria-label="No digits entered"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="banner error" role="alert"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lock"/></svg><div><p class="title">Too many attempts. Try again in 15 minutes.</p><p>Your drafts and unsent reports are safe on this phone.</p></div></div>
+    <div class="keypad" aria-label="PIN keypad" aria-disabled="true" style="opacity:.45">
+      <button class="key" disabled>1</button><button class="key" disabled>2</button><button class="key" disabled>3</button>
+      <button class="key" disabled>4</button><button class="key" disabled>5</button><button class="key" disabled>6</button>
+      <button class="key" disabled>7</button><button class="key" disabled>8</button><button class="key" disabled>9</button>
+      <span class="key ghost" aria-hidden="true"></span><button class="key" disabled>0</button><button class="key ghost" disabled aria-label="Delete last digit"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-backspace"/></svg></button>
+    </div>
+  </div>
+  <p class="hint" style="text-align:center">Version 1.0.0</p>
+</main>
+<div class="gesture"></div>
+</div></figure></div></section><section class="scr" id="s03-home" aria-labelledby="s03-home-h">
+  <div class="scr-head"><span class="id">S-03</span><h2 id="s03-home-h">Home (Owner)</h2><p>Sync chip and role badge are always visible. The Owner sees the month-to-date strip; the Manager's home is the same without it. Business date follows A-03 (after 12:00 it is today).</p><p class="reqs">S-03, FR-REP-09, FR-AUTH-05</p></div>
+  <div class="pair-ph"><figure><figcaption>Light · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="light"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <h1>Aluthgama Daily<span class="sub">Wed 4 Nov 2026</span></h1>
+  <span class="badge">Owner</span>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<main class="body">
+  <h2 class="h2">Good evening</h2>
+  <section class="card stack" aria-labelledby="today-h-s03-home-light" style="gap:12px">
+    <div class="row" style="justify-content:space-between">
+      <h3 class="h3" id="today-h-s03-home-light">Today's report</h3>
+      <span class="state" style="color:var(--text-muted)">Not started</span>
+    </div>
+    <p class="muted" style="font-size:var(--fs-14)">Business date Wed 4 Nov. Takes about 90 seconds for the required figures.</p>
+    <a class="btn btn-primary btn-block" href="#">Start report</a>
+  </section>
+  <section class="stack-sm" aria-labelledby="mtd-h-s03-home-light">
+    <div class="row" style="justify-content:space-between"><h3 class="section-title" id="mtd-h-s03-home-light">November so far</h3><a class="link" style="min-height:32px;font-size:var(--fs-14)" href="#">Dashboard</a></div>
+    <div class="grid-2" style="grid-template-columns:1.3fr 1fr 0.8fr;gap:8px">
+      <div class="kpi"><span class="k">Sales</span><span class="v" style="font-size:var(--fs-16)">361,724.75</span></div>
+      <div class="kpi"><span class="k">Avg bill</span><span class="v" style="font-size:var(--fs-16)">2,825.97</span></div>
+      <div class="kpi"><span class="k">Bills</span><span class="v" style="font-size:var(--fs-16)">128</span></div>
+    </div>
+  </section>
+  <section class="stack-sm" aria-labelledby="last7-h-s03-home-light">
+    <h3 class="section-title" id="last7-h-s03-home-light">Last 7 days</h3>
+    <div class="list">
+      <a class="list-row" href="#"><span class="date">Tue 3 Nov</span><span class="amt">Rs 129,849.85</span><span class="meta">46 bills · avg 2,822.82</span><span class="icons"><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+      <a class="list-row" href="#"><span class="date">Mon 2 Nov</span><span class="amt">Rs 231,874.90</span><span class="meta">82 bills · avg 2,827.74</span><span class="icons"><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+    </div>
+  </section>
+</main>
+<nav class="nav" aria-label="Main"><a href="#" aria-current="page"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span>Home</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"/></svg></span>History</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>Dashboard</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg></span>Settings</a></nav>
+<div class="gesture"></div>
+</div></figure><figure><figcaption>Dark · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="dark"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <h1>Aluthgama Daily<span class="sub">Wed 4 Nov 2026</span></h1>
+  <span class="badge">Owner</span>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<main class="body">
+  <h2 class="h2">Good evening</h2>
+  <section class="card stack" aria-labelledby="today-h-s03-home-dark" style="gap:12px">
+    <div class="row" style="justify-content:space-between">
+      <h3 class="h3" id="today-h-s03-home-dark">Today's report</h3>
+      <span class="state" style="color:var(--text-muted)">Not started</span>
+    </div>
+    <p class="muted" style="font-size:var(--fs-14)">Business date Wed 4 Nov. Takes about 90 seconds for the required figures.</p>
+    <a class="btn btn-primary btn-block" href="#">Start report</a>
+  </section>
+  <section class="stack-sm" aria-labelledby="mtd-h-s03-home-dark">
+    <div class="row" style="justify-content:space-between"><h3 class="section-title" id="mtd-h-s03-home-dark">November so far</h3><a class="link" style="min-height:32px;font-size:var(--fs-14)" href="#">Dashboard</a></div>
+    <div class="grid-2" style="grid-template-columns:1.3fr 1fr 0.8fr;gap:8px">
+      <div class="kpi"><span class="k">Sales</span><span class="v" style="font-size:var(--fs-16)">361,724.75</span></div>
+      <div class="kpi"><span class="k">Avg bill</span><span class="v" style="font-size:var(--fs-16)">2,825.97</span></div>
+      <div class="kpi"><span class="k">Bills</span><span class="v" style="font-size:var(--fs-16)">128</span></div>
+    </div>
+  </section>
+  <section class="stack-sm" aria-labelledby="last7-h-s03-home-dark">
+    <h3 class="section-title" id="last7-h-s03-home-dark">Last 7 days</h3>
+    <div class="list">
+      <a class="list-row" href="#"><span class="date">Tue 3 Nov</span><span class="amt">Rs 129,849.85</span><span class="meta">46 bills · avg 2,822.82</span><span class="icons"><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+      <a class="list-row" href="#"><span class="date">Mon 2 Nov</span><span class="amt">Rs 231,874.90</span><span class="meta">82 bills · avg 2,827.74</span><span class="icons"><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+    </div>
+  </section>
+</main>
+<nav class="nav" aria-label="Main"><a href="#" aria-current="page"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span>Home</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"/></svg></span>History</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>Dashboard</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg></span>Settings</a></nav>
+<div class="gesture"></div>
+</div></figure></div></section><section class="scr" id="s04-wizard-sales" aria-labelledby="s04-wizard-sales-h">
+  <div class="scr-head"><span class="id">S-04</span><h2 id="s04-wizard-sales-h">Report wizard, step 1: Sales</h2><p>Required fields carry an asterisk. PickMe is focused, so it shows the raw value (4400) while the others show the formatted value. The summary strip updates live. Draft restored banner per FR-REP-07.</p><p class="reqs">FR-REP-01, -04, -07, 8.1, 10.3 MoneyField</p></div>
+  <div class="pair-ph"><figure><figcaption>Light · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="light"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <button class="icon-btn" aria-label="Close report"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
+  <h1>Report for Wed 4 Nov</h1>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<nav class="stepper" aria-label="Report steps">
+  <div class="label"><b>Step 1 of 5 · Sales</b><span class="muted">Next: Payments</span></div>
+  <ol>
+    <li class="current"><button class="seg" aria-current="step" aria-label="Step 1, Sales, current"></button></li>
+    <li><button class="seg" aria-label="Step 2, Payments and adjustments"></button></li>
+    <li><button class="seg" aria-label="Step 3, Customers and operations"></button></li>
+    <li><button class="seg" aria-label="Step 4, Conditions and notes"></button></li>
+    <li><button class="seg" aria-label="Step 5, Review and submit"></button></li>
+  </ol>
+</nav>
+<main class="body" style="gap:16px">
+  <div class="banner info" role="status"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"/></svg><p>Draft restored · last edited 21:42</p></div>
+  <div class="field"><label for="d-s04-wizard-sales-light">Business date <span class="req" aria-hidden="true">*</span></label>
+    <div class="input" id="d-s04-wizard-sales-light"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg><span class="val" style="font-family:var(--font-sans)">Wed 4 Nov 2026</span><span class="link" style="min-height:auto;font-size:var(--fs-14)">Change</span></div></div>
+  <div class="pair">
+    <div class="field"><label for="t-s04-wizard-sales-light">Total net sales <span class="req" aria-hidden="true">*</span></label>
+      <div class="input" id="t-s04-wizard-sales-light"><span class="prefix">Rs</span><span class="val">148,320.00</span></div></div>
+    <div class="field"><label for="b-s04-wizard-sales-light">Bills <span class="req" aria-hidden="true">*</span></label>
+      <div class="input" id="b-s04-wizard-sales-light"><span class="val">52</span></div></div>
+  </div>
+  <div class="strip" aria-live="polite">
+    <div><span class="k">Avg bill</span><span class="v">2,852.31</span></div>
+    <div><span class="k">Delivery</span><span class="v">6.1%</span></div>
+    <div><span class="k">Walk-in</span><span class="v">139,280.00</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="field"><label for="di-s04-wizard-sales-light">Dine-in</label><div class="input" id="di-s04-wizard-sales-light"><span class="prefix">Rs</span><span class="val">96,500.00</span></div></div>
+    <div class="field"><label for="ta-s04-wizard-sales-light">Takeaway</label><div class="input" id="ta-s04-wizard-sales-light"><span class="prefix">Rs</span><span class="val">42,780.00</span></div></div>
+  </div>
+  <div class="pair">
+    <div class="field"><label for="u-s04-wizard-sales-light">Uber Eats sales <span class="req" aria-hidden="true">*</span></label><div class="input" id="u-s04-wizard-sales-light"><span class="prefix">Rs</span><span class="val">4,640.00</span></div></div>
+    <div class="field"><label for="uo-s04-wizard-sales-light">Orders</label><div class="input" id="uo-s04-wizard-sales-light"><span class="val">3</span></div></div>
+  </div>
+  <div class="pair">
+    <div class="field"><label for="p-s04-wizard-sales-light">PickMe Food sales <span class="req" aria-hidden="true">*</span></label><div class="input is-focus" id="p-s04-wizard-sales-light"><span class="prefix">Rs</span><span class="val">4400</span></div><span class="hint">Enter 0 if none</span></div>
+    <div class="field"><label for="po-s04-wizard-sales-light">Orders</label><div class="input" id="po-s04-wizard-sales-light"><span class="val placeholder">Optional</span></div></div>
+  </div>
+</main>
+<div class="actionbar">
+  <button class="btn btn-secondary">Save draft</button>
+  <button class="btn btn-primary">Next</button>
+</div>
+<div class="gesture"></div>
+</div></figure><figure><figcaption>Dark · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="dark"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <button class="icon-btn" aria-label="Close report"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
+  <h1>Report for Wed 4 Nov</h1>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<nav class="stepper" aria-label="Report steps">
+  <div class="label"><b>Step 1 of 5 · Sales</b><span class="muted">Next: Payments</span></div>
+  <ol>
+    <li class="current"><button class="seg" aria-current="step" aria-label="Step 1, Sales, current"></button></li>
+    <li><button class="seg" aria-label="Step 2, Payments and adjustments"></button></li>
+    <li><button class="seg" aria-label="Step 3, Customers and operations"></button></li>
+    <li><button class="seg" aria-label="Step 4, Conditions and notes"></button></li>
+    <li><button class="seg" aria-label="Step 5, Review and submit"></button></li>
+  </ol>
+</nav>
+<main class="body" style="gap:16px">
+  <div class="banner info" role="status"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"/></svg><p>Draft restored · last edited 21:42</p></div>
+  <div class="field"><label for="d-s04-wizard-sales-dark">Business date <span class="req" aria-hidden="true">*</span></label>
+    <div class="input" id="d-s04-wizard-sales-dark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg><span class="val" style="font-family:var(--font-sans)">Wed 4 Nov 2026</span><span class="link" style="min-height:auto;font-size:var(--fs-14)">Change</span></div></div>
+  <div class="pair">
+    <div class="field"><label for="t-s04-wizard-sales-dark">Total net sales <span class="req" aria-hidden="true">*</span></label>
+      <div class="input" id="t-s04-wizard-sales-dark"><span class="prefix">Rs</span><span class="val">148,320.00</span></div></div>
+    <div class="field"><label for="b-s04-wizard-sales-dark">Bills <span class="req" aria-hidden="true">*</span></label>
+      <div class="input" id="b-s04-wizard-sales-dark"><span class="val">52</span></div></div>
+  </div>
+  <div class="strip" aria-live="polite">
+    <div><span class="k">Avg bill</span><span class="v">2,852.31</span></div>
+    <div><span class="k">Delivery</span><span class="v">6.1%</span></div>
+    <div><span class="k">Walk-in</span><span class="v">139,280.00</span></div>
+  </div>
+  <div class="grid-2">
+    <div class="field"><label for="di-s04-wizard-sales-dark">Dine-in</label><div class="input" id="di-s04-wizard-sales-dark"><span class="prefix">Rs</span><span class="val">96,500.00</span></div></div>
+    <div class="field"><label for="ta-s04-wizard-sales-dark">Takeaway</label><div class="input" id="ta-s04-wizard-sales-dark"><span class="prefix">Rs</span><span class="val">42,780.00</span></div></div>
+  </div>
+  <div class="pair">
+    <div class="field"><label for="u-s04-wizard-sales-dark">Uber Eats sales <span class="req" aria-hidden="true">*</span></label><div class="input" id="u-s04-wizard-sales-dark"><span class="prefix">Rs</span><span class="val">4,640.00</span></div></div>
+    <div class="field"><label for="uo-s04-wizard-sales-dark">Orders</label><div class="input" id="uo-s04-wizard-sales-dark"><span class="val">3</span></div></div>
+  </div>
+  <div class="pair">
+    <div class="field"><label for="p-s04-wizard-sales-dark">PickMe Food sales <span class="req" aria-hidden="true">*</span></label><div class="input is-focus" id="p-s04-wizard-sales-dark"><span class="prefix">Rs</span><span class="val">4400</span></div><span class="hint">Enter 0 if none</span></div>
+    <div class="field"><label for="po-s04-wizard-sales-dark">Orders</label><div class="input" id="po-s04-wizard-sales-dark"><span class="val placeholder">Optional</span></div></div>
+  </div>
+</main>
+<div class="actionbar">
+  <button class="btn btn-secondary">Save draft</button>
+  <button class="btn btn-primary">Next</button>
+</div>
+<div class="gesture"></div>
+</div></figure></div></section><section class="scr" id="s05-review" aria-labelledby="s05-review-h">
+  <div class="scr-head"><span class="id">S-05</span><h2 id="s05-review-h">Review and submit</h2><p>The payment split is Rs 500 short of the total, so submitting needs the confirmation tick. Each section links back to its step. Blocking errors, when present, appear above the warnings with links to each field.</p><p class="reqs">FR-REP-05, -06, UAT-03</p></div>
+  <div class="pair-ph"><figure><figcaption>Light · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="light"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <button class="icon-btn" aria-label="Back to step 4"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"/></svg></button>
+  <h1>Review and submit<span class="sub">Report for Wed 4 Nov 2026</span></h1>
+</header>
+<nav class="stepper" aria-label="Report steps">
+  <ol>
+    <li class="done"><button class="seg" aria-label="Step 1, Sales, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 2, Payments, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 3, Customers, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 4, Conditions, complete"></button></li>
+    <li class="current"><button class="seg" aria-current="step" aria-label="Step 5, Review, current"></button></li>
+  </ol>
+</nav>
+<main class="body">
+  <section class="banner warning" aria-labelledby="w-h-s05-review-light" role="status"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-alert"/></svg>
+    <div class="stack-sm" style="gap:4px;flex:1">
+      <p class="title" id="w-h-s05-review-light">Check 1 figure before submitting</p>
+      <p>Payments (cash + card + QR) are <b class="num">Rs 500.00 less</b> than total net sales.</p>
+      <label class="check"><span class="box on"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>I've checked these figures.</label>
+    </div>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r1-s05-review-light">
+    <div class="review-head"><h3 class="h3" id="r1-s05-review-light">Sales</h3><a class="link" href="#">Edit <span class="sr-only">sales</span></a></div>
+    <dl class="dl">
+      <dt>Total net sales</dt><dd>Rs 148,320.00</dd>
+      <dt>Bills</dt><dd>52</dd>
+      <dt>Dine-in / Takeaway</dt><dd>96,500.00 / 42,780.00</dd>
+      <dt>Uber Eats (3 orders)</dt><dd>4,640.00</dd>
+      <dt>PickMe Food</dt><dd>4,400.00</dd>
+    </dl>
+    <div class="strip" style="margin-top:8px">
+      <div><span class="k">Avg bill</span><span class="v">2,852.31</span></div>
+      <div><span class="k">Delivery</span><span class="v">6.1%</span></div>
+      <div><span class="k">Walk-in</span><span class="v">139,280.00</span></div>
+    </div>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r2-s05-review-light">
+    <div class="review-head"><h3 class="h3" id="r2-s05-review-light">Payments and adjustments</h3><a class="link" href="#">Edit <span class="sr-only">payments</span></a></div>
+    <dl class="dl">
+      <dt>Cash / Card / QR</dt><dd>61,200 / 72,620 / 14,000</dd>
+      <dt>Discounts</dt><dd>1,850.00</dd>
+      <dt>Comps / Voids</dt><dd>960.00 / 0.00</dd>
+    </dl>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r3-s05-review-light">
+    <div class="review-head"><h3 class="h3" id="r3-s05-review-light">Customers and operations</h3><a class="link" href="#">Edit <span class="sr-only">customers and operations</span></a></div>
+    <dl class="dl">
+      <dt>Busiest</dt><dd class="txt">6pm–9pm</dd>
+      <dt>Quietest</dt><dd class="txt">3pm–6pm</dd>
+      <dt>Staff on duty</dt><dd>6</dd>
+      <dt>Open / Close</dt><dd>07:00 / 22:10</dd>
+    </dl>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r4-s05-review-light">
+    <div class="review-head"><h3 class="h3" id="r4-s05-review-light">Conditions and notes</h3><a class="link" href="#">Edit <span class="sr-only">conditions and notes</span></a></div>
+    <dl class="dl"><dt>Weather</dt><dd class="txt">Sunny, Cloudy, Cloudy, Light rain</dd><dt>Conditions</dt><dd class="txt">Normal day</dd></dl>
+    <p style="font-size:var(--fs-14)">Steady day. Uber Eats started taking orders from 4pm.</p>
+  </section>
+</main>
+<div class="actionbar"><button class="btn btn-primary btn-block">Submit report</button></div>
+<div class="gesture"></div>
+</div></figure><figure><figcaption>Dark · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="dark"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <button class="icon-btn" aria-label="Back to step 4"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"/></svg></button>
+  <h1>Review and submit<span class="sub">Report for Wed 4 Nov 2026</span></h1>
+</header>
+<nav class="stepper" aria-label="Report steps">
+  <ol>
+    <li class="done"><button class="seg" aria-label="Step 1, Sales, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 2, Payments, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 3, Customers, complete"></button></li>
+    <li class="done"><button class="seg" aria-label="Step 4, Conditions, complete"></button></li>
+    <li class="current"><button class="seg" aria-current="step" aria-label="Step 5, Review, current"></button></li>
+  </ol>
+</nav>
+<main class="body">
+  <section class="banner warning" aria-labelledby="w-h-s05-review-dark" role="status"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-alert"/></svg>
+    <div class="stack-sm" style="gap:4px;flex:1">
+      <p class="title" id="w-h-s05-review-dark">Check 1 figure before submitting</p>
+      <p>Payments (cash + card + QR) are <b class="num">Rs 500.00 less</b> than total net sales.</p>
+      <label class="check"><span class="box on"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>I've checked these figures.</label>
+    </div>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r1-s05-review-dark">
+    <div class="review-head"><h3 class="h3" id="r1-s05-review-dark">Sales</h3><a class="link" href="#">Edit <span class="sr-only">sales</span></a></div>
+    <dl class="dl">
+      <dt>Total net sales</dt><dd>Rs 148,320.00</dd>
+      <dt>Bills</dt><dd>52</dd>
+      <dt>Dine-in / Takeaway</dt><dd>96,500.00 / 42,780.00</dd>
+      <dt>Uber Eats (3 orders)</dt><dd>4,640.00</dd>
+      <dt>PickMe Food</dt><dd>4,400.00</dd>
+    </dl>
+    <div class="strip" style="margin-top:8px">
+      <div><span class="k">Avg bill</span><span class="v">2,852.31</span></div>
+      <div><span class="k">Delivery</span><span class="v">6.1%</span></div>
+      <div><span class="k">Walk-in</span><span class="v">139,280.00</span></div>
+    </div>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r2-s05-review-dark">
+    <div class="review-head"><h3 class="h3" id="r2-s05-review-dark">Payments and adjustments</h3><a class="link" href="#">Edit <span class="sr-only">payments</span></a></div>
+    <dl class="dl">
+      <dt>Cash / Card / QR</dt><dd>61,200 / 72,620 / 14,000</dd>
+      <dt>Discounts</dt><dd>1,850.00</dd>
+      <dt>Comps / Voids</dt><dd>960.00 / 0.00</dd>
+    </dl>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r3-s05-review-dark">
+    <div class="review-head"><h3 class="h3" id="r3-s05-review-dark">Customers and operations</h3><a class="link" href="#">Edit <span class="sr-only">customers and operations</span></a></div>
+    <dl class="dl">
+      <dt>Busiest</dt><dd class="txt">6pm–9pm</dd>
+      <dt>Quietest</dt><dd class="txt">3pm–6pm</dd>
+      <dt>Staff on duty</dt><dd>6</dd>
+      <dt>Open / Close</dt><dd>07:00 / 22:10</dd>
+    </dl>
+  </section>
+  <section class="card stack-sm" aria-labelledby="r4-s05-review-dark">
+    <div class="review-head"><h3 class="h3" id="r4-s05-review-dark">Conditions and notes</h3><a class="link" href="#">Edit <span class="sr-only">conditions and notes</span></a></div>
+    <dl class="dl"><dt>Weather</dt><dd class="txt">Sunny, Cloudy, Cloudy, Light rain</dd><dt>Conditions</dt><dd class="txt">Normal day</dd></dl>
+    <p style="font-size:var(--fs-14)">Steady day. Uber Eats started taking orders from 4pm.</p>
+  </section>
+</main>
+<div class="actionbar"><button class="btn btn-primary btn-block">Submit report</button></div>
+<div class="gesture"></div>
+</div></figure></div></section><section class="scr" id="s06-success" aria-labelledby="s06-success-h">
+  <div class="scr-head"><span class="id">S-06</span><h2 id="s06-success-h">Success and share</h2><p>The preview shows the message exactly as FR-SHR-01 defines it. After sharing, the toast says “Share sheet opened”, never “Sent”.</p><p class="reqs">FR-REP-11, FR-SHR-01, FR-SHR-02</p></div>
+  <div class="pair-ph"><figure><figcaption>Light · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="light"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<main class="body" style="padding-top:40px;gap:20px">
+  <div class="stack" style="align-items:center;text-align:center;gap:12px">
+    <div class="success-mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></div>
+    <h2 class="h2" role="status">Report for Wed 4 Nov saved.</h2>
+    <p class="muted" style="font-size:var(--fs-14)">Share the summary with the WhatsApp group.</p>
+  </div>
+  <section class="stack-sm" aria-labelledby="wa-h-s06-success-light">
+    <h3 class="section-title" id="wa-h-s06-success-light">WhatsApp message</h3>
+<div class="wa"><b>Aluthgama</b>
+
+Date - 04/11/2026
+Sale - 148,320.00/=
+Uber - 4,640.00/=
+Pick me - 4,400.00/=
+Ticket - 52
+Avg bill - 2,852.31/=
+
+Steady day. Uber Eats started taking orders from 4pm.</div>
+    <p class="hint">Sent as <span class="num">*Aluthgama*</span>, which WhatsApp shows in bold.</p>
+  </section>
+</main>
+<div class="toast" role="status"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Share sheet opened</div>
+<div class="actionbar" style="flex-direction:column;gap:8px">
+  <button class="btn btn-primary btn-block"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-share"/></svg>Share to WhatsApp</button>
+  <div class="row" style="gap:12px"><button class="btn btn-secondary" style="flex:1"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>Copy</button><button class="btn btn-secondary" style="flex:1">Done</button></div>
+</div>
+<div class="gesture"></div>
+</div></figure><figure><figcaption>Dark · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="dark"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<main class="body" style="padding-top:40px;gap:20px">
+  <div class="stack" style="align-items:center;text-align:center;gap:12px">
+    <div class="success-mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></div>
+    <h2 class="h2" role="status">Report for Wed 4 Nov saved.</h2>
+    <p class="muted" style="font-size:var(--fs-14)">Share the summary with the WhatsApp group.</p>
+  </div>
+  <section class="stack-sm" aria-labelledby="wa-h-s06-success-dark">
+    <h3 class="section-title" id="wa-h-s06-success-dark">WhatsApp message</h3>
+<div class="wa"><b>Aluthgama</b>
+
+Date - 04/11/2026
+Sale - 148,320.00/=
+Uber - 4,640.00/=
+Pick me - 4,400.00/=
+Ticket - 52
+Avg bill - 2,852.31/=
+
+Steady day. Uber Eats started taking orders from 4pm.</div>
+    <p class="hint">Sent as <span class="num">*Aluthgama*</span>, which WhatsApp shows in bold.</p>
+  </section>
+</main>
+<div class="toast" role="status"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Share sheet opened</div>
+<div class="actionbar" style="flex-direction:column;gap:8px">
+  <button class="btn btn-primary btn-block"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-share"/></svg>Share to WhatsApp</button>
+  <div class="row" style="gap:12px"><button class="btn btn-secondary" style="flex:1"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>Copy</button><button class="btn btn-secondary" style="flex:1">Done</button></div>
+</div>
+<div class="gesture"></div>
+</div></figure></div></section><section class="scr" id="s07-history" aria-labelledby="s07-history-h">
+  <div class="scr-head"><span class="id">S-07</span><h2 id="s07-history-h">History (Owner)</h2><p>Newest first. Each row has date, total, bills, average bill, sync state and rain once the weather is in. The month switcher and condition filter are Owner only.</p><p class="reqs">FR-HIS-01, FR-HIS-04</p></div>
+  <div class="pair-ph"><figure><figcaption>Light · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="light"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <h1>History</h1>
+  <span class="badge">Owner</span>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<main class="body">
+  <div class="stack-sm">
+    <div class="row" style="justify-content:space-between">
+      <button class="icon-btn" style="margin:0" aria-label="Previous month"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"/></svg></button>
+      <span class="h3">November 2026</span>
+      <button class="icon-btn" style="margin:0" aria-label="Next month" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></button>
+    </div>
+    <div class="chips" role="group" aria-label="Filter by condition" style="flex-wrap:nowrap;overflow-x:auto">
+      <button class="chip" aria-pressed="true">All days</button><button class="chip" aria-pressed="false">Poya day</button><button class="chip" aria-pressed="false">Public holiday</button><button class="chip" aria-pressed="false">Power cut</button>
+    </div>
+  </div>
+  <p class="hint">3 reports · pull down to refresh</p>
+  <div class="list">
+    <a class="list-row" href="#"><span class="date">Wed 4 Nov</span><span class="amt">Rs 148,320.00</span><span class="meta">52 bills · avg 2,852.31</span><span class="icons"><span title="Weather arrives the next morning">Weather tomorrow</span><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+    <a class="list-row" href="#"><span class="date">Tue 3 Nov</span><span class="amt">Rs 129,849.85</span><span class="meta">46 bills · avg 2,822.82</span><span class="icons"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-rain"/></svg><span class="num">6.8 mm</span><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+    <a class="list-row" href="#"><span class="date">Mon 2 Nov</span><span class="amt">Rs 231,874.90</span><span class="meta">82 bills · avg 2,827.74</span><span class="icons"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg><span class="num">0.4 mm</span><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+  </div>
+  <p class="hint" style="text-align:center">The outlet opened on Mon 2 Nov 2026.</p>
+</main>
+<nav class="nav" aria-label="Main"><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span>Home</a><a href="#" aria-current="page"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"/></svg></span>History</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>Dashboard</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg></span>Settings</a></nav>
+<div class="gesture"></div>
+</div></figure><figure><figcaption>Dark · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="dark"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <h1>History</h1>
+  <span class="badge">Owner</span>
+  <button class="sync ok" aria-label="Sync status: all sent"><span class="dot"></span>All sent</button>
+</header>
+<main class="body">
+  <div class="stack-sm">
+    <div class="row" style="justify-content:space-between">
+      <button class="icon-btn" style="margin:0" aria-label="Previous month"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"/></svg></button>
+      <span class="h3">November 2026</span>
+      <button class="icon-btn" style="margin:0" aria-label="Next month" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></button>
+    </div>
+    <div class="chips" role="group" aria-label="Filter by condition" style="flex-wrap:nowrap;overflow-x:auto">
+      <button class="chip" aria-pressed="true">All days</button><button class="chip" aria-pressed="false">Poya day</button><button class="chip" aria-pressed="false">Public holiday</button><button class="chip" aria-pressed="false">Power cut</button>
+    </div>
+  </div>
+  <p class="hint">3 reports · pull down to refresh</p>
+  <div class="list">
+    <a class="list-row" href="#"><span class="date">Wed 4 Nov</span><span class="amt">Rs 148,320.00</span><span class="meta">52 bills · avg 2,852.31</span><span class="icons"><span title="Weather arrives the next morning">Weather tomorrow</span><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+    <a class="list-row" href="#"><span class="date">Tue 3 Nov</span><span class="amt">Rs 129,849.85</span><span class="meta">46 bills · avg 2,822.82</span><span class="icons"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-rain"/></svg><span class="num">6.8 mm</span><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+    <a class="list-row" href="#"><span class="date">Mon 2 Nov</span><span class="amt">Rs 231,874.90</span><span class="meta">82 bills · avg 2,827.74</span><span class="icons"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg><span class="num">0.4 mm</span><span class="state ok"><svg class="icon icon-sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Sent</span></span></a>
+  </div>
+  <p class="hint" style="text-align:center">The outlet opened on Mon 2 Nov 2026.</p>
+</main>
+<nav class="nav" aria-label="Main"><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span>Home</a><a href="#" aria-current="page"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"/></svg></span>History</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>Dashboard</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg></span>Settings</a></nav>
+<div class="gesture"></div>
+</div></figure></div></section><section class="scr" id="s10-dashboard" aria-labelledby="s10-dashboard-h">
+  <div class="scr-head"><span class="id">S-10</span><h2 id="s10-dashboard-h">Dashboard (Owner)</h2><p>Real seed data plus an example 4 Nov report. The monthly target is not set yet (OQ-01), so target cards show their empty state. Bars, average line and chain benchmark are drawn to one scale. Each chart has a “Show as table” alternative.</p><p class="reqs">FR-DSH-01 to -07</p></div>
+  <div class="pair-ph"><figure><figcaption>Light · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="light"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <h1>Dashboard<span class="sub">Updated 21:42</span></h1>
+  <button class="btn btn-ghost" style="min-height:48px"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-refresh"/></svg>Refresh</button>
+</header>
+<main class="body">
+  <div class="row" style="justify-content:space-between">
+    <button class="icon-btn" style="margin:0" aria-label="Previous month"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"/></svg></button>
+    <span class="h3">November 2026</span>
+    <button class="icon-btn" style="margin:0" aria-label="Next month" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></button>
+  </div>
+  <section class="grid-2" aria-label="Month to date">
+    <div class="kpi" style="grid-column:1/-1"><span class="k">Sales this month</span><span class="v" style="font-size:var(--fs-28)">Rs 510,044.75</span><span class="d">3 days reported · 2–4 Nov</span></div>
+    <div class="kpi empty"><span class="k">Monthly target</span><span class="v">Not set</span><a class="link" href="#">Set a monthly target in Settings</a></div>
+    <div class="kpi empty"><span class="k">Needed per day</span><span class="v">Needs a target</span></div>
+    <div class="kpi"><span class="k">Projected month end</span><span class="v">4,930,432.58</span><span class="d">at the current daily average</span></div>
+    <div class="kpi"><span class="k">Average bill</span><span class="v">2,833.58</span></div>
+    <div class="kpi"><span class="k">Bills</span><span class="v">180</span></div>
+    <div class="kpi"><span class="k">Delivery share</span><span class="v">2.1%</span><span class="d">Uber + PickMe</span></div>
+  </section>
+  <section class="card chart-card" aria-labelledby="dc-h-s10-dashboard-light">
+    <div class="row" style="justify-content:space-between"><h3 class="h3" id="dc-h-s10-dashboard-light">Daily sales</h3><a class="link" style="min-height:32px;font-size:var(--fs-14)" href="#">Show as table</a></div>
+    <div class="legend"><span><i style="background:var(--chart-bar)"></i>Daily total</span><span><i class="line" style="background:var(--chart-line)"></i>7-day average</span><span><i class="dash"></i>Chain average</span></div>
+    <svg viewBox="0 0 340 176" role="img" aria-labelledby="dc-t-s10-dashboard-light"><title id="dc-t-s10-dashboard-light">Daily sales, 2 to 4 November, with 7-day average and chain benchmark</title><line x1="40" x2="330" y1="150.0" y2="150.0" stroke="var(--chart-grid)"/><text x="34" y="154.0" text-anchor="end">0k</text><line x1="40" x2="330" y1="123.2" y2="123.2" stroke="var(--chart-grid)"/><text x="34" y="127.2" text-anchor="end">50k</text><line x1="40" x2="330" y1="96.4" y2="96.4" stroke="var(--chart-grid)"/><text x="34" y="100.4" text-anchor="end">100k</text><line x1="40" x2="330" y1="69.6" y2="69.6" stroke="var(--chart-grid)"/><text x="34" y="73.6" text-anchor="end">150k</text><line x1="40" x2="330" y1="42.8" y2="42.8" stroke="var(--chart-grid)"/><text x="34" y="46.8" text-anchor="end">200k</text><line x1="40" x2="330" y1="16.0" y2="16.0" stroke="var(--chart-grid)"/><text x="34" y="20.0" text-anchor="end">250k</text><line x1="40" x2="330" y1="47.8" y2="47.8" stroke="var(--chart-ref)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="330" y="42.8" text-anchor="end">Chain avg 190.7k/day</text><rect x="41.5" y="25.7" width="7" height="124.3" rx="1.5" fill="var(--chart-bar)"><title>2 Nov: Rs 231,874.90</title></rect><rect x="51.5" y="80.4" width="7" height="69.6" rx="1.5" fill="var(--chart-bar)"><title>3 Nov: Rs 129,849.85</title></rect><rect x="61.5" y="70.5" width="7" height="79.5" rx="1.5" fill="var(--chart-bar)"><title>4 Nov: Rs 148,320.00</title></rect><polyline points="45,25.7 55,53.1 65,58.9" fill="none" stroke="var(--chart-line)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="45" cy="25.7" r="3" fill="var(--chart-line)"/><circle cx="55" cy="53.1" r="3" fill="var(--chart-line)"/><circle cx="65" cy="58.9" r="3" fill="var(--chart-line)"/><text x="45" y="166" text-anchor="middle">2</text><text x="115" y="166" text-anchor="middle">9</text><text x="185" y="166" text-anchor="middle">16</text><text x="255" y="166" text-anchor="middle">23</text><text x="325" y="166" text-anchor="middle">30</text></svg>
+    <p class="hint">Target line appears once a monthly target is set.</p>
+  </section>
+  <section class="card stack-sm" aria-labelledby="wd-h-s10-dashboard-light">
+    <h3 class="h3" id="wd-h-s10-dashboard-light">By day of week</h3>
+    <div class="table-wrap"><table class="table"><thead><tr><th scope="col">Day</th><th scope="col" class="r">Avg sales</th><th scope="col" class="r">Bills</th><th scope="col" class="r">Avg bill</th></tr></thead>
+    <tbody><tr><td>Mon</td><td class="r">231,874.90</td><td class="r">82</td><td class="r">2,827.74</td></tr><tr><td>Tue</td><td class="r">129,849.85</td><td class="r">46</td><td class="r">2,822.82</td></tr><tr><td>Wed</td><td class="r">148,320.00</td><td class="r">52</td><td class="r">2,852.31</td></tr></tbody></table></div>
+  </section>
+  <section class="card chart-card" aria-labelledby="cm-h-s10-dashboard-light">
+    <h3 class="h3" id="cm-h-s10-dashboard-light">Channel mix</h3>
+    <div class="legend"><span><i style="background:var(--chart-dine)"></i>Dine-in</span><span><i style="background:var(--chart-take)"></i>Takeaway</span><span><i style="background:var(--chart-uber)"></i>Uber</span><span><i style="background:var(--chart-pickme)"></i>PickMe</span><span><i style="background:var(--surface);border:1.5px solid var(--chart-ref)"></i>Unsplit</span></div>
+    <svg viewBox="0 0 340 84" role="img" aria-labelledby="cm-t-s10-dashboard-light"><title id="cm-t-s10-dashboard-light">Channel mix per day</title><defs><pattern id="hatch-s10-dashboard-light" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--surface)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--chart-ref)" stroke-width="1.5"/></pattern></defs><g transform="translate(0 0)"><text x="0" y="13">Mon 2</text><rect x="56.0" y="0.75" width="211.8" height="16.5" fill="url(#hatch-s10-dashboard-light)" stroke="var(--chart-ref)" stroke-width="1.5"><title>Unsplit Rs 231,874.90</title></rect></g><g transform="translate(0 30)"><text x="0" y="13">Tue 3</text><rect x="56.0" y="0.75" width="116.2" height="16.5" fill="url(#hatch-s10-dashboard-light)" stroke="var(--chart-ref)" stroke-width="1.5"><title>Unsplit Rs 127,949.85</title></rect><rect x="173.7" y="0" width="1.7" height="18" fill="var(--chart-pickme)" stroke="var(--surface)" stroke-width="1.5"><title>PickMe Rs 1,900.00</title></rect></g><g transform="translate(0 60)"><text x="0" y="13">Wed 4</text><rect x="56.0" y="0" width="88.8" height="18" fill="var(--chart-dine)" stroke="var(--surface)" stroke-width="1.5"><title>Dine-in Rs 96,500.00</title></rect><rect x="144.8" y="0" width="39.4" height="18" fill="var(--chart-take)" stroke="var(--surface)" stroke-width="1.5"><title>Takeaway Rs 42,780.00</title></rect><rect x="184.1" y="0" width="4.3" height="18" fill="var(--chart-uber)" stroke="var(--surface)" stroke-width="1.5"><title>Uber Rs 4,640.00</title></rect><rect x="188.4" y="0" width="4.0" height="18" fill="var(--chart-pickme)" stroke="var(--surface)" stroke-width="1.5"><title>PickMe Rs 4,400.00</title></rect></g></svg>
+  </section>
+  <section class="card chart-card" aria-labelledby="sc-h-s10-dashboard-light">
+    <div class="row" style="justify-content:space-between"><h3 class="h3" id="sc-h-s10-dashboard-light">Weather and sales</h3></div>
+    <div class="chips" role="radiogroup" aria-label="Weather measure"><button class="chip" role="radio" aria-checked="true" style="min-height:40px">Rain</button><button class="chip" role="radio" aria-checked="false" style="min-height:40px">Temperature</button></div>
+    <svg viewBox="0 0 340 180" role="img" aria-labelledby="sc-t-s10-dashboard-light"><title id="sc-t-s10-dashboard-light">Daily sales against rain during trading hours</title><line x1="40" x2="330" y1="150.0" y2="150.0" stroke="var(--chart-grid)"/><text x="34" y="154.0" text-anchor="end">0k</text><line x1="40" x2="330" y1="96.4" y2="96.4" stroke="var(--chart-grid)"/><text x="34" y="100.4" text-anchor="end">100k</text><line x1="40" x2="330" y1="42.8" y2="42.8" stroke="var(--chart-grid)"/><text x="34" y="46.8" text-anchor="end">200k</text><text x="40.0" y="166" text-anchor="middle">0</text><text x="98.0" y="166" text-anchor="middle">2</text><text x="156.0" y="166" text-anchor="middle">4</text><text x="214.0" y="166" text-anchor="middle">6</text><text x="272.0" y="166" text-anchor="middle">8</text><text x="330.0" y="166" text-anchor="middle">10</text><text x="330" y="10" text-anchor="end">x: rain 07:00–22:00 (mm)</text><circle cx="51.6" cy="25.7" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="1.5"><title>2 Nov: 0.4 mm, Rs 231,874.90</title></circle><text x="59.6" y="29.7">2 Nov</text><circle cx="237.2" cy="80.4" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="1.5"><title>3 Nov: 6.8 mm, Rs 129,849.85</title></circle><text x="245.2" y="84.4">3 Nov</text></svg>
+    <p class="hint">Wed 4 Nov is added after tomorrow's 06:00 weather update.</p>
+  </section>
+</main>
+<nav class="nav" aria-label="Main"><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span>Home</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"/></svg></span>History</a><a href="#" aria-current="page"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>Dashboard</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg></span>Settings</a></nav>
+<div class="gesture"></div>
+</div></figure><figure><figcaption>Dark · full length (scrolls on the phone)</figcaption><div class="phone" data-theme="dark"><div class="statusbar" aria-hidden="true"><span>21:42</span><span class="sys"><span>4G</span><i></i></span></div>
+<header class="appbar">
+  <h1>Dashboard<span class="sub">Updated 21:42</span></h1>
+  <button class="btn btn-ghost" style="min-height:48px"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-refresh"/></svg>Refresh</button>
+</header>
+<main class="body">
+  <div class="row" style="justify-content:space-between">
+    <button class="icon-btn" style="margin:0" aria-label="Previous month"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-back"/></svg></button>
+    <span class="h3">November 2026</span>
+    <button class="icon-btn" style="margin:0" aria-label="Next month" disabled><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg></button>
+  </div>
+  <section class="grid-2" aria-label="Month to date">
+    <div class="kpi" style="grid-column:1/-1"><span class="k">Sales this month</span><span class="v" style="font-size:var(--fs-28)">Rs 510,044.75</span><span class="d">3 days reported · 2–4 Nov</span></div>
+    <div class="kpi empty"><span class="k">Monthly target</span><span class="v">Not set</span><a class="link" href="#">Set a monthly target in Settings</a></div>
+    <div class="kpi empty"><span class="k">Needed per day</span><span class="v">Needs a target</span></div>
+    <div class="kpi"><span class="k">Projected month end</span><span class="v">4,930,432.58</span><span class="d">at the current daily average</span></div>
+    <div class="kpi"><span class="k">Average bill</span><span class="v">2,833.58</span></div>
+    <div class="kpi"><span class="k">Bills</span><span class="v">180</span></div>
+    <div class="kpi"><span class="k">Delivery share</span><span class="v">2.1%</span><span class="d">Uber + PickMe</span></div>
+  </section>
+  <section class="card chart-card" aria-labelledby="dc-h-s10-dashboard-dark">
+    <div class="row" style="justify-content:space-between"><h3 class="h3" id="dc-h-s10-dashboard-dark">Daily sales</h3><a class="link" style="min-height:32px;font-size:var(--fs-14)" href="#">Show as table</a></div>
+    <div class="legend"><span><i style="background:var(--chart-bar)"></i>Daily total</span><span><i class="line" style="background:var(--chart-line)"></i>7-day average</span><span><i class="dash"></i>Chain average</span></div>
+    <svg viewBox="0 0 340 176" role="img" aria-labelledby="dc-t-s10-dashboard-dark"><title id="dc-t-s10-dashboard-dark">Daily sales, 2 to 4 November, with 7-day average and chain benchmark</title><line x1="40" x2="330" y1="150.0" y2="150.0" stroke="var(--chart-grid)"/><text x="34" y="154.0" text-anchor="end">0k</text><line x1="40" x2="330" y1="123.2" y2="123.2" stroke="var(--chart-grid)"/><text x="34" y="127.2" text-anchor="end">50k</text><line x1="40" x2="330" y1="96.4" y2="96.4" stroke="var(--chart-grid)"/><text x="34" y="100.4" text-anchor="end">100k</text><line x1="40" x2="330" y1="69.6" y2="69.6" stroke="var(--chart-grid)"/><text x="34" y="73.6" text-anchor="end">150k</text><line x1="40" x2="330" y1="42.8" y2="42.8" stroke="var(--chart-grid)"/><text x="34" y="46.8" text-anchor="end">200k</text><line x1="40" x2="330" y1="16.0" y2="16.0" stroke="var(--chart-grid)"/><text x="34" y="20.0" text-anchor="end">250k</text><line x1="40" x2="330" y1="47.8" y2="47.8" stroke="var(--chart-ref)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="330" y="42.8" text-anchor="end">Chain avg 190.7k/day</text><rect x="41.5" y="25.7" width="7" height="124.3" rx="1.5" fill="var(--chart-bar)"><title>2 Nov: Rs 231,874.90</title></rect><rect x="51.5" y="80.4" width="7" height="69.6" rx="1.5" fill="var(--chart-bar)"><title>3 Nov: Rs 129,849.85</title></rect><rect x="61.5" y="70.5" width="7" height="79.5" rx="1.5" fill="var(--chart-bar)"><title>4 Nov: Rs 148,320.00</title></rect><polyline points="45,25.7 55,53.1 65,58.9" fill="none" stroke="var(--chart-line)" stroke-width="2.5" stroke-linejoin="round"/><circle cx="45" cy="25.7" r="3" fill="var(--chart-line)"/><circle cx="55" cy="53.1" r="3" fill="var(--chart-line)"/><circle cx="65" cy="58.9" r="3" fill="var(--chart-line)"/><text x="45" y="166" text-anchor="middle">2</text><text x="115" y="166" text-anchor="middle">9</text><text x="185" y="166" text-anchor="middle">16</text><text x="255" y="166" text-anchor="middle">23</text><text x="325" y="166" text-anchor="middle">30</text></svg>
+    <p class="hint">Target line appears once a monthly target is set.</p>
+  </section>
+  <section class="card stack-sm" aria-labelledby="wd-h-s10-dashboard-dark">
+    <h3 class="h3" id="wd-h-s10-dashboard-dark">By day of week</h3>
+    <div class="table-wrap"><table class="table"><thead><tr><th scope="col">Day</th><th scope="col" class="r">Avg sales</th><th scope="col" class="r">Bills</th><th scope="col" class="r">Avg bill</th></tr></thead>
+    <tbody><tr><td>Mon</td><td class="r">231,874.90</td><td class="r">82</td><td class="r">2,827.74</td></tr><tr><td>Tue</td><td class="r">129,849.85</td><td class="r">46</td><td class="r">2,822.82</td></tr><tr><td>Wed</td><td class="r">148,320.00</td><td class="r">52</td><td class="r">2,852.31</td></tr></tbody></table></div>
+  </section>
+  <section class="card chart-card" aria-labelledby="cm-h-s10-dashboard-dark">
+    <h3 class="h3" id="cm-h-s10-dashboard-dark">Channel mix</h3>
+    <div class="legend"><span><i style="background:var(--chart-dine)"></i>Dine-in</span><span><i style="background:var(--chart-take)"></i>Takeaway</span><span><i style="background:var(--chart-uber)"></i>Uber</span><span><i style="background:var(--chart-pickme)"></i>PickMe</span><span><i style="background:var(--surface);border:1.5px solid var(--chart-ref)"></i>Unsplit</span></div>
+    <svg viewBox="0 0 340 84" role="img" aria-labelledby="cm-t-s10-dashboard-dark"><title id="cm-t-s10-dashboard-dark">Channel mix per day</title><defs><pattern id="hatch-s10-dashboard-dark" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--surface)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--chart-ref)" stroke-width="1.5"/></pattern></defs><g transform="translate(0 0)"><text x="0" y="13">Mon 2</text><rect x="56.0" y="0.75" width="211.8" height="16.5" fill="url(#hatch-s10-dashboard-dark)" stroke="var(--chart-ref)" stroke-width="1.5"><title>Unsplit Rs 231,874.90</title></rect></g><g transform="translate(0 30)"><text x="0" y="13">Tue 3</text><rect x="56.0" y="0.75" width="116.2" height="16.5" fill="url(#hatch-s10-dashboard-dark)" stroke="var(--chart-ref)" stroke-width="1.5"><title>Unsplit Rs 127,949.85</title></rect><rect x="173.7" y="0" width="1.7" height="18" fill="var(--chart-pickme)" stroke="var(--surface)" stroke-width="1.5"><title>PickMe Rs 1,900.00</title></rect></g><g transform="translate(0 60)"><text x="0" y="13">Wed 4</text><rect x="56.0" y="0" width="88.8" height="18" fill="var(--chart-dine)" stroke="var(--surface)" stroke-width="1.5"><title>Dine-in Rs 96,500.00</title></rect><rect x="144.8" y="0" width="39.4" height="18" fill="var(--chart-take)" stroke="var(--surface)" stroke-width="1.5"><title>Takeaway Rs 42,780.00</title></rect><rect x="184.1" y="0" width="4.3" height="18" fill="var(--chart-uber)" stroke="var(--surface)" stroke-width="1.5"><title>Uber Rs 4,640.00</title></rect><rect x="188.4" y="0" width="4.0" height="18" fill="var(--chart-pickme)" stroke="var(--surface)" stroke-width="1.5"><title>PickMe Rs 4,400.00</title></rect></g></svg>
+  </section>
+  <section class="card chart-card" aria-labelledby="sc-h-s10-dashboard-dark">
+    <div class="row" style="justify-content:space-between"><h3 class="h3" id="sc-h-s10-dashboard-dark">Weather and sales</h3></div>
+    <div class="chips" role="radiogroup" aria-label="Weather measure"><button class="chip" role="radio" aria-checked="true" style="min-height:40px">Rain</button><button class="chip" role="radio" aria-checked="false" style="min-height:40px">Temperature</button></div>
+    <svg viewBox="0 0 340 180" role="img" aria-labelledby="sc-t-s10-dashboard-dark"><title id="sc-t-s10-dashboard-dark">Daily sales against rain during trading hours</title><line x1="40" x2="330" y1="150.0" y2="150.0" stroke="var(--chart-grid)"/><text x="34" y="154.0" text-anchor="end">0k</text><line x1="40" x2="330" y1="96.4" y2="96.4" stroke="var(--chart-grid)"/><text x="34" y="100.4" text-anchor="end">100k</text><line x1="40" x2="330" y1="42.8" y2="42.8" stroke="var(--chart-grid)"/><text x="34" y="46.8" text-anchor="end">200k</text><text x="40.0" y="166" text-anchor="middle">0</text><text x="98.0" y="166" text-anchor="middle">2</text><text x="156.0" y="166" text-anchor="middle">4</text><text x="214.0" y="166" text-anchor="middle">6</text><text x="272.0" y="166" text-anchor="middle">8</text><text x="330.0" y="166" text-anchor="middle">10</text><text x="330" y="10" text-anchor="end">x: rain 07:00–22:00 (mm)</text><circle cx="51.6" cy="25.7" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="1.5"><title>2 Nov: 0.4 mm, Rs 231,874.90</title></circle><text x="59.6" y="29.7">2 Nov</text><circle cx="237.2" cy="80.4" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="1.5"><title>3 Nov: 6.8 mm, Rs 129,849.85</title></circle><text x="245.2" y="84.4">3 Nov</text></svg>
+    <p class="hint">Wed 4 Nov is added after tomorrow's 06:00 weather update.</p>
+  </section>
+</main>
+<nav class="nav" aria-label="Main"><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg></span>Home</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-list"/></svg></span>History</a><a href="#" aria-current="page"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"/></svg></span>Dashboard</a><a href="#"><span class="pill"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg></span>Settings</a></nav>
+<div class="gesture"></div>
+</div></figure></div></section>
+  <section class="scr" id="tokens" aria-labelledby="tokens-h">
+    <div class="scr-head"><span class="id">10.2</span><h2 id="tokens-h">Design tokens</h2><p>Each swatch shows the light value, then the dark value.</p></div>
+    
+      <div class="tok-group"><h3>Neutrals</h3><ul class="swatches"><li><span class="sw"><i style="background:#F4F7F5"></i><i style="background:#0E1412"></i></span><code>--bg</code><span class="hx">#F4F7F5 · #0E1412</span></li><li><span class="sw"><i style="background:#FFFFFF"></i><i style="background:#151D1A"></i></span><code>--surface</code><span class="hx">#FFFFFF · #151D1A</span></li><li><span class="sw"><i style="background:#FFFFFF"></i><i style="background:#1C2622"></i></span><code>--surface-raised</code><span class="hx">#FFFFFF · #1C2622</span></li><li><span class="sw"><i style="background:#D3DCD8"></i><i style="background:#2A3632"></i></span><code>--border</code><span class="hx">#D3DCD8 · #2A3632</span></li><li><span class="sw"><i style="background:#7D8C86"></i><i style="background:#6F7F79"></i></span><code>--border-strong</code><span class="hx">#7D8C86 · #6F7F79</span></li><li><span class="sw"><i style="background:#14201B"></i><i style="background:#E5ECE9"></i></span><code>--text</code><span class="hx">#14201B · #E5ECE9</span></li><li><span class="sw"><i style="background:#51605A"></i><i style="background:#A0AEA8"></i></span><code>--text-muted</code><span class="hx">#51605A · #A0AEA8</span></li></ul></div><div class="tok-group"><h3>Brand</h3><ul class="swatches"><li><span class="sw"><i style="background:#1D6A54"></i><i style="background:#5CC39F"></i></span><code>--primary</code><span class="hx">#1D6A54 · #5CC39F</span></li><li><span class="sw"><i style="background:#175843"></i><i style="background:#74D0AF"></i></span><code>--primary-hover</code><span class="hx">#175843 · #74D0AF</span></li><li><span class="sw"><i style="background:#FFFFFF"></i><i style="background:#06231A"></i></span><code>--on-primary</code><span class="hx">#FFFFFF · #06231A</span></li><li><span class="sw"><i style="background:#E1F0EA"></i><i style="background:#153328"></i></span><code>--primary-soft</code><span class="hx">#E1F0EA · #153328</span></li><li><span class="sw"><i style="background:#145140"></i><i style="background:#8FDDBF"></i></span><code>--on-primary-soft</code><span class="hx">#145140 · #8FDDBF</span></li></ul></div><div class="tok-group"><h3>Semantic</h3><ul class="swatches"><li><span class="sw"><i style="background:#1F7339"></i><i style="background:#6CCB88"></i></span><code>--success</code><span class="hx">#1F7339 · #6CCB88</span></li><li><span class="sw"><i style="background:#E4F3E8"></i><i style="background:#14301F"></i></span><code>--success-soft</code><span class="hx">#E4F3E8 · #14301F</span></li><li><span class="sw"><i style="background:#855700"></i><i style="background:#EDBE62"></i></span><code>--warning</code><span class="hx">#855700 · #EDBE62</span></li><li><span class="sw"><i style="background:#FCF0D8"></i><i style="background:#362A10"></i></span><code>--warning-soft</code><span class="hx">#FCF0D8 · #362A10</span></li><li><span class="sw"><i style="background:#B1261D"></i><i style="background:#F29188"></i></span><code>--danger</code><span class="hx">#B1261D · #F29188</span></li><li><span class="sw"><i style="background:#FBE8E6"></i><i style="background:#3B1916"></i></span><code>--danger-soft</code><span class="hx">#FBE8E6 · #3B1916</span></li><li><span class="sw"><i style="background:#1E5DA3"></i><i style="background:#8DB9EE"></i></span><code>--info</code><span class="hx">#1E5DA3 · #8DB9EE</span></li><li><span class="sw"><i style="background:#E6EFF9"></i><i style="background:#15283F"></i></span><code>--info-soft</code><span class="hx">#E6EFF9 · #15283F</span></li></ul></div><div class="tok-group"><h3>Charts</h3><ul class="swatches"><li><span class="sw"><i style="background:#1D6A54"></i><i style="background:#5CC39F"></i></span><code>--chart-bar</code><span class="hx">#1D6A54 · #5CC39F</span></li><li><span class="sw"><i style="background:#1E5DA3"></i><i style="background:#8DB9EE"></i></span><code>--chart-line</code><span class="hx">#1E5DA3 · #8DB9EE</span></li><li><span class="sw"><i style="background:#6A7872"></i><i style="background:#8D9B95"></i></span><code>--chart-ref</code><span class="hx">#6A7872 · #8D9B95</span></li><li><span class="sw"><i style="background:#E3E9E6"></i><i style="background:#24302C"></i></span><code>--chart-grid</code><span class="hx">#E3E9E6 · #24302C</span></li><li><span class="sw"><i style="background:#1D6A54"></i><i style="background:#5CC39F"></i></span><code>--chart-dine</code><span class="hx">#1D6A54 · #5CC39F</span></li><li><span class="sw"><i style="background:#5A9E86"></i><i style="background:#2F7A60"></i></span><code>--chart-take</code><span class="hx">#5A9E86 · #2F7A60</span></li><li><span class="sw"><i style="background:#3F4A46"></i><i style="background:#C9D3CF"></i></span><code>--chart-uber</code><span class="hx">#3F4A46 · #C9D3CF</span></li><li><span class="sw"><i style="background:#C27C0E"></i><i style="background:#E0A548"></i></span><code>--chart-pickme</code><span class="hx">#C27C0E · #E0A548</span></li></ul></div>
+      <div class="tok-group"><h3>Type: IBM Plex Sans (UI) and IBM Plex Mono (figures)</h3><ul class="type-scale"><li style="font-size:28px"><span class="tk">28</span>Rs 129,849.85 · Report for Tue 3 Nov</li><li style="font-size:22px"><span class="tk">22</span>Rs 129,849.85 · Report for Tue 3 Nov</li><li style="font-size:18px"><span class="tk">18</span>Rs 129,849.85 · Report for Tue 3 Nov</li><li style="font-size:16px"><span class="tk">16</span>Rs 129,849.85 · Report for Tue 3 Nov</li><li style="font-size:14px"><span class="tk">14</span>Rs 129,849.85 · Report for Tue 3 Nov</li><li style="font-size:12px"><span class="tk">12</span>Rs 129,849.85 · Report for Tue 3 Nov</li></ul>
+        <p class="note">Weights 400, 500, 600. Self-hosted WOFF2 (C-07); no network font requests.</p></div>
+      <div class="tok-group"><h3>Spacing (4 px grid), radius, elevation, motion</h3><ul class="space"><li><i style="width:4px"></i><span class="tk">4</span></li><li><i style="width:8px"></i><span class="tk">8</span></li><li><i style="width:12px"></i><span class="tk">12</span></li><li><i style="width:16px"></i><span class="tk">16</span></li><li><i style="width:24px"></i><span class="tk">24</span></li><li><i style="width:32px"></i><span class="tk">32</span></li><li><i style="width:48px"></i><span class="tk">48</span></li></ul>
+        <p class="note">Radius 8 for inputs and cards, 999 for chips. Elevation 0 / 1 (cards) / 2 (sheets and dialogs). Motion 180 ms ease-out, off under reduced motion. Touch targets at least 48 × 48.</p></div>
+      <div class="tok-group"><h3>Contrast checks (WCAG 2.1 AA)</h3><p class="note">Computed by <code>build.py</code> from <code>tokens.css</code>. The build fails if any pair drops below its minimum.</p><div class="tw"><table><thead><tr><th>Use</th><th>Pair</th><th class="n">Needs</th><th class="n">Light</th><th class="n">Dark</th></tr></thead><tbody><tr><td>Text</td><td><code>--text</code> on <code>--bg</code></td><td class="n">4.5</td><td class="n">15.55</td><td class="n">15.53</td></tr><tr><td>Text</td><td><code>--text</code> on <code>--surface</code></td><td class="n">4.5</td><td class="n">16.77</td><td class="n">14.32</td></tr><tr><td>Text</td><td><code>--text</code> on <code>--surface-raised</code></td><td class="n">4.5</td><td class="n">16.77</td><td class="n">12.97</td></tr><tr><td>Text</td><td><code>--text-muted</code> on <code>--bg</code></td><td class="n">4.5</td><td class="n">6.14</td><td class="n">8.08</td></tr><tr><td>Text</td><td><code>--text-muted</code> on <code>--surface</code></td><td class="n">4.5</td><td class="n">6.62</td><td class="n">7.46</td></tr><tr><td>Text</td><td><code>--text-muted</code> on <code>--surface-raised</code></td><td class="n">4.5</td><td class="n">6.62</td><td class="n">6.75</td></tr><tr><td>Text</td><td><code>--on-primary</code> on <code>--primary</code></td><td class="n">4.5</td><td class="n">6.48</td><td class="n">7.73</td></tr><tr><td>Text</td><td><code>--on-primary-soft</code> on <code>--primary-soft</code></td><td class="n">4.5</td><td class="n">7.83</td><td class="n">8.63</td></tr><tr><td>Text</td><td><code>--text</code> on <code>--primary-soft</code></td><td class="n">4.5</td><td class="n">14.26</td><td class="n">11.40</td></tr><tr><td>Text</td><td><code>--primary</code> on <code>--surface</code></td><td class="n">4.5</td><td class="n">6.48</td><td class="n">7.98</td></tr><tr><td>Text</td><td><code>--primary</code> on <code>--bg</code></td><td class="n">4.5</td><td class="n">6.01</td><td class="n">8.66</td></tr><tr><td>Text</td><td><code>--danger</code> on <code>--surface</code></td><td class="n">4.5</td><td class="n">6.64</td><td class="n">7.51</td></tr><tr><td>Text</td><td><code>--danger</code> on <code>--bg</code></td><td class="n">4.5</td><td class="n">6.15</td><td class="n">8.14</td></tr><tr><td>Text</td><td><code>--warning</code> on <code>--surface</code></td><td class="n">4.5</td><td class="n">6.25</td><td class="n">9.93</td></tr><tr><td>Text</td><td><code>--text</code> on <code>--success-soft</code></td><td class="n">4.5</td><td class="n">14.60</td><td class="n">11.89</td></tr><tr><td>Text</td><td><code>--text</code> on <code>--warning-soft</code></td><td class="n">4.5</td><td class="n">14.85</td><td class="n">11.71</td></tr><tr><td>Text</td><td><code>--text</code> on <code>--danger-soft</code></td><td class="n">4.5</td><td class="n">14.20</td><td class="n">13.10</td></tr><tr><td>Text</td><td><code>--text</code> on <code>--info-soft</code></td><td class="n">4.5</td><td class="n">14.44</td><td class="n">12.44</td></tr><tr><td>Text</td><td><code>--bg</code> on <code>--text</code></td><td class="n">4.5</td><td class="n">15.55</td><td class="n">15.53</td></tr><tr><td>UI / graphics</td><td><code>--border-strong</code> on <code>--surface</code></td><td class="n">3.0</td><td class="n">3.52</td><td class="n">4.08</td></tr><tr><td>UI / graphics</td><td><code>--border-strong</code> on <code>--bg</code></td><td class="n">3.0</td><td class="n">3.26</td><td class="n">4.42</td></tr><tr><td>UI / graphics</td><td><code>--primary</code> on <code>--primary-soft</code></td><td class="n">3.0</td><td class="n">5.51</td><td class="n">6.36</td></tr><tr><td>UI / graphics</td><td><code>--success</code> on <code>--success-soft</code></td><td class="n">3.0</td><td class="n">5.12</td><td class="n">7.16</td></tr><tr><td>UI / graphics</td><td><code>--warning</code> on <code>--warning-soft</code></td><td class="n">3.0</td><td class="n">5.53</td><td class="n">8.12</td></tr><tr><td>UI / graphics</td><td><code>--danger</code> on <code>--danger-soft</code></td><td class="n">3.0</td><td class="n">5.62</td><td class="n">6.87</td></tr><tr><td>UI / graphics</td><td><code>--info</code> on <code>--info-soft</code></td><td class="n">3.0</td><td class="n">5.74</td><td class="n">7.32</td></tr><tr><td>UI / graphics</td><td><code>--chart-bar</code> on <code>--surface</code></td><td class="n">3.0</td><td class="n">6.48</td><td class="n">7.98</td></tr><tr><td>UI / graphics</td><td><code>--chart-line</code> on <code>--surface</code></td><td class="n">3.0</td><td class="n">6.67</td><td class="n">8.43</td></tr><tr><td>UI / graphics</td><td><code>--chart-ref</code> on <code>--surface</code></td><td class="n">3.0</td><td class="n">4.62</td><td class="n">5.93</td></tr><tr><td>UI / graphics</td><td><code>--chart-dine</code> on <code>--surface</code></td><td class="n">3.0</td><td class="n">6.48</td><td class="n">7.98</td></tr><tr><td>UI / graphics</td><td><code>--chart-take</code> on <code>--surface</code></td><td class="n">3.0</td><td class="n">3.15</td><td class="n">3.33</td></tr><tr><td>UI / graphics</td><td><code>--chart-uber</code> on <code>--surface</code></td><td class="n">3.0</td><td class="n">9.21</td><td class="n">11.21</td></tr><tr><td>UI / graphics</td><td><code>--chart-pickme</code> on <code>--surface</code></td><td class="n">3.0</td><td class="n">3.40</td><td class="n">7.89</td></tr></tbody></table></div></div>
+  </section>
+  <footer>Source: <code>docs/design/</code> (tokens.css, components.css, screens/, build.py). Component inventory: <code>docs/design/components.md</code>.</footer>
+</div>
+</body>
+</html>
