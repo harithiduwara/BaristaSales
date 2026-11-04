@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+package-lock.json
+apps/android
+docs/design/index.html
+docs/design/screens
+REQUIREMENTS.md
+playwright-report
+test-results

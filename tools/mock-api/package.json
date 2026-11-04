@@ -3,9 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "In-memory mock of the Apps Script API (REQUIREMENTS.md Section 7, ADR-0007)",
+  "description": "Mock API: the real backend core on in-memory services (Section 7, ADR-0007)",
   "scripts": {
-    "start": "node server.mjs",
-    "test": "node --test test/*.test.mjs"
+    "build": "esbuild src/server.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist/server.mjs --log-level=warning",
+    "start": "npm run build && node dist/server.mjs",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@aluthgama/backend": "0.0.0",
+    "@aluthgama/shared": "0.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
   }
 }

@@ -1,7 +1,7 @@
 // Self-test: the mock honours the Section 7 contract the E2E suite relies on.
 import { test, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { start } from '../server.mjs';
+import { start } from '../dist/server.mjs';
 
 let srv, base;
 before(async () => { const s = await start(0); srv = s.server; base = `http://localhost:${s.port}`; });
@@ -49,11 +49,11 @@ test('FR-AUTH-02 token required, bound to device, expires', async () => {
 
 test('FR-REP-08 upsert is idempotent on submissionId; V-02 parses money input', async () => {
   const token = await signIn();
-  const a = await call('report.upsert', { submissionId: 's1', baseVersion: null, report: base3Nov }, { token });
+  const a = await call('report.upsert', { submissionId: 'sub-0001', baseVersion: null, report: base3Nov }, { token });
   assert.equal(a.ok, true);
   assert.equal(a.data.report.pickme, 1900);
   assert.equal(a.data.report.total, 129849.85);
-  const b = await call('report.upsert', { submissionId: 's1', baseVersion: null, report: { ...base3Nov, total: 1 } }, { token });
+  const b = await call('report.upsert', { submissionId: 'sub-0001', baseVersion: null, report: { ...base3Nov, total: 1 } }, { token });
   assert.deepEqual(b.data, a.data);
   const st = await ctl('state');
   assert.equal(st.reports.filter((r) => r.businessDate === '2026-11-04').length, 1);
@@ -62,26 +62,26 @@ test('FR-REP-08 upsert is idempotent on submissionId; V-02 parses money input', 
 
 test('FR-REP-10 version conflict returns the current record', async () => {
   const token = await signIn();
-  const c = await call('report.upsert', { submissionId: 's2', baseVersion: null, report: { ...base3Nov, businessDate: '2026-11-03' } }, { token });
+  const c = await call('report.upsert', { submissionId: 'sub-0002', baseVersion: null, report: { ...base3Nov, businessDate: '2026-11-03' } }, { token });
   assert.equal(c.error.code, 'CONFLICT');
   assert.equal(c.error.current.version, 1);
-  const ok = await call('report.upsert', { submissionId: 's3', baseVersion: 1, report: { ...base3Nov, businessDate: '2026-11-03' } }, { token });
+  const ok = await call('report.upsert', { submissionId: 'sub-0003', baseVersion: 1, report: { ...base3Nov, businessDate: '2026-11-03' } }, { token });
   assert.equal(ok.data.version, 2);
 });
 
 test('FR-HIS-03 edit window: Manager blocked at 10 days, Owner allowed', async () => {
   await ctl('clock', { now: '2026-11-13T10:00:00+05:30' });
   const m = await signIn('111111');
-  const r = await call('report.upsert', { submissionId: 's4', baseVersion: 1, report: { ...base3Nov, businessDate: '2026-11-03' } }, { token: m });
+  const r = await call('report.upsert', { submissionId: 'sub-0004', baseVersion: 1, report: { ...base3Nov, businessDate: '2026-11-03' } }, { token: m });
   assert.equal(r.error.code, 'EDIT_WINDOW_CLOSED');
   const o = await signIn('999999', 'dev-o');
-  const r2 = await call('report.upsert', { submissionId: 's5', baseVersion: 1, report: { ...base3Nov, businessDate: '2026-11-03' } }, { token: o, deviceId: 'dev-o' });
+  const r2 = await call('report.upsert', { submissionId: 'sub-0005', baseVersion: 1, report: { ...base3Nov, businessDate: '2026-11-03' } }, { token: o, deviceId: 'dev-o' });
   assert.equal(r2.ok, true);
 });
 
 test('8.2 validation rules reported per field', async () => {
   const token = await signIn();
-  const r = await call('report.upsert', { submissionId: 's6', baseVersion: null, report: { businessDate: '2026-11-05', total: 100, bills: 0, uber: 80, pickme: 30, busyPeriods: ['After 9pm'], quietPeriod: 'After 9pm' } }, { token });
+  const r = await call('report.upsert', { submissionId: 'sub-0006', baseVersion: null, report: { businessDate: '2026-11-05', total: 100, bills: 0, uber: 80, pickme: 30, busyPeriods: ['After 9pm'], quietPeriod: 'After 9pm' } }, { token });
   const rules = r.error.details.map((d) => `${d.field}:${d.rule}`).sort();
   assert.deepEqual(rules, ['bills:billsRequired', 'businessDate:future', 'pickme:deliveryExceedsTotal', 'quietPeriod:alsoBusy']);
 });
@@ -98,7 +98,8 @@ test('FR-DSH-01 dashboard is Owner only and computes KPIs from seed', async () =
   assert.equal(d.kpis.totalBills, 128);
   assert.ok(Math.abs(d.kpis.mtdSales - 361724.75) < 1e-6);
   assert.ok(Math.abs(d.kpis.projectedMonthEnd - (361724.75 / 2) * 29) < 1e-6);
-  assert.ok(Math.abs(d.kpis.requiredDaily - (4500000 - 361724.75) / 27) < 1e-6);
+  assert.equal(d.kpis.requiredDaily.kind, 'perDay');
+  assert.ok(Math.abs(d.kpis.requiredDaily.amount - (4500000 - 361724.75) / 27) < 1e-6);
 });
 
 test('7.4 forced BUSY and unsupported apiVersion', async () => {

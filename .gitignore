@@ -4,3 +4,8 @@ coverage/
 .DS_Store
 *.log
 __pycache__/
+playwright-report/
+test-results/
+.env
+.env.*
+!.env.example
