@@ -1,6 +1,16 @@
 // S-07 History (FR-HIS-01, FR-HIS-04).
 import { useEffect, useState } from 'react';
-import { CONDITIONS, MANAGER_HISTORY_DAYS, addDays, daysInMonth, formatMonth, monthOf, shiftMonth, todayColombo, type ListItem } from '@aluthgama/shared';
+import type { CONDITIONS } from '@aluthgama/shared';
+import {
+  MANAGER_HISTORY_DAYS,
+  addDays,
+  daysInMonth,
+  formatMonth,
+  monthOf,
+  shiftMonth,
+  todayColombo,
+  type ListItem,
+} from '@aluthgama/shared';
 import { AppBar } from '../components/AppBar';
 import { BottomNav } from '../components/BottomNav';
 import { Button } from '../components/Button';
@@ -13,7 +23,13 @@ import { config, useStore } from '../state/app';
 import { t } from '../i18n';
 import { ApiCallError } from '../lib/api';
 
-const FILTERS = ['Poya day', 'Public holiday', 'School holiday', 'Power cut', 'Local event / festival'] as const satisfies readonly (typeof CONDITIONS)[number][];
+const FILTERS = [
+  'Poya day',
+  'Public holiday',
+  'School holiday',
+  'Power cut',
+  'Local event / festival',
+] as const satisfies readonly (typeof CONDITIONS)[number][];
 
 export function History() {
   const role = useStore(session).role;
@@ -45,7 +61,10 @@ export function History() {
         setCursor(r.nextCursor);
         setFromCache(r.fromCache);
       })
-      .catch((e: unknown) => alive && setError(e instanceof ApiCallError ? e : new ApiCallError('NETWORK', String(e))));
+      .catch(
+        (e: unknown) =>
+          alive && setError(e instanceof ApiCallError ? e : new ApiCallError('NETWORK', String(e))),
+      );
     return () => {
       alive = false;
     };
@@ -73,7 +92,12 @@ export function History() {
         title={t('history.title')}
         showRole
         actions={
-          <button type="button" className="icon-btn" aria-label={t('history.refresh')} onClick={() => setReload((n) => n + 1)}>
+          <button
+            type="button"
+            className="icon-btn"
+            aria-label={t('history.refresh')}
+            onClick={() => setReload((n) => n + 1)}
+          >
             <Icon name="refresh" />
           </button>
         }
@@ -82,22 +106,53 @@ export function History() {
         {isOwner ? (
           <div className="stack-sm">
             <div className="row" style={{ justifyContent: 'space-between' }}>
-              <button type="button" className="icon-btn" style={{ margin: 0 }} aria-label={t('history.prevMonth')} disabled={month <= minMonth} onClick={() => setMonth((m) => shiftMonth(m, -1))}>
+              <button
+                type="button"
+                className="icon-btn"
+                style={{ margin: 0 }}
+                aria-label={t('history.prevMonth')}
+                disabled={month <= minMonth}
+                onClick={() => setMonth((m) => shiftMonth(m, -1))}
+              >
                 <Icon name="back" />
               </button>
               <h2 className="h3" aria-live="polite">
                 {formatMonth(month)}
               </h2>
-              <button type="button" className="icon-btn" style={{ margin: 0 }} aria-label={t('history.nextMonth')} disabled={month >= monthOf(today)} onClick={() => setMonth((m) => shiftMonth(m, 1))}>
+              <button
+                type="button"
+                className="icon-btn"
+                style={{ margin: 0 }}
+                aria-label={t('history.nextMonth')}
+                disabled={month >= monthOf(today)}
+                onClick={() => setMonth((m) => shiftMonth(m, 1))}
+              >
                 <Icon name="chevron" />
               </button>
             </div>
-            <div className="chips" role="group" aria-label={t('history.filter')} style={{ flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: 4 }}>
-              <button type="button" className="chip" aria-pressed={filter === null} onClick={() => setFilter(null)}>
+            <div
+              className="chips"
+              role="group"
+              aria-label={t('history.filter')}
+              style={{ flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: 4 }}
+            >
+              <button
+                type="button"
+                className="chip"
+                aria-pressed={filter === null}
+                onClick={() => setFilter(null)}
+              >
                 {t('history.allDays')}
               </button>
               {FILTERS.map((f) => (
-                <button key={f} type="button" className="chip" style={{ flex: 'none' }} aria-pressed={filter === f} onClick={() => setFilter(filter === f ? null : f)}>
+                <button
+                  key={f}
+                  type="button"
+                  className="chip"
+                  style={{ flex: 'none' }}
+                  aria-pressed={filter === f}
+                  onClick={() => setFilter(filter === f ? null : f)}
+                >
                   {f}
                 </button>
               ))}
@@ -112,14 +167,20 @@ export function History() {
           </p>
         ) : null}
         {error ? (
-          <ErrorState message={t(error.isNetwork ? 'error.NETWORK_GENERIC' : 'error.INTERNAL')} correlationId={error.error?.correlationId} onRetry={() => setReload((n) => n + 1)} />
+          <ErrorState
+            message={t(error.isNetwork ? 'error.NETWORK_GENERIC' : 'error.INTERNAL')}
+            correlationId={error.error?.correlationId}
+            onRetry={() => setReload((n) => n + 1)}
+          />
         ) : items === null ? (
           <Skeleton />
         ) : shown.length === 0 ? (
           <EmptyState text={t('history.empty')} />
         ) : (
           <>
-            <p className="hint">{shown.length === 1 ? t('history.countOne') : t('history.count', { count: shown.length })}</p>
+            <p className="hint">
+              {shown.length === 1 ? t('history.countOne') : t('history.count', { count: shown.length })}
+            </p>
             <div className="list" data-testid="history-list">
               {shown.map((i) => (
                 <ReportRow key={i.businessDate} item={i} pending={pending.has(i.businessDate)} />

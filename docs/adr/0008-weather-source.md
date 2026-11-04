@@ -1,6 +1,6 @@
 # ADR-0008: Weather source and metric definitions
 
-- Status: Proposed (Phase 1)
+- Status: Accepted (design); built in Phase 3
 - Date: 2026-11-04
 - Requirements: FR-BE-03, FR-BE-04, Section 8.3 (Weather), A-02, R-06
 
@@ -16,17 +16,17 @@ If that request fails, or the response is rejected (fewer than 24 hourly values,
 
 **Metrics** (trading hours `h` with `TRADE_START_HOUR ≤ h < TRADE_END_HOUR`, OQ-14):
 
-| Column | Definition |
-|--------|-----------|
-| `avgTempTrading` | mean of `temperature_2m` over trading hours, 1 dp |
-| `maxTemp`, `minTemp` | max/min `temperature_2m` over all 24 hours |
-| `maxFeelsLike` | max `apparent_temperature` over all 24 hours |
+| Column               | Definition                                              |
+| -------------------- | ------------------------------------------------------- |
+| `avgTempTrading`     | mean of `temperature_2m` over trading hours, 1 dp       |
+| `maxTemp`, `minTemp` | max/min `temperature_2m` over all 24 hours              |
+| `maxFeelsLike`       | max `apparent_temperature` over all 24 hours            |
 | `avgHumidityTrading` | mean `relative_humidity_2m` over trading hours, whole % |
-| `rainTradingMm` | sum of `precipitation` over trading hours, 1 dp |
-| `rainHoursTrading` | count of trading hours with `precipitation ≥ 0.1` |
-| `rainDayMm` | sum of `precipitation` over all 24 hours, 1 dp |
-| `source` | `forecast` or `archive` |
-| `fetchedAt` | ISO time, Asia/Colombo |
+| `rainTradingMm`      | sum of `precipitation` over trading hours, 1 dp         |
+| `rainHoursTrading`   | count of trading hours with `precipitation ≥ 0.1`       |
+| `rainDayMm`          | sum of `precipitation` over all 24 hours, 1 dp          |
+| `source`             | `forecast` or `archive`                                 |
+| `fetchedAt`          | ISO time, Asia/Colombo                                  |
 
 Only past dates are fetched (never today), so a stored row is final. A row is never overwritten by a later fetch.
 

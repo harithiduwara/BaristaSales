@@ -19,7 +19,9 @@ await build({
   keepNames: true,
   logLevel: 'warning',
 });
-const stubs = ENTRY_POINTS.map((n) => `function ${n}() { return Backend.${n}.apply(this, arguments); }`).join('\n');
+const stubs = ENTRY_POINTS.map((n) => `function ${n}() { return Backend.${n}.apply(this, arguments); }`).join(
+  '\n',
+);
 writeFileSync('dist/Code.js', `${readFileSync('dist/Code.js', 'utf8')}\n${stubs}\n`);
 copyFileSync('appsscript.json', 'dist/appsscript.json');
 console.log(`dist/Code.js ${(readFileSync('dist/Code.js').length / 1024).toFixed(0)} KB`);

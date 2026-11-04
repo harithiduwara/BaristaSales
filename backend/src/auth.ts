@@ -12,7 +12,8 @@ export const PROP = {
   SHEET_ID: 'SHEET_ID',
 } as const;
 
-export const hashPin = (crypto: Crypto, salt: string, pin: string): string => crypto.sha256Hex(`${salt}:${pin}`);
+export const hashPin = (crypto: Crypto, salt: string, pin: string): string =>
+  crypto.sha256Hex(`${salt}:${pin}`);
 
 export interface TokenPayload {
   role: Role;
@@ -33,7 +34,8 @@ export function verifyToken(s: Services, token: unknown, deviceId: string): Toke
   if (typeof token !== 'string' || !secret) return { ok: false, code: 'UNAUTHORIZED' };
   const [part, sig, extra] = token.split('.');
   if (!part || !sig || extra !== undefined) return { ok: false, code: 'UNAUTHORIZED' };
-  if (!constantTimeEqual(s.crypto.hmacSha256B64u(part, secret), sig)) return { ok: false, code: 'UNAUTHORIZED' };
+  if (!constantTimeEqual(s.crypto.hmacSha256B64u(part, secret), sig))
+    return { ok: false, code: 'UNAUTHORIZED' };
   const json = b64uDecode(part);
   let p: Partial<TokenPayload>;
   try {
@@ -41,7 +43,8 @@ export function verifyToken(s: Services, token: unknown, deviceId: string): Toke
   } catch {
     return { ok: false, code: 'UNAUTHORIZED' };
   }
-  if (p.deviceId !== deviceId || (p.role !== 'Manager' && p.role !== 'Owner')) return { ok: false, code: 'UNAUTHORIZED' };
+  if (p.deviceId !== deviceId || (p.role !== 'Manager' && p.role !== 'Owner'))
+    return { ok: false, code: 'UNAUTHORIZED' };
   if (p.ver !== currentTokenVersion(s) || typeof p.exp !== 'number' || p.exp * 1000 <= s.now()) {
     return { ok: false, code: 'TOKEN_EXPIRED' };
   }
@@ -65,12 +68,15 @@ const WINDOW_S = LOCKOUT_MINUTES * 60;
 const failKey = (d: string) => `fail:${d}`;
 const lockKey = (d: string) => `locked:${d}`;
 
-export const isLockedOut = (s: Services, deviceId: string): boolean => s.cache.get(lockKey(deviceId)) !== null;
+export const isLockedOut = (s: Services, deviceId: string): boolean =>
+  s.cache.get(lockKey(deviceId)) !== null;
 
 /** Records a failed PIN. Returns true when this failure triggered the lockout. */
 export function recordFailure(s: Services, deviceId: string): { attempts: number; lockedOut: boolean } {
   const now = s.now();
-  const prior = (JSON.parse(s.cache.get(failKey(deviceId)) ?? '[]') as number[]).filter((t) => t > now - WINDOW_S * 1000);
+  const prior = (JSON.parse(s.cache.get(failKey(deviceId)) ?? '[]') as number[]).filter(
+    (t) => t > now - WINDOW_S * 1000,
+  );
   const attempts = [...prior, now];
   if (attempts.length >= MAX_PIN_FAILURES) {
     s.cache.put(lockKey(deviceId), String(now), WINDOW_S);
@@ -96,8 +102,13 @@ export function roleForPin(s: Services, pin: string): Role | null {
 }
 
 /** Stores new PIN hashes and signs every device out (OPS-03). */
-export function setPins(s: Services, managerPin: string, ownerPin: string): { ok: true } | { ok: false; reason: string } {
-  if (!/^\d{6}$/.test(managerPin) || !/^\d{6}$/.test(ownerPin)) return { ok: false, reason: 'PINs must be exactly 6 digits.' };
+export function setPins(
+  s: Services,
+  managerPin: string,
+  ownerPin: string,
+): { ok: true } | { ok: false; reason: string } {
+  if (!/^\d{6}$/.test(managerPin) || !/^\d{6}$/.test(ownerPin))
+    return { ok: false, reason: 'PINs must be exactly 6 digits.' };
   if (managerPin === ownerPin) return { ok: false, reason: 'The Manager and Owner PINs must be different.' };
   let salt = s.props.get(PROP.PIN_SALT);
   if (!salt) {

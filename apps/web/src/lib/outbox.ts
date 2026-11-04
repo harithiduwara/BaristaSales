@@ -6,7 +6,8 @@ import { createStore } from './store';
 
 /** Retry delays after the 1st, 2nd, 3rd and later failures (FR-REP-09). */
 export const BACKOFF_MS = [5_000, 15_000, 60_000, 300_000] as const;
-export const backoff = (attempts: number): number => BACKOFF_MS[Math.min(attempts, BACKOFF_MS.length) - 1] ?? BACKOFF_MS[0];
+export const backoff = (attempts: number): number =>
+  BACKOFF_MS[Math.min(attempts, BACKOFF_MS.length) - 1] ?? BACKOFF_MS[0];
 
 export interface OutboxSummary {
   waiting: number;
@@ -56,9 +57,17 @@ async function sendOne(item: OutboxItem): Promise<SendOutcome> {
     await tx.objectStore('outbox').delete(item.submissionId);
     await tx.objectStore('drafts').delete(draftKey(item.businessDate));
     const cached = await tx.objectStore('reports').get(item.businessDate);
-    await tx.objectStore('reports').put({ ...data.report, weather: cached?.weather ?? null, cachedAt: Date.now() });
+    await tx
+      .objectStore('reports')
+      .put({ ...data.report, weather: cached?.weather ?? null, cachedAt: Date.now() });
     await tx.done;
-    await logSync({ at: Date.now(), action: 'report.upsert', result: data.version > 1 ? 'updated' : 'created', errorCode: '', businessDate: item.businessDate });
+    await logSync({
+      at: Date.now(),
+      action: 'report.upsert',
+      result: data.version > 1 ? 'updated' : 'created',
+      errorCode: '',
+      businessDate: item.businessDate,
+    });
     return { kind: 'sent', record: data.report };
   } catch (e) {
     const err = e instanceof ApiCallError ? e : new ApiCallError('NETWORK', String(e));
@@ -73,11 +82,23 @@ async function sendOne(item: OutboxItem): Promise<SendOutcome> {
         lastError,
       });
       if (err.isAuth) authLost.set((n) => n + 1);
-      await logSync({ at: Date.now(), action: 'report.upsert', result: 'retry', errorCode: err.code, businessDate: item.businessDate });
+      await logSync({
+        at: Date.now(),
+        action: 'report.upsert',
+        result: 'retry',
+        errorCode: err.code,
+        businessDate: item.businessDate,
+      });
       return { kind: 'queued', error: err };
     }
     await d.put('outbox', { ...item, status: 'failed', attempts: item.attempts + 1, lastError });
-    await logSync({ at: Date.now(), action: 'report.upsert', result: 'rejected', errorCode: err.code, businessDate: item.businessDate });
+    await logSync({
+      at: Date.now(),
+      action: 'report.upsert',
+      result: 'rejected',
+      errorCode: err.code,
+      businessDate: item.businessDate,
+    });
     return { kind: 'rejected', error: err };
   }
 }
@@ -86,7 +107,10 @@ async function sendOne(item: OutboxItem): Promise<SendOutcome> {
  * Stores the report in the outbox, then tries to send it straight away.
  * The outbox row is committed before any network call (NFR-REL-01).
  */
-export async function submitReport(report: Report, baseVersion: number | null): Promise<{ submissionId: string; outcome: SendOutcome }> {
+export async function submitReport(
+  report: Report,
+  baseVersion: number | null,
+): Promise<{ submissionId: string; outcome: SendOutcome }> {
   const item: OutboxItem = {
     submissionId: crypto.randomUUID(),
     businessDate: report.businessDate,
@@ -100,7 +124,8 @@ export async function submitReport(report: Report, baseVersion: number | null): 
   };
   const d = await db();
   // Only one unsent copy per date: a newer submission replaces an older unsent one.
-  for (const old of await d.getAllFromIndex('outbox', 'byDate', report.businessDate)) await d.delete('outbox', old.submissionId);
+  for (const old of await d.getAllFromIndex('outbox', 'byDate', report.businessDate))
+    await d.delete('outbox', old.submissionId);
   await d.put('outbox', item);
   await refreshOutboxState();
   const outcome = await exclusive(() => sendOne(item));
@@ -129,9 +154,10 @@ export function processOutbox(opts: { force?: boolean } = {}): Promise<void> {
       const r = await sendOne(item);
       if (r.kind === 'queued' && (r.error.isNetwork || r.error.isAuth)) break;
     }
+    await refreshOutboxState();
   }).finally(() => {
     processing = null;
-    void refreshOutboxState().then(schedule);
+    schedule();
   });
   return processing;
 }

@@ -1,6 +1,6 @@
 # ADR-0005: Accepting a public /exec URL
 
-- Status: Proposed (Phase 1)
+- Status: Accepted (Phase 2)
 - Date: 2026-11-04
 - Requirements: NFR-SEC-03, R-02
 

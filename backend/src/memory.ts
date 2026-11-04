@@ -25,7 +25,10 @@ export class MemoryStore implements Store {
     this.reports.set(this.key(r.outletId, r.businessDate), structuredClone(r));
   }
   findSubmission(id: string) {
-    return this.log.find((l) => l.submissionId === id && (l.result === 'created' || l.result === 'updated')) ?? null;
+    return (
+      this.log.find((l) => l.submissionId === id && (l.result === 'created' || l.result === 'updated')) ??
+      null
+    );
   }
   appendSubmission(row: SubmissionLogRow) {
     this.log.push({ ...row, payloadJson: guardFormula(row.payloadJson) });

@@ -149,6 +149,7 @@
   "field.comments": "Manager comments",
   "field.privacyHint": "Don't enter customer names or phone numbers.",
   "field.required": "required",
+  "field.requiredSr": "(required)",
   "field.counter": "{count} / {max}",
   "field.rs": "Rs",
   "field.clear": "Clear",

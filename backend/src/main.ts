@@ -4,7 +4,8 @@ import { gasServices } from './gas/services';
 
 export { onOpen, setup, setPinsPrompt, loadSeedData } from './gas/admin';
 
-const json = (o: unknown) => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+const json = (o: unknown) =>
+  ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 
 export function doPost(e: GoogleAppsScript.Events.DoPost): GoogleAppsScript.Content.TextOutput {
   return json(handlePost(gasServices(), e?.postData?.contents ?? ''));

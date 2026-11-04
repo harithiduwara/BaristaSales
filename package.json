@@ -17,15 +17,15 @@
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc -p packages/shared && tsc -p backend && tsc -p apps/web && tsc -p apps/web/tsconfig.node.json",
+    "typecheck": "tsc -p packages/shared && tsc -p backend && tsc -p apps/web && tsc -p apps/web/tsconfig.node.json && tsc -p tools/mock-api",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:mock": "node --test tools/mock-api/test/*.test.mjs",
+    "test:mock": "npm test -w @aluthgama/mock-api",
     "test:e2e": "npm run test:e2e -w apps/web",
     "build:web": "npm run build -w apps/web",
     "build:backend": "npm run build -w backend",
     "dev": "npm run dev -w apps/web",
-    "mock": "node tools/mock-api/server.mjs"
+    "mock": "npm start -w @aluthgama/mock-api"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

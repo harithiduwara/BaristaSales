@@ -36,7 +36,8 @@ export interface FieldIssue {
   rule: Rule | string;
 }
 
-const blankToUndefined = (v: unknown): unknown => (v === null || (typeof v === 'string' && v.trim() === '') ? undefined : v);
+const blankToUndefined = (v: unknown): unknown =>
+  v === null || (typeof v === 'string' && v.trim() === '') ? undefined : v;
 
 const numberError = (iss: { input?: unknown }): string => (iss.input === undefined ? 'required' : 'money');
 const intError = (iss: { input?: unknown }): string => (iss.input === undefined ? 'required' : 'integer');
@@ -150,7 +151,8 @@ export function createReportSchema(ctx: SchemaContext) {
     .object(baseShape)
     .strip()
     .superRefine((r, issue) => {
-      const add = (field: ReportField, rule: Rule) => issue.addIssue({ code: 'custom', path: [field], message: rule });
+      const add = (field: ReportField, rule: Rule) =>
+        issue.addIssue({ code: 'custom', path: [field], message: rule });
       // Cross-field rules only compare values that passed their own checks,
       // so one bad entry gives one message.
       const okMoney = (n: unknown): n is number =>
@@ -171,7 +173,13 @@ export function createReportSchema(ctx: SchemaContext) {
         if (okMoney(v) && v > r.total) add(f, 'exceedsTotal');
       }
       // V-06
-      if (okMoney(r.uber) && okMoney(r.pickme) && r.uber <= r.total && r.pickme <= r.total && r.uber + r.pickme > r.total) {
+      if (
+        okMoney(r.uber) &&
+        okMoney(r.pickme) &&
+        r.uber <= r.total &&
+        r.pickme <= r.total &&
+        r.uber + r.pickme > r.total
+      ) {
         add('pickme', 'deliveryExceedsTotal');
       }
     });

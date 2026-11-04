@@ -1,6 +1,6 @@
 # ADR-0004: CORS and transport to Apps Script
 
-- Status: Proposed (Phase 1)
+- Status: Accepted (Phase 2)
 - Date: 2026-11-04
 - Requirements: C-02, Section 7.1, FR-BE-06, NFR-PERF-03
 
@@ -20,3 +20,7 @@ Apps Script web apps do not answer CORS preflight requests and reply to `/exec` 
 
 - The mock API server (ADR-0007) behaves the same way: it accepts `text/plain` bodies, always answers HTTP 200, and can be told to answer with a 302 first so the redirect path is tested in E2E.
 - Idempotency (FR-REP-08) makes retries after a timeout safe even when the first request actually reached the server.
+
+## Phase 2 addition: `deviceName` in the envelope
+
+The 7.2 envelope carries `deviceId` but not the device name, while FR-HIS-02 and the `Submissions_Log` sheet need "the submitting device name". The client therefore sends an optional `deviceName` in the envelope on every call (it is also in the `auth.verify` payload, as 7.3 says). The backend stores it as `updatedByDevice` and in the log. Calls without it still work (the deviceId is used instead).

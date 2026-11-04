@@ -6,45 +6,80 @@
    - data-theme="light|dark"  → forced; also works on any subtree (used by the prototype gallery)
    Every text/background pair is checked against WCAG 2.1 AA by docs/design/build.py. */
 
-@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "IBM Plex Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2"); }
-@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2"); }
-@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2"); }
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url('fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}
 
-:root, [data-theme="light"] {
+:root,
+[data-theme='light'] {
   color-scheme: light;
   /* Neutrals: a slight green bias toward the brand */
-  --bg: #F4F7F5;
-  --surface: #FFFFFF;
-  --surface-raised: #FFFFFF;
-  --border: #D3DCD8;          /* dividers (decorative) */
-  --border-strong: #7D8C86;   /* input and control boundaries, ≥ 3:1 */
-  --text: #14201B;
-  --text-muted: #51605A;
+  --bg: #f4f7f5;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border: #d3dcd8; /* dividers (decorative) */
+  --border-strong: #7d8c86; /* input and control boundaries, ≥ 3:1 */
+  --text: #14201b;
+  --text-muted: #51605a;
 
   /* Brand */
-  --primary: #1D6A54;
+  --primary: #1d6a54;
   --primary-hover: #175843;
-  --on-primary: #FFFFFF;
-  --primary-soft: #E1F0EA;
+  --on-primary: #ffffff;
+  --primary-soft: #e1f0ea;
   --on-primary-soft: #145140;
 
   /* Semantic */
-  --success: #1F7339;   --success-soft: #E4F3E8;
-  --warning: #855700;   --warning-soft: #FCF0D8;
-  --danger:  #B1261D;   --danger-soft:  #FBE8E6;
-  --info:    #1E5DA3;   --info-soft:    #E6EFF9;
+  --success: #1f7339;
+  --success-soft: #e4f3e8;
+  --warning: #855700;
+  --warning-soft: #fcf0d8;
+  --danger: #b1261d;
+  --danger-soft: #fbe8e6;
+  --info: #1e5da3;
+  --info-soft: #e6eff9;
 
   /* Charts */
-  --chart-bar: #1D6A54;
-  --chart-line: #1E5DA3;
-  --chart-ref: #6A7872;
-  --chart-grid: #E3E9E6;
-  --chart-dine: #1D6A54;
-  --chart-take: #5A9E86;
-  --chart-uber: #3F4A46;
-  --chart-pickme: #C27C0E;
+  --chart-bar: #1d6a54;
+  --chart-line: #1e5da3;
+  --chart-ref: #6a7872;
+  --chart-grid: #e3e9e6;
+  --chart-dine: #1d6a54;
+  --chart-take: #5a9e86;
+  --chart-uber: #3f4a46;
+  --chart-pickme: #c27c0e;
 
   --focus-ring: rgba(29, 106, 84, 0.35);
   --scrim: rgba(10, 20, 16, 0.45);
@@ -52,56 +87,108 @@
   --elev-2: 0 8px 24px rgba(16, 32, 26, 0.16), 0 2px 6px rgba(16, 32, 26, 0.08);
 
   /* Type */
-  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --fs-12: 0.75rem; --fs-14: 0.875rem; --fs-16: 1rem; --fs-18: 1.125rem; --fs-22: 1.375rem; --fs-28: 1.75rem;
-  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600;
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --fs-12: 0.75rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-22: 1.375rem;
+  --fs-28: 1.75rem;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
 
   /* Space (4 px grid), radius, motion */
-  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-6: 24px; --s-8: 32px; --s-12: 48px;
-  --r-control: 8px; --r-chip: 999px;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --r-control: 8px;
+  --r-chip: 999px;
   --touch: 48px;
   --motion: 180ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme='light']) {
     color-scheme: dark;
-    --bg: #0E1412; --surface: #151D1A; --surface-raised: #1C2622;
-    --border: #2A3632; --border-strong: #6F7F79;
-    --text: #E5ECE9; --text-muted: #A0AEA8;
-    --primary: #5CC39F; --primary-hover: #74D0AF; --on-primary: #06231A; --primary-soft: #153328; --on-primary-soft: #8FDDBF;
-    --success: #6CCB88; --success-soft: #14301F;
-    --warning: #EDBE62; --warning-soft: #362A10;
-    --danger:  #F29188; --danger-soft:  #3B1916;
-    --info:    #8DB9EE; --info-soft:    #15283F;
-    --chart-bar: #5CC39F; --chart-line: #8DB9EE; --chart-ref: #8D9B95; --chart-grid: #24302C;
-    --chart-dine: #5CC39F; --chart-take: #2F7A60; --chart-uber: #C9D3CF; --chart-pickme: #E0A548;
-    --focus-ring: rgba(92, 195, 159, 0.40);
+    --bg: #0e1412;
+    --surface: #151d1a;
+    --surface-raised: #1c2622;
+    --border: #2a3632;
+    --border-strong: #6f7f79;
+    --text: #e5ece9;
+    --text-muted: #a0aea8;
+    --primary: #5cc39f;
+    --primary-hover: #74d0af;
+    --on-primary: #06231a;
+    --primary-soft: #153328;
+    --on-primary-soft: #8fddbf;
+    --success: #6ccb88;
+    --success-soft: #14301f;
+    --warning: #edbe62;
+    --warning-soft: #362a10;
+    --danger: #f29188;
+    --danger-soft: #3b1916;
+    --info: #8db9ee;
+    --info-soft: #15283f;
+    --chart-bar: #5cc39f;
+    --chart-line: #8db9ee;
+    --chart-ref: #8d9b95;
+    --chart-grid: #24302c;
+    --chart-dine: #5cc39f;
+    --chart-take: #2f7a60;
+    --chart-uber: #c9d3cf;
+    --chart-pickme: #e0a548;
+    --focus-ring: rgba(92, 195, 159, 0.4);
     --scrim: rgba(0, 0, 0, 0.6);
     --elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
     --elev-2: 0 8px 24px rgba(0, 0, 0, 0.5);
   }
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #0E1412; --surface: #151D1A; --surface-raised: #1C2622;
-  --border: #2A3632; --border-strong: #6F7F79;
-  --text: #E5ECE9; --text-muted: #A0AEA8;
-  --primary: #5CC39F; --primary-hover: #74D0AF; --on-primary: #06231A; --primary-soft: #153328; --on-primary-soft: #8FDDBF;
-  --success: #6CCB88; --success-soft: #14301F;
-  --warning: #EDBE62; --warning-soft: #362A10;
-  --danger:  #F29188; --danger-soft:  #3B1916;
-  --info:    #8DB9EE; --info-soft:    #15283F;
-  --chart-bar: #5CC39F; --chart-line: #8DB9EE; --chart-ref: #8D9B95; --chart-grid: #24302C;
-  --chart-dine: #5CC39F; --chart-take: #2F7A60; --chart-uber: #C9D3CF; --chart-pickme: #E0A548;
-  --focus-ring: rgba(92, 195, 159, 0.40);
+  --bg: #0e1412;
+  --surface: #151d1a;
+  --surface-raised: #1c2622;
+  --border: #2a3632;
+  --border-strong: #6f7f79;
+  --text: #e5ece9;
+  --text-muted: #a0aea8;
+  --primary: #5cc39f;
+  --primary-hover: #74d0af;
+  --on-primary: #06231a;
+  --primary-soft: #153328;
+  --on-primary-soft: #8fddbf;
+  --success: #6ccb88;
+  --success-soft: #14301f;
+  --warning: #edbe62;
+  --warning-soft: #362a10;
+  --danger: #f29188;
+  --danger-soft: #3b1916;
+  --info: #8db9ee;
+  --info-soft: #15283f;
+  --chart-bar: #5cc39f;
+  --chart-line: #8db9ee;
+  --chart-ref: #8d9b95;
+  --chart-grid: #24302c;
+  --chart-dine: #5cc39f;
+  --chart-take: #2f7a60;
+  --chart-uber: #c9d3cf;
+  --chart-pickme: #e0a548;
+  --focus-ring: rgba(92, 195, 159, 0.4);
   --scrim: rgba(0, 0, 0, 0.6);
   --elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
   --elev-2: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root { --motion: 0ms linear; }
+  :root {
+    --motion: 0ms linear;
+  }
 }

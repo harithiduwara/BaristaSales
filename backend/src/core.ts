@@ -92,8 +92,12 @@ interface Ctx {
   today: string;
 }
 
-const audit = (s: Services, event: Parameters<Services['store']['appendAudit']>[0]['event'], deviceId: string, detail: string) =>
-  s.store.appendAudit({ at: colomboIso(s.now()), event, deviceId, detail });
+const audit = (
+  s: Services,
+  event: Parameters<Services['store']['appendAudit']>[0]['event'],
+  deviceId: string,
+  detail: string,
+) => s.store.appendAudit({ at: colomboIso(s.now()), event, deviceId, detail });
 
 // ---------- actions ----------
 
@@ -122,21 +126,38 @@ const handlers: { [A in ActionName]: Handler<A> } = {
 
   'report.upsert'(ctx, payload) {
     const p = z
-      .object({ submissionId: z.string().min(8).max(64), baseVersion: z.number().int().nullable(), report: z.unknown() })
+      .object({
+        submissionId: z.string().min(8).max(64),
+        baseVersion: z.number().int().nullable(),
+        report: z.unknown(),
+      })
       .safeParse(payload);
-    if (!p.success) throw new ApiFailure('VALIDATION_FAILED', 'Bad request.', { details: [{ field: 'payload', rule: 'shape' }] });
+    if (!p.success)
+      throw new ApiFailure('VALIDATION_FAILED', 'Bad request.', {
+        details: [{ field: 'payload', rule: 'shape' }],
+      });
     return upsertLocked(ctx, p.data);
   },
 
   'report.get'({ s, config }, payload) {
     const p = z.object({ businessDate: z.string() }).safeParse(payload);
-    if (!p.success) throw new ApiFailure('VALIDATION_FAILED', 'Bad request.', { details: [{ field: 'businessDate', rule: 'date' }] });
-    return { report: s.store.getReport(config.OUTLET_ID, p.data.businessDate), weather: s.store.getWeather(p.data.businessDate) };
+    if (!p.success)
+      throw new ApiFailure('VALIDATION_FAILED', 'Bad request.', {
+        details: [{ field: 'businessDate', rule: 'date' }],
+      });
+    return {
+      report: s.store.getReport(config.OUTLET_ID, p.data.businessDate),
+      weather: s.store.getWeather(p.data.businessDate),
+    };
   },
 
   'report.list'({ s, role, config, today }, payload) {
     const p = z
-      .object({ from: z.string().optional(), to: z.string().optional(), cursor: z.string().nullable().optional() })
+      .object({
+        from: z.string().optional(),
+        to: z.string().optional(),
+        cursor: z.string().nullable().optional(),
+      })
       .safeParse(payload ?? {});
     if (!p.success) throw new ApiFailure('VALIDATION_FAILED', 'Bad request.');
     let from = p.data.from ?? config.OPENING_DATE;
@@ -159,12 +180,17 @@ const handlers: { [A in ActionName]: Handler<A> } = {
 
   'dashboard.summary'({ s, config }, payload) {
     const p = z.object({ month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/) }).safeParse(payload);
-    if (!p.success) throw new ApiFailure('VALIDATION_FAILED', 'Bad month.', { details: [{ field: 'month', rule: 'format' }] });
+    if (!p.success)
+      throw new ApiFailure('VALIDATION_FAILED', 'Bad month.', {
+        details: [{ field: 'month', rule: 'format' }],
+      });
     const month = p.data.month;
     // include the 6 days before the month so the 7-day average is right on the 1st
     const from = addDays(`${month}-01`, -6);
     const to = addDays(`${month}-01`, 31);
-    const reports = s.store.listReports(config.OUTLET_ID, from, to).map((r) => ({ ...r, date: r.businessDate }));
+    const reports = s.store
+      .listReports(config.OUTLET_ID, from, to)
+      .map((r) => ({ ...r, date: r.businessDate }));
     const weather = new Map(s.store.listWeather(`${month}-01`, to).map((w) => [w.date, w]));
     return dashboardSummary(month, reports, weather, config);
   },
@@ -180,7 +206,10 @@ const handlers: { [A in ActionName]: Handler<A> } = {
       .strict()
       .safeParse(payload);
     if (!p.success) {
-      const details: FieldIssue[] = p.error.issues.map((i) => ({ field: String(i.path[0] ?? 'payload'), rule: 'money' }));
+      const details: FieldIssue[] = p.error.issues.map((i) => ({
+        field: String(i.path[0] ?? 'payload'),
+        rule: 'money',
+      }));
       throw new ApiFailure('VALIDATION_FAILED', 'Bad value.', { details });
     }
     for (const [k, v] of Object.entries(p.data)) if (v !== undefined) s.store.writeConfig(k, v);
@@ -204,7 +233,15 @@ function upsertLocked(ctx: Ctx, p: { submissionId: string; baseVersion: number |
 export function buildRecord(
   report: Report,
   prev: ReportRecord | null,
-  meta: { outletId: string; openingDate: string; at: string; role: Role; device: string; submissionId: string; source: ReportRecord['source'] },
+  meta: {
+    outletId: string;
+    openingDate: string;
+    at: string;
+    role: Role;
+    device: string;
+    submissionId: string;
+    source: ReportRecord['source'];
+  },
 ): ReportRecord {
   return {
     outletId: meta.outletId,
@@ -226,9 +263,10 @@ function upsert(ctx: Ctx, p: { submissionId: string; baseVersion: number | null;
   const { s, env, config, today } = ctx;
   const role = ctx.role as Role;
   const at = colomboIso(s.now());
-  const businessDate = typeof (p.report as { businessDate?: unknown })?.businessDate === 'string'
-    ? (p.report as { businessDate: string }).businessDate
-    : '';
+  const businessDate =
+    typeof (p.report as { businessDate?: unknown })?.businessDate === 'string'
+      ? (p.report as { businessDate: string }).businessDate
+      : '';
   const log = (result: SubmissionLogRow['result'], errorCode = '') =>
     s.store.appendSubmission({
       loggedAt: at,
@@ -255,7 +293,9 @@ function upsert(ctx: Ctx, p: { submissionId: string; baseVersion: number | null;
   const v = validateReport(p.report, { openingDate: config.OPENING_DATE, today });
   if (!v.ok) {
     log('rejected', 'VALIDATION_FAILED');
-    throw new ApiFailure('VALIDATION_FAILED', 'Fix the highlighted fields to continue.', { details: v.issues });
+    throw new ApiFailure('VALIDATION_FAILED', 'Fix the highlighted fields to continue.', {
+      details: v.issues,
+    });
   }
   // 3. role and edit window
   if (!canEditDate(role, v.value.businessDate, today, config.EDIT_WINDOW_DAYS)) {
@@ -285,7 +325,10 @@ function upsert(ctx: Ctx, p: { submissionId: string; baseVersion: number | null;
 
 // ---------- request handling ----------
 
-function respond<D>(s: Services, body: { ok: true; data: D } | { ok: false; error: ApiError }): ApiResponse<D> {
+function respond<D>(
+  s: Services,
+  body: { ok: true; data: D } | { ok: false; error: ApiError },
+): ApiResponse<D> {
   return { ...body, serverTime: colomboIso(s.now()), apiVersion: API_VERSION } as ApiResponse<D>;
 }
 
@@ -303,8 +346,10 @@ export function handlePost(s: Services, body: string): ApiResponse<unknown> {
     const e = envelopeSchema.safeParse(raw);
     if (!e.success) throw new ApiFailure('VALIDATION_FAILED', 'Bad request envelope.');
     envelope = e.data;
-    correlationId = String((envelope.payload as { submissionId?: unknown })?.submissionId ?? '') || s.crypto.uuid();
-    if (envelope.apiVersion !== API_VERSION) throw new ApiFailure('UNSUPPORTED_API_VERSION', 'Update the app.');
+    correlationId =
+      String((envelope.payload as { submissionId?: unknown })?.submissionId ?? '') || s.crypto.uuid();
+    if (envelope.apiVersion !== API_VERSION)
+      throw new ApiFailure('UNSUPPORTED_API_VERSION', 'Update the app.');
     const action = envelope.action as ActionName;
     const allowed = ACTION_ROLES[action];
     if (!allowed) throw new ApiFailure('NOT_FOUND', 'Unknown action.');
@@ -331,17 +376,29 @@ export function handlePost(s: Services, body: string): ApiResponse<unknown> {
     }
     const id = correlationId || s.crypto.uuid();
     try {
-      audit(s, 'error', envelope?.deviceId ?? '', `${id} ${err instanceof Error ? err.message : String(err)}`.slice(0, 2000));
+      audit(
+        s,
+        'error',
+        envelope?.deviceId ?? '',
+        `${id} ${err instanceof Error ? err.message : String(err)}`.slice(0, 2000),
+      );
     } catch {
       // logging must never hide the original error
     }
-    return respond(s, { ok: false, error: { code: 'INTERNAL', message: 'Something went wrong.', correlationId: id } });
+    return respond(s, {
+      ok: false,
+      error: { code: 'INTERNAL', message: 'Something went wrong.', correlationId: id },
+    });
   }
 }
 
 /** FR-BE-06: GET ?action=health, no auth, no data. */
-export function handleGet(s: Services, params: Record<string, string | undefined>): HealthResponse | ApiResponse<never> {
-  if (params.action === 'health') return { ok: true, apiVersion: API_VERSION, serverTime: colomboIso(s.now()) };
+export function handleGet(
+  s: Services,
+  params: Record<string, string | undefined>,
+): HealthResponse | ApiResponse<never> {
+  if (params.action === 'health')
+    return { ok: true, apiVersion: API_VERSION, serverTime: colomboIso(s.now()) };
   return respond(s, { ok: false, error: { code: 'NOT_FOUND', message: 'Unknown action.' } });
 }
 
@@ -382,5 +439,6 @@ export function ensureSecrets(s: Services): void {
 /** Writes Config defaults for keys that are missing. Idempotent. */
 export function ensureConfigDefaults(s: Services): void {
   const raw = s.store.readConfig();
-  for (const [k, v] of Object.entries(DEFAULT_CONFIG)) if (!(k in raw)) s.store.writeConfig(k, v as string | number | null);
+  for (const [k, v] of Object.entries(DEFAULT_CONFIG))
+    if (!(k in raw)) s.store.writeConfig(k, v as string | number | null);
 }

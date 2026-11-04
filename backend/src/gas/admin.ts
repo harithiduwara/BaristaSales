@@ -23,7 +23,9 @@ function ensureSheet(
   const sh = ss.getSheetByName(name) ?? ss.insertSheet(name);
   const current = sh.getRange(1, 1, 1, headers.length).getValues()[0] as unknown[];
   if (current.join('|') !== headers.join('|')) {
-    sh.getRange(1, 1, 1, headers.length).setValues([headers as string[]]).setFontWeight('bold');
+    sh.getRange(1, 1, 1, headers.length)
+      .setValues([headers as string[]])
+      .setFontWeight('bold');
   }
   sh.setFrozenRows(1);
   const maxRows = sh.getMaxRows();
@@ -76,14 +78,21 @@ export function setPinsPrompt(): void {
     ui.alert(`PINs not changed. ${result.reason}`);
     return;
   }
-  s.store.appendAudit({ at: colomboIso(s.now()), event: 'pins_set', deviceId: '', detail: 'PINs changed; all devices signed out' });
+  s.store.appendAudit({
+    at: colomboIso(s.now()),
+    event: 'pins_set',
+    deviceId: '',
+    detail: 'PINs changed; all devices signed out',
+  });
   ui.alert('PINs saved. Every device must sign in again.');
 }
 
 /** Admin → Load seed data (8.6). */
 export function loadSeedData(): void {
   const written = seed(gasServices());
-  SpreadsheetApp.getUi().alert(written.length ? `Added reports for ${written.join(', ')}.` : 'Seed reports are already there.');
+  SpreadsheetApp.getUi().alert(
+    written.length ? `Added reports for ${written.join(', ')}.` : 'Seed reports are already there.',
+  );
 }
 
 export function onOpen(): void {

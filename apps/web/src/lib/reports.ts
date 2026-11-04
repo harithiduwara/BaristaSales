@@ -1,5 +1,11 @@
 // Reading reports: from the server when online, from the IndexedDB cache otherwise (NFR-OFF-01).
-import { addDays, type ListItem, type ReportRecord, type Weather, type DashboardSummary } from '@aluthgama/shared';
+import {
+  addDays,
+  type ListItem,
+  type ReportRecord,
+  type Weather,
+  type DashboardSummary,
+} from '@aluthgama/shared';
 import { callApi } from './api';
 import { db } from './db';
 
@@ -12,7 +18,9 @@ export async function cacheItems(items: ListItem[]): Promise<void> {
 
 export async function cachedRange(from: string, to: string): Promise<ListItem[]> {
   const all = await (await db()).getAll('reports');
-  return all.filter((r) => r.businessDate >= from && r.businessDate <= to).sort((a, b) => b.businessDate.localeCompare(a.businessDate));
+  return all
+    .filter((r) => r.businessDate >= from && r.businessDate <= to)
+    .sort((a, b) => b.businessDate.localeCompare(a.businessDate));
 }
 
 export interface ListResult {
@@ -21,7 +29,11 @@ export interface ListResult {
   fromCache: boolean;
 }
 
-export async function listReports(from: string, to: string, cursor: string | null = null): Promise<ListResult> {
+export async function listReports(
+  from: string,
+  to: string,
+  cursor: string | null = null,
+): Promise<ListResult> {
   try {
     const data = await callApi('report.list', { from, to, cursor });
     await cacheItems(data.items);
@@ -54,7 +66,9 @@ export async function getReport(date: string): Promise<GetResult> {
 
 export const last7 = (today: string) => cachedRange(addDays(today, -7), today);
 
-export async function getDashboard(month: string): Promise<{ data: DashboardSummary; fetchedAt: number; fromCache: boolean } | null> {
+export async function getDashboard(
+  month: string,
+): Promise<{ data: DashboardSummary; fetchedAt: number; fromCache: boolean } | null> {
   const d = await db();
   try {
     const data = await callApi('dashboard.summary', { month });

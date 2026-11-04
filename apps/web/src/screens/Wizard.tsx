@@ -32,7 +32,16 @@ import { ConfirmDialog } from '../components/Dialog';
 import { Stepper, STEP_LONG } from '../components/Stepper';
 import { showToast } from '../components/Toast';
 import { SummaryStrip, ErrorState } from '../components/misc';
-import { ChipGroup, Checkbox, DateField, IntegerField, MoneyField, TextAreaField, TextField, TimeField } from '../components/fields';
+import {
+  ChipGroup,
+  Checkbox,
+  DateField,
+  IntegerField,
+  MoneyField,
+  TextAreaField,
+  TextField,
+  TimeField,
+} from '../components/fields';
 import { db, draftKey } from '../lib/db';
 import { emptyForm, reportToForm, type FormValues } from '../lib/formModel';
 import { removeFromOutbox, submitReport } from '../lib/outbox';
@@ -92,7 +101,10 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
   const [showErrors, setShowErrors] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<{ message: string; correlationId?: string | undefined } | null>(null);
+  const [submitError, setSubmitError] = useState<{
+    message: string;
+    correlationId?: string | undefined;
+  } | null>(null);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [history, setHistory] = useState<{ date: string; total: number }[]>([]);
   const [touchedByUser, setTouchedByUser] = useState(false);
@@ -125,7 +137,13 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
     const key = draftKey(v.businessDate);
     const d = await db();
     if (savedKey.current && savedKey.current !== key) await d.delete('drafts', savedKey.current);
-    await d.put('drafts', { key, businessDate: v.businessDate, values: v, baseVersion, updatedAt: Date.now() });
+    await d.put('drafts', {
+      key,
+      businessDate: v.businessDate,
+      values: v,
+      baseVersion,
+      updatedAt: Date.now(),
+    });
     savedKey.current = key;
   }, [getValues, baseVersion]);
 
@@ -138,7 +156,8 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
   // ---- keep the URL on the selected date ----
   const date = values.businessDate;
   useEffect(() => {
-    if (loaded && isValidDate(date) && date !== routeDate) navigate(`/report/${date}/${step}`, { replace: true });
+    if (loaded && isValidDate(date) && date !== routeDate)
+      navigate(`/report/${date}/${step}`, { replace: true });
   }, [date, routeDate, step, loaded]);
 
   // ---- existing report detection (FR-REP-03) ----
@@ -159,7 +178,7 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
         }
         setExisting(r.report);
         // Submitting replaces the saved report, as the banner says.
-        setBaseVersion((b) => (b === null ? r.report?.version ?? null : b));
+        setBaseVersion((b) => (b === null ? (r.report?.version ?? null) : b));
       })
       .catch(() => undefined);
     void cachedRange(addDays(date, -7), addDays(date, -1)).then((items) => {
@@ -184,7 +203,9 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
   const validation = useMemo(() => validateReport(values, ctx), [values, ctx]);
   const issues: FieldIssue[] = validation.ok ? [] : validation.issues;
   const touched = formState.touchedFields as Partial<Record<F, unknown>>;
-  const visibleIssues = issues.filter((i) => showErrors || touched[i.field as F] || formState.errors[i.field as F]);
+  const visibleIssues = issues.filter(
+    (i) => showErrors || touched[i.field as F] || formState.errors[i.field as F],
+  );
   const errorFor = (f: F): string | undefined => {
     const i = visibleIssues.find((x) => x.field === f);
     if (i) return ruleMessage(f, i.rule, cfg.OPENING_DATE);
@@ -197,7 +218,7 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
   const goStep = (n: number) => {
     void saveDraft();
     navigate(`/report/${date}/${n}`, { replace: true });
-    document.querySelector('.body')?.scrollTo({ top: 0 });
+    document.querySelector('.body')?.scrollTo?.({ top: 0 });
   };
 
   const next = async () => {
@@ -259,7 +280,10 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
       if (err.code === 'VALIDATION_FAILED') {
         for (const d of err.error?.details ?? []) setError(d.field as F, { type: d.rule, message: d.rule });
       }
-      setSubmitError({ message: tDynamic(`error.${err.code}`, 'error.INTERNAL'), correlationId: err.error?.correlationId });
+      setSubmitError({
+        message: tDynamic(`error.${err.code}`, 'error.INTERNAL'),
+        correlationId: err.error?.correlationId,
+      });
     } finally {
       setSubmitting(false);
     }
@@ -267,7 +291,15 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
 
   if (!loaded) return <div className="screen" aria-busy="true" />;
 
-  const field = (name: F, render: (p: { value: string; onChange: (v: string) => void; onBlur: () => void; error?: string | undefined }) => React.ReactNode) => (
+  const field = (
+    name: F,
+    render: (p: {
+      value: string;
+      onChange: (v: string) => void;
+      onBlur: () => void;
+      error?: string | undefined;
+    }) => React.ReactNode,
+  ) => (
     <Controller
       name={name}
       control={control}
@@ -325,12 +357,22 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
     />
   );
 
-  const live = <SummaryStrip total={num(values.total)} bills={int(values.bills)} uber={num(values.uber)} pickme={num(values.pickme)} />;
+  const live = (
+    <SummaryStrip
+      total={num(values.total)}
+      bills={int(values.bills)}
+      uber={num(values.uber)}
+      pickme={num(values.pickme)}
+    />
+  );
   const titleDate = isValidDate(date) ? formatDateShort(date) : '';
 
   return (
     <div className="screen">
-      <AppBar title={t('wizard.title', { date: titleDate })} leading={{ icon: 'close', label: t('wizard.close'), onClick: requestLeave }} />
+      <AppBar
+        title={t('wizard.title', { date: titleDate })}
+        leading={{ icon: 'close', label: t('wizard.close'), onClick: requestLeave }}
+      />
       <Stepper step={step} errorSteps={errorSteps} onJump={goStep} />
       <main className="body">
         {restoredAt && step === 1 ? (
@@ -352,24 +394,53 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
         {step === 1 ? (
           <>
             {field('businessDate', (p) => (
-              <DateField id="businessDate" label={t('field.businessDate')} required min={cfg.OPENING_DATE} max={today} {...p} />
+              <DateField
+                id="businessDate"
+                label={t('field.businessDate')}
+                required
+                min={cfg.OPENING_DATE}
+                max={today}
+                {...p}
+              />
             ))}
             <div className="pair">
-              {field('total', (p) => <MoneyField id="total" label={t('field.total')} required {...p} />)}
-              {field('bills', (p) => <IntegerField id="bills" label={t('field.bills')} required {...p} />)}
+              {field('total', (p) => (
+                <MoneyField id="total" label={t('field.total')} required {...p} />
+              ))}
+              {field('bills', (p) => (
+                <IntegerField id="bills" label={t('field.bills')} required {...p} />
+              ))}
             </div>
             {live}
             <div className="grid-2">
-              {field('dineIn', (p) => <MoneyField id="dineIn" label={t('field.dineIn')} {...p} />)}
-              {field('takeaway', (p) => <MoneyField id="takeaway" label={t('field.takeaway')} hint={t('field.takeawayHint')} {...p} />)}
+              {field('dineIn', (p) => (
+                <MoneyField id="dineIn" label={t('field.dineIn')} {...p} />
+              ))}
+              {field('takeaway', (p) => (
+                <MoneyField id="takeaway" label={t('field.takeaway')} hint={t('field.takeawayHint')} {...p} />
+              ))}
             </div>
             <div className="pair">
-              {field('uber', (p) => <MoneyField id="uber" label={t('field.uber')} required hint={t('wizard.enterZero')} {...p} />)}
-              {field('uberOrders', (p) => <IntegerField id="uberOrders" label={t('field.uberOrders')} {...p} />)}
+              {field('uber', (p) => (
+                <MoneyField id="uber" label={t('field.uber')} required hint={t('wizard.enterZero')} {...p} />
+              ))}
+              {field('uberOrders', (p) => (
+                <IntegerField id="uberOrders" label={t('field.uberOrders')} {...p} />
+              ))}
             </div>
             <div className="pair">
-              {field('pickme', (p) => <MoneyField id="pickme" label={t('field.pickme')} required hint={t('wizard.enterZero')} {...p} />)}
-              {field('pickmeOrders', (p) => <IntegerField id="pickmeOrders" label={t('field.pickmeOrders')} {...p} />)}
+              {field('pickme', (p) => (
+                <MoneyField
+                  id="pickme"
+                  label={t('field.pickme')}
+                  required
+                  hint={t('wizard.enterZero')}
+                  {...p}
+                />
+              ))}
+              {field('pickmeOrders', (p) => (
+                <IntegerField id="pickmeOrders" label={t('field.pickmeOrders')} {...p} />
+              ))}
             </div>
           </>
         ) : null}
@@ -377,30 +448,56 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
         {step === 2 ? (
           <>
             <p className="hint">{t('field.paymentsHint')}</p>
-            {field('cash', (p) => <MoneyField id="cash" label={t('field.cash')} {...p} />)}
-            {field('card', (p) => <MoneyField id="card" label={t('field.card')} {...p} />)}
-            {field('qr', (p) => <MoneyField id="qr" label={t('field.qr')} {...p} />)}
-            {field('discounts', (p) => <MoneyField id="discounts" label={t('field.discounts')} {...p} />)}
-            {field('comps', (p) => <MoneyField id="comps" label={t('field.comps')} hint={t('field.compsHint')} {...p} />)}
-            {field('voids', (p) => <MoneyField id="voids" label={t('field.voids')} {...p} />)}
+            {field('cash', (p) => (
+              <MoneyField id="cash" label={t('field.cash')} {...p} />
+            ))}
+            {field('card', (p) => (
+              <MoneyField id="card" label={t('field.card')} {...p} />
+            ))}
+            {field('qr', (p) => (
+              <MoneyField id="qr" label={t('field.qr')} {...p} />
+            ))}
+            {field('discounts', (p) => (
+              <MoneyField id="discounts" label={t('field.discounts')} {...p} />
+            ))}
+            {field('comps', (p) => (
+              <MoneyField id="comps" label={t('field.comps')} hint={t('field.compsHint')} {...p} />
+            ))}
+            {field('voids', (p) => (
+              <MoneyField id="voids" label={t('field.voids')} {...p} />
+            ))}
           </>
         ) : null}
 
         {step === 3 ? (
           <>
-            {field('foreignCustomers', (p) => <IntegerField id="foreignCustomers" label={t('field.foreignCustomers')} {...p} />)}
+            {field('foreignCustomers', (p) => (
+              <IntegerField id="foreignCustomers" label={t('field.foreignCustomers')} {...p} />
+            ))}
             {multi('busyPeriods', PERIODS, t('field.busyPeriods'))}
             {single('quietPeriod', PERIODS, t('field.quietPeriod'))}
-            {field('topItems', (p) => <TextField id="topItems" label={t('field.topItems')} max={TEXT_LIMITS.topItems} {...p} />)}
-            {field('stockOuts', (p) => <TextAreaField id="stockOuts" label={t('field.stockOuts')} max={TEXT_LIMITS.stockOuts} {...p} />)}
-            {field('staffOnDuty', (p) => <IntegerField id="staffOnDuty" label={t('field.staffOnDuty')} {...p} />)}
+            {field('topItems', (p) => (
+              <TextField id="topItems" label={t('field.topItems')} max={TEXT_LIMITS.topItems} {...p} />
+            ))}
+            {field('stockOuts', (p) => (
+              <TextAreaField id="stockOuts" label={t('field.stockOuts')} max={TEXT_LIMITS.stockOuts} {...p} />
+            ))}
+            {field('staffOnDuty', (p) => (
+              <IntegerField id="staffOnDuty" label={t('field.staffOnDuty')} {...p} />
+            ))}
             <div className="grid-2">
-              {field('openTime', (p) => <TimeField id="openTime" label={t('field.openTime')} {...p} />)}
+              {field('openTime', (p) => (
+                <TimeField id="openTime" label={t('field.openTime')} {...p} />
+              ))}
               {field('closeTime', (p) => (
                 <TimeField
                   id="closeTime"
                   label={t('field.closeTime')}
-                  hint={values.openTime && p.value && p.value < values.openTime ? t('field.closeAfterMidnight') : undefined}
+                  hint={
+                    values.openTime && p.value && p.value < values.openTime
+                      ? t('field.closeAfterMidnight')
+                      : undefined
+                  }
                   {...p}
                 />
               ))}
@@ -424,13 +521,34 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
               </div>
             </fieldset>
             {multi('conditions', CONDITIONS, t('field.conditions'))}
-            {field('conditionsOther', (p) => <TextField id="conditionsOther" label={t('field.conditionsOther')} max={TEXT_LIMITS.conditionsOther} {...p} />)}
-            {field('promotions', (p) => <TextField id="promotions" label={t('field.promotions')} max={TEXT_LIMITS.promotions} {...p} />)}
+            {field('conditionsOther', (p) => (
+              <TextField
+                id="conditionsOther"
+                label={t('field.conditionsOther')}
+                max={TEXT_LIMITS.conditionsOther}
+                {...p}
+              />
+            ))}
+            {field('promotions', (p) => (
+              <TextField id="promotions" label={t('field.promotions')} max={TEXT_LIMITS.promotions} {...p} />
+            ))}
             {field('feedback', (p) => (
-              <TextAreaField id="feedback" label={t('field.feedback')} max={TEXT_LIMITS.feedback} hint={t('field.privacyHint')} {...p} />
+              <TextAreaField
+                id="feedback"
+                label={t('field.feedback')}
+                max={TEXT_LIMITS.feedback}
+                hint={t('field.privacyHint')}
+                {...p}
+              />
             ))}
             {field('comments', (p) => (
-              <TextAreaField id="comments" label={t('field.comments')} max={TEXT_LIMITS.comments} hint={t('field.privacyHint')} {...p} />
+              <TextAreaField
+                id="comments"
+                label={t('field.comments')}
+                max={TEXT_LIMITS.comments}
+                hint={t('field.privacyHint')}
+                {...p}
+              />
             ))}
           </>
         ) : null}
@@ -490,13 +608,63 @@ export function Wizard({ routeDate, step }: { routeDate: string | null; step: nu
 // ---------- Review (S-05) ----------
 
 const REVIEW_SECTIONS: { step: number; fields: F[] }[] = [
-  { step: 1, fields: ['businessDate', 'total', 'bills', 'dineIn', 'takeaway', 'uber', 'uberOrders', 'pickme', 'pickmeOrders'] },
+  {
+    step: 1,
+    fields: [
+      'businessDate',
+      'total',
+      'bills',
+      'dineIn',
+      'takeaway',
+      'uber',
+      'uberOrders',
+      'pickme',
+      'pickmeOrders',
+    ],
+  },
   { step: 2, fields: ['cash', 'card', 'qr', 'discounts', 'comps', 'voids'] },
-  { step: 3, fields: ['foreignCustomers', 'busyPeriods', 'quietPeriod', 'topItems', 'stockOuts', 'staffOnDuty', 'openTime', 'closeTime'] },
-  { step: 4, fields: ['wxMorning', 'wxAfternoon', 'wxEvening', 'wxNight', 'conditions', 'conditionsOther', 'promotions', 'feedback', 'comments'] },
+  {
+    step: 3,
+    fields: [
+      'foreignCustomers',
+      'busyPeriods',
+      'quietPeriod',
+      'topItems',
+      'stockOuts',
+      'staffOnDuty',
+      'openTime',
+      'closeTime',
+    ],
+  },
+  {
+    step: 4,
+    fields: [
+      'wxMorning',
+      'wxAfternoon',
+      'wxEvening',
+      'wxNight',
+      'conditions',
+      'conditionsOther',
+      'promotions',
+      'feedback',
+      'comments',
+    ],
+  },
 ];
 
-const MONEY = new Set<F>(['total', 'dineIn', 'takeaway', 'uber', 'pickme', 'cash', 'card', 'qr', 'discounts', 'comps', 'voids']);
+const MONEY = new Set<F>([
+  'total',
+  'dineIn',
+  'takeaway',
+  'uber',
+  'pickme',
+  'cash',
+  'card',
+  'qr',
+  'discounts',
+  'comps',
+  'voids',
+]);
 
 function displayValue(f: F, v: string | string[]): string {
   if (Array.isArray(v)) return v.join(', ');
@@ -546,9 +714,17 @@ function Review({
 }) {
   return (
     <>
-      {submitError ? <ErrorState message={submitError.message} correlationId={submitError.correlationId} /> : null}
+      {submitError ? (
+        <ErrorState message={submitError.message} correlationId={submitError.correlationId} />
+      ) : null}
       {issues.length > 0 ? (
-        <section className="banner error error-summary" id="error-summary" tabIndex={-1} role="alert" aria-labelledby="err-h">
+        <section
+          className="banner error error-summary"
+          id="error-summary"
+          tabIndex={-1}
+          role="alert"
+          aria-labelledby="err-h"
+        >
           <div className="stack-sm" style={{ gap: 4 }}>
             <p className="title" id="err-h">
               {t('review.errorsTitle')}
@@ -621,7 +797,9 @@ function Review({
                 {filled.map((f) => (
                   <div key={f} style={{ display: 'contents' }}>
                     <dt>{t(`field.${f}` as MessageKey)}</dt>
-                    <dd className={MONEY.has(f) || f === 'bills' ? undefined : 'txt'}>{displayValue(f, values[f])}</dd>
+                    <dd className={MONEY.has(f) || f === 'bills' ? undefined : 'txt'}>
+                      {displayValue(f, values[f])}
+                    </dd>
                   </div>
                 ))}
               </dl>

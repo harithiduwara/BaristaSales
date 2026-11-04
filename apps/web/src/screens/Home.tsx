@@ -66,7 +66,15 @@ export function Home() {
   const pendingDates = new Set(outbox.items.map((i) => i.businessDate));
   const item = outbox.items.find((i) => i.businessDate === date);
   const saved = recent.find((r) => r.businessDate === date);
-  const state: CardState = item ? (item.status === 'failed' ? 'failed' : 'waiting') : draft ? 'draft' : saved ? 'saved' : 'notStarted';
+  const state: CardState = item
+    ? item.status === 'failed'
+      ? 'failed'
+      : 'waiting'
+    : draft
+      ? 'draft'
+      : saved
+        ? 'saved'
+        : 'notStarted';
   const hint =
     state === 'draft'
       ? t('home.hint.draft', { time: colomboTime(draft?.updatedAt ?? now) })
@@ -116,7 +124,10 @@ export function Home() {
             </h3>
             <div className="grid-2" style={{ gridTemplateColumns: '1.3fr 1fr 0.8fr', gap: 8 }}>
               <KpiCard label={t('home.mtdSales')} value={formatMoney(mtd.kpis.mtdSales)} />
-              <KpiCard label={t('home.mtdAvgBill')} value={mtd.kpis.avgBill === null ? t('summary.none') : formatMoney(mtd.kpis.avgBill)} />
+              <KpiCard
+                label={t('home.mtdAvgBill')}
+                value={mtd.kpis.avgBill === null ? t('summary.none') : formatMoney(mtd.kpis.avgBill)}
+              />
               <KpiCard label={t('home.mtdBills')} value={formatInt(mtd.kpis.totalBills)} />
             </div>
           </section>

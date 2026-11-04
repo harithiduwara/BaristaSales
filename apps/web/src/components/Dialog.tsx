@@ -50,15 +50,21 @@ export function ConfirmDialog({
   }, [open, onCancel]);
   if (!open) return null;
   return (
-    <div className="dialog-scrim" onClick={onCancel}>
-      <div className="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlg-title" ref={ref} onClick={(e) => e.stopPropagation()}>
+    // Tapping the backdrop cancels; keyboard users press Escape (handled on document above).
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+    <div className="dialog-scrim" onClick={(e) => e.target === e.currentTarget && onCancel()}>
+      <div className="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlg-title" ref={ref}>
         <h2 id="dlg-title">{title}</h2>
         {children ? <div className="text-sm">{children}</div> : null}
         <div className="actions">
           <Button variant="secondary" onClick={onCancel}>
             {cancelLabel}
           </Button>
-          <Button variant="primary" onClick={onConfirm} style={danger ? { background: 'var(--danger)', color: 'var(--surface)' } : undefined}>
+          <Button
+            variant="primary"
+            onClick={onConfirm}
+            style={danger ? { background: 'var(--danger)', color: 'var(--surface)' } : undefined}
+          >
             {confirmLabel}
           </Button>
         </div>

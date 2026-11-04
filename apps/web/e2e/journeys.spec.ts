@@ -1,6 +1,17 @@
 // Critical journeys E2E-01 … E2E-08 (12.2).
 import { expect, test } from '@playwright/test';
-import { fillRequired, freezeTime, mock, mockState, OWNER_PIN, signIn, syncChip, toReview, enterPin, MANAGER_PIN } from './helpers';
+import {
+  fillRequired,
+  freezeTime,
+  mock,
+  mockState,
+  OWNER_PIN,
+  signIn,
+  syncChip,
+  toReview,
+  enterPin,
+  MANAGER_PIN,
+} from './helpers';
 
 test.beforeEach(async ({ page, request }) => {
   await mock(request, 'reset');
@@ -50,16 +61,28 @@ test('E2E-02 full report with every field persists to the detail view', async ({
   await page.getByRole('button', { name: 'Next' }).click();
   await page.getByLabel('Foreign customers (approx.)').fill('4');
   await page.getByRole('group', { name: 'Busiest periods' }).getByRole('button', { name: '6pm–9pm' }).click();
-  await page.getByRole('radiogroup', { name: 'Quietest period' }).getByRole('radio', { name: '3pm–6pm' }).click();
+  await page
+    .getByRole('radiogroup', { name: 'Quietest period' })
+    .getByRole('radio', { name: '3pm–6pm' })
+    .click();
   await page.getByLabel('Top 3 selling items').fill('Cappuccino, iced latte, club sandwich');
   await page.getByLabel('Items out of stock').fill('Almond milk');
   await page.getByLabel('Staff on duty').fill('6');
   await page.getByLabel('Opened at').fill('07:00');
   await page.getByLabel('Closed at').fill('22:10');
   await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByRole('radiogroup', { name: 'Weather: Morning' }).getByRole('radio', { name: 'Sunny' }).click();
-  await page.getByRole('radiogroup', { name: 'Weather: Night' }).getByRole('radio', { name: 'Light rain' }).click();
-  await page.getByRole('group', { name: 'Special conditions' }).getByRole('button', { name: 'Normal day' }).click();
+  await page
+    .getByRole('radiogroup', { name: 'Weather: Morning' })
+    .getByRole('radio', { name: 'Sunny' })
+    .click();
+  await page
+    .getByRole('radiogroup', { name: 'Weather: Night' })
+    .getByRole('radio', { name: 'Light rain' })
+    .click();
+  await page
+    .getByRole('group', { name: 'Special conditions' })
+    .getByRole('button', { name: 'Normal day' })
+    .click();
   await page.getByLabel('Other condition').fill('Wedding nearby');
   await page.getByLabel('Promotions running').fill('Buy 2 get 1 on cookies');
   await page.getByLabel('Customer feedback or complaints').fill('Wifi was slow');
@@ -70,7 +93,15 @@ test('E2E-02 full report with every field persists to the detail view', async ({
   await expect(page.getByRole('heading', { name: 'Report for Wed 4 Nov saved.' })).toBeVisible();
 
   const saved = (await mockState(request)).reports.find((r) => r.businessDate === '2026-11-04');
-  expect(saved).toMatchObject({ dineIn: 96500, cash: 61200, quietPeriod: '3pm–6pm', busyPeriods: ['6pm–9pm'], closeTime: '22:10', wxNight: 'Light rain', conditionsOther: 'Wedding nearby' });
+  expect(saved).toMatchObject({
+    dineIn: 96500,
+    cash: 61200,
+    quietPeriod: '3pm–6pm',
+    busyPeriods: ['6pm–9pm'],
+    closeTime: '22:10',
+    wxNight: 'Light rain',
+    conditionsOther: 'Wedding nearby',
+  });
 
   await page.getByRole('button', { name: 'Done' }).click();
   await page.getByRole('link', { name: 'History' }).click();
@@ -82,14 +113,20 @@ test('E2E-02 full report with every field persists to the detail view', async ({
   await expect(page.getByTestId('detail-comments')).toHaveText('Steady day.');
 });
 
-test('E2E-03 NFR-REL-01 offline submit waits, then sends once when back online', async ({ page, context, request }) => {
+test('E2E-03 NFR-REL-01 offline submit waits, then sends once when back online', async ({
+  page,
+  context,
+  request,
+}) => {
   await signIn(page);
   await page.getByRole('link', { name: 'Start report' }).click();
   await fillRequired(page, { total: '148320', bills: '52', uber: '0', pickme: '0' });
   await context.setOffline(true);
   await toReview(page);
   await page.getByRole('button', { name: 'Submit report' }).click();
-  await expect(page.getByRole('heading', { name: 'Report for Wed 4 Nov saved on this phone.' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Report for Wed 4 Nov saved on this phone.' }),
+  ).toBeVisible();
   await page.getByRole('button', { name: 'Done' }).click();
   await expect(syncChip(page)).toHaveText('1 waiting to send');
   await expect(page.getByTestId('today-state')).toHaveText('Waiting to send');
@@ -100,10 +137,15 @@ test('E2E-03 NFR-REL-01 offline submit waits, then sends once when back online',
   expect(st.log.filter((l) => l.businessDate === '2026-11-04' && l.result === 'created')).toHaveLength(1);
 });
 
-test('E2E-04 FR-REP-03 same date twice: banner, load saved, replace; version increments', async ({ page, request }) => {
+test('E2E-04 FR-REP-03 same date twice: banner, load saved, replace; version increments', async ({
+  page,
+  request,
+}) => {
   await signIn(page);
   await page.goto('/#/report/2026-11-03/1');
-  await expect(page.getByText('A report for Tue 3 Nov is already saved. Submitting replaces it.')).toBeVisible();
+  await expect(
+    page.getByText('A report for Tue 3 Nov is already saved. Submitting replaces it.'),
+  ).toBeVisible();
   await page.getByRole('button', { name: 'Load saved report' }).click();
   await expect(page.getByLabel('Total net sales')).toHaveValue('129,849.85');
   await expect(page.getByLabel('PickMe Food sales')).toHaveValue('1,900.00');
@@ -115,7 +157,10 @@ test('E2E-04 FR-REP-03 same date twice: banner, load saved, replace; version inc
   expect(r).toMatchObject({ version: 2, total: 130000 });
 });
 
-test('E2E-05 FR-REP-10 conflict between two devices: keep saved, then replace with mine', async ({ browser, request }) => {
+test('E2E-05 FR-REP-10 conflict between two devices: keep saved, then replace with mine', async ({
+  browser,
+  request,
+}) => {
   const open = async (name: string) => {
     const ctx = await browser.newContext({ serviceWorkers: 'block', baseURL: 'http://localhost:4173' });
     const page = await ctx.newPage();
@@ -137,7 +182,9 @@ test('E2E-05 FR-REP-10 conflict between two devices: keep saved, then replace wi
   await b.getByLabel('Total net sales').fill('132000');
   await toReview(b);
   await b.getByRole('button', { name: 'Submit report' }).click();
-  await expect(b.getByText('This report was changed on another device. Choose which version to keep.')).toBeVisible();
+  await expect(
+    b.getByText('This report was changed on another device. Choose which version to keep.'),
+  ).toBeVisible();
   await expect(b.getByTestId('mine-total')).toHaveText('132000');
   await expect(b.getByTestId('saved-total')).toHaveText('131000');
   await b.getByRole('button', { name: 'Keep saved' }).click();
@@ -165,7 +212,11 @@ test('E2E-05 FR-REP-10 conflict between two devices: keep saved, then replace wi
   expect(r).toMatchObject({ version: 4, total: 134000 });
 });
 
-test('E2E-06 FR-HIS-03 Manager cannot edit a 10-day-old report; Owner can', async ({ page, browser, request }) => {
+test('E2E-06 FR-HIS-03 Manager cannot edit a 10-day-old report; Owner can', async ({
+  page,
+  browser,
+  request,
+}) => {
   const later = '2026-11-13T10:00:00+05:30';
   await mock(request, 'clock', { now: later });
   await freezeTime(page, later);
@@ -197,7 +248,9 @@ test('E2E-07 FR-AUTH-03 lockout after 5 wrong PINs', async ({ page }) => {
   // The 6th attempt is refused even with the correct PIN.
   await enterPin(page, MANAGER_PIN);
   await expect(page.getByText('Too many attempts. Try again in 15 minutes.')).toBeVisible();
-  await expect(page.getByRole('group', { name: 'PIN keypad' }).getByRole('button', { name: '1', exact: true })).toBeDisabled();
+  await expect(
+    page.getByRole('group', { name: 'PIN keypad' }).getByRole('button', { name: '1', exact: true }),
+  ).toBeDisabled();
   await page.reload();
   await enterPin(page, MANAGER_PIN);
   await expect(page.getByText('Too many attempts. Try again in 15 minutes.')).toBeVisible();

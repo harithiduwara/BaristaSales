@@ -10,7 +10,8 @@ export interface SalesFigures {
 }
 
 /** Total ÷ bills, or null when there are no bills. */
-export const avgBill = (r: Pick<SalesFigures, 'total' | 'bills'>): number | null => (r.bills > 0 ? r.total / r.bills : null);
+export const avgBill = (r: Pick<SalesFigures, 'total' | 'bills'>): number | null =>
+  r.bills > 0 ? r.total / r.bills : null;
 
 export const deliverySales = (r: Pick<SalesFigures, 'uber' | 'pickme'>): number => r.uber + r.pickme;
 
@@ -18,7 +19,8 @@ export const deliverySales = (r: Pick<SalesFigures, 'uber' | 'pickme'>): number 
 export const deliveryShare = (r: Pick<SalesFigures, 'total' | 'uber' | 'pickme'>): number | null =>
   r.total > 0 ? deliverySales(r) / r.total : null;
 
-export const walkInSales = (r: Pick<SalesFigures, 'total' | 'uber' | 'pickme'>): number => r.total - deliverySales(r);
+export const walkInSales = (r: Pick<SalesFigures, 'total' | 'uber' | 'pickme'>): number =>
+  r.total - deliverySales(r);
 
 export interface Computed {
   avgBill: number | null;
@@ -102,7 +104,15 @@ export function weekdayAverages(reports: readonly (DailyPoint & { bills: number 
   return WEEK_ORDER.flatMap((d) => {
     const a = acc.get(d);
     return a
-      ? [{ weekday: d, reports: a.n, avgSales: a.sales / a.n, avgBills: a.bills / a.n, avgBill: a.bills > 0 ? a.sales / a.bills : null }]
+      ? [
+          {
+            weekday: d,
+            reports: a.n,
+            avgSales: a.sales / a.n,
+            avgBills: a.bills / a.n,
+            avgBill: a.bills > 0 ? a.sales / a.bills : null,
+          },
+        ]
       : [];
   });
 }
@@ -114,7 +124,10 @@ export interface ReconciliationDiff {
 }
 
 /** Compares a split with the total; differences under Rs 1 count as balanced (FR-REP-05). */
-export function reconciliationDiff(parts: readonly (number | undefined)[], total: number): ReconciliationDiff {
+export function reconciliationDiff(
+  parts: readonly (number | undefined)[],
+  total: number,
+): ReconciliationDiff {
   const sum = parts.reduce<number>((s, p) => s + (p ?? 0), 0);
   const diff = Math.round((sum - total) * 100) / 100;
   if (Math.abs(diff) < 1) return { diff, direction: 'balanced' };
@@ -157,7 +170,8 @@ export function reportWarnings(r: WarningInput, history: readonly DailyPoint[]):
     history.filter((h) => h.date !== r.businessDate),
     r.businessDate,
   );
-  if (avg !== null && avg > 0 && (r.total > 3 * avg || r.total < 0.25 * avg)) out.push({ code: 'farFromAverage', average: avg });
+  if (avg !== null && avg > 0 && (r.total > 3 * avg || r.total < 0.25 * avg))
+    out.push({ code: 'farFromAverage', average: avg });
   return out;
 }
 
@@ -235,7 +249,12 @@ export function dashboardSummary(
   const daysElapsed = latest ? daysBetween(periodStart, latest) + 1 : 0;
   const daysRemaining = latest ? daysBetween(latest, periodEnd) : daysInPeriod;
   const target = config.MONTHLY_TARGET;
-  const ma = movingAverage(reports.filter((r) => r.date <= periodEnd).slice().sort((a, b) => a.date.localeCompare(b.date)));
+  const ma = movingAverage(
+    reports
+      .filter((r) => r.date <= periodEnd)
+      .slice()
+      .sort((a, b) => a.date.localeCompare(b.date)),
+  );
   const maByDate = new Map(
     reports
       .filter((r) => r.date <= periodEnd)

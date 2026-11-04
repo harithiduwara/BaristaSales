@@ -82,12 +82,18 @@ export interface ListItem extends ReportRecord {
 }
 
 export interface Actions {
-  'auth.verify': { payload: { pin: string; deviceName: string }; data: { role: Role; token: string; expiresAt: string } };
+  'auth.verify': {
+    payload: { pin: string; deviceName: string };
+    data: { role: Role; token: string; expiresAt: string };
+  };
   'report.upsert': {
     payload: { submissionId: string; baseVersion: number | null; report: unknown };
     data: { report: ReportRecord; version: number };
   };
-  'report.get': { payload: { businessDate: string }; data: { report: ReportRecord | null; weather: Weather | null } };
+  'report.get': {
+    payload: { businessDate: string };
+    data: { report: ReportRecord | null; weather: Weather | null };
+  };
   'report.list': {
     payload: { from?: string; to?: string; cursor?: string | null };
     data: { items: ListItem[]; nextCursor: string | null };

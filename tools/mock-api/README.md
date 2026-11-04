@@ -1,10 +1,10 @@
 # Mock API
 
-In-memory mock of the Apps Script API (REQUIREMENTS.md Section 7). See ADR-0007.
+The real backend core on in-memory storage, served over HTTP (REQUIREMENTS.md Section 7). See ADR-0007.
 
 ```sh
-node tools/mock-api/server.mjs          # http://localhost:8787
-npm test --prefix tools/mock-api        # contract self-test
+npm run mock                         # build and start on http://localhost:8787
+npm test -w @aluthgama/mock-api      # contract self-test
 ```
 
 Test PINs: Manager `111111`, Owner `999999` (mock only). Starts with the two seed reports (8.6).

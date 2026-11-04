@@ -35,7 +35,9 @@ const PATHS = {
     </>
   ),
   cloud: <path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 11.5 3.3 3.3 0 0 0 7 18z" />,
-  rain: <path d="M7 15h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 8.5 3.3 3.3 0 0 0 7 15zM8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5" />,
+  rain: (
+    <path d="M7 15h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 8.5 3.3 3.3 0 0 0 7 15zM8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5" />
+  ),
   share: <path d="M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M12 3v12M7.5 7.5L12 3l4.5 4.5" />,
   copy: (
     <>
@@ -64,14 +66,21 @@ const PATHS = {
     </>
   ),
   edit: <path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4" />,
-  offline: <path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4.2-2.5M19 13a10 10 0 0 0-3-2M2 9.5a15 15 0 0 1 4.5-3M22 9.5A15 15 0 0 0 11 5.6M12 20v.01" />,
+  offline: (
+    <path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4.2-2.5M19 13a10 10 0 0 0-3-2M2 9.5a15 15 0 0 1 4.5-3M22 9.5A15 15 0 0 0 11 5.6M12 20v.01" />
+  ),
 } as const;
 
 export type IconName = keyof typeof PATHS;
 
 export function Icon({ name, size = 'md' }: { name: IconName; size?: 'sm' | 'md' }) {
   return (
-    <svg className={size === 'sm' ? 'icon icon-sm' : 'icon'} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <svg
+      className={size === 'sm' ? 'icon icon-sm' : 'icon'}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
       {PATHS[name]}
     </svg>
   );

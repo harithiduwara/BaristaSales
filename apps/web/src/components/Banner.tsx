@@ -4,7 +4,19 @@ import { Icon, type IconName } from './Icon';
 type Tone = 'info' | 'warning' | 'error' | 'success';
 const ICONS: Record<Tone, IconName> = { info: 'info', warning: 'alert', error: 'alert', success: 'check' };
 
-export function Banner({ tone, title, children, icon, className }: { tone: Tone; title?: ReactNode; children?: ReactNode; icon?: IconName; className?: string }) {
+export function Banner({
+  tone,
+  title,
+  children,
+  icon,
+  className,
+}: {
+  tone: Tone;
+  title?: ReactNode;
+  children?: ReactNode;
+  icon?: IconName;
+  className?: string;
+}) {
   return (
     <div className={`banner ${tone} ${className ?? ''}`} role={tone === 'error' ? 'alert' : 'status'}>
       <Icon name={icon ?? ICONS[tone]} />

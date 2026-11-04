@@ -12,7 +12,14 @@ export interface AppBarProps {
   showSync?: boolean;
 }
 
-export function AppBar({ title, subtitle, leading, actions, showRole = false, showSync = true }: AppBarProps) {
+export function AppBar({
+  title,
+  subtitle,
+  leading,
+  actions,
+  showRole = false,
+  showSync = true,
+}: AppBarProps) {
   return (
     <header className="appbar">
       {leading ? (

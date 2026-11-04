@@ -21,7 +21,8 @@ export function Success({ date }: { date: string }) {
     if (report) return;
     void (async () => {
       const d = await db();
-      const r = (await d.get('reports', date)) ?? (await d.getAllFromIndex('outbox', 'byDate', date))[0]?.report;
+      const r =
+        (await d.get('reports', date)) ?? (await d.getAllFromIndex('outbox', 'byDate', date))[0]?.report;
       if (r) setReport(r as unknown as Report);
     })();
   }, [date, report]);
@@ -31,7 +32,13 @@ export function Success({ date }: { date: string }) {
 
   const share = async () => {
     const r = await shareText(text);
-    showToast(r === 'shareOpened' ? t('success.shareOpened') : r === 'copied' ? t('success.copied') : t('success.copyFailed'));
+    showToast(
+      r === 'shareOpened'
+        ? t('success.shareOpened')
+        : r === 'copied'
+          ? t('success.copied')
+          : t('success.copyFailed'),
+    );
   };
   const copy = async () => {
     const r = await copyText(text);

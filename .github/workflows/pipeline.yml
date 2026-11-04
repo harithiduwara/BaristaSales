@@ -1,0 +1,260 @@
+# CI/CD pipeline (REQUIREMENTS.md 11.1, CICD-01 … 10). Runs on every commit.
+name: pipeline
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# CICD-04: newer commits cancel older runs on the same branch; main and tags are never cancelled.
+concurrency:
+  group: pipeline-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/') }}
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  # Playwright browsers live here so they can be cached (CICD-05).
+  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/ms-playwright
+
+jobs:
+  quality:
+    name: 1 quality
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with: { node-version: '${{ env.NODE_VERSION }}', cache: npm }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+
+  unit:
+    name: 2 unit
+    needs: quality
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with: { node-version: '${{ env.NODE_VERSION }}', cache: npm }
+      - run: npm ci
+      - name: Unit and component tests with coverage (NFR-MNT-02 thresholds)
+        run: npx vitest run --coverage --reporter=default --reporter=json --outputFile.json=vitest-results.json
+      - name: Mock API contract tests
+        run: npm test -w @aluthgama/mock-api
+      - name: Summary
+        if: always()
+        run: |
+          node -e '
+            const fs = require("fs");
+            const r = fs.existsSync("vitest-results.json") ? JSON.parse(fs.readFileSync("vitest-results.json")) : null;
+            const c = fs.existsSync("coverage/coverage-summary.json") ? JSON.parse(fs.readFileSync("coverage/coverage-summary.json")).total : null;
+            const lines = ["### Unit tests", "", "| | |", "|---|---|"];
+            if (r) lines.push(`| Tests | ${r.numPassedTests} passed, ${r.numFailedTests} failed |`);
+            if (c) lines.push(`| Coverage (lines) | ${c.lines.pct}% |`);
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n");
+          '
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 14
+
+  build-web:
+    name: 3 build-web
+    needs: quality
+    runs-on: ubuntu-24.04
+    outputs:
+      versionName: ${{ steps.version.outputs.versionName }}
+      versionCode: ${{ steps.version.outputs.versionCode }}
+      isRelease: ${{ steps.version.outputs.isRelease }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with: { node-version: '${{ env.NODE_VERSION }}', cache: npm }
+      - run: npm ci
+      - id: version
+        name: Version (AND-05)
+        run: node scripts/version.mjs
+      - name: Production web build
+        env:
+          # Repository variable: the production Apps Script /exec URL (OPS-01).
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VERSION_NAME: ${{ steps.version.outputs.versionName }}
+        run: |
+          if [ -z "$VITE_API_URL" ]; then echo "::warning::Repository variable VITE_API_URL is not set; the build cannot reach a server."; fi
+          npm run build:web
+      - name: Bundle budget (NFR-PERF-02)
+        run: |
+          echo "### Web build" >> "$GITHUB_STEP_SUMMARY"
+          echo "| | |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          node scripts/check-bundle.mjs apps/web/dist
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: web-dist
+          path: apps/web/dist/
+          retention-days: 14
+
+  e2e:
+    name: 4 e2e
+    needs: build-web
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with: { node-version: '${{ env.NODE_VERSION }}', cache: npm }
+      - run: npm ci
+      - uses: actions/cache@v6.1.0
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+      - name: E2E-01 … E2E-09 and the axe suite against the mock API
+        run: npm run test:e2e -w @aluthgama/web
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report/
+            apps/web/test-results/
+          retention-days: 14
+
+  backend:
+    name: 5 backend
+    needs: unit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with: { node-version: '${{ env.NODE_VERSION }}', cache: npm }
+      - run: npm ci
+      - name: Bundle and check top-level entry points (C-03)
+        run: npm run build:backend
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: apps-script-bundle
+          path: backend/dist/
+          retention-days: 14
+
+  android:
+    name: 6 android
+    needs: [unit, e2e, build-web]
+    # Never for pull requests from forks: they must not see the signing secrets (CICD-06).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    env:
+      VERSION_NAME: ${{ needs.build-web.outputs.versionName }}
+      VERSION_CODE: ${{ needs.build-web.outputs.versionCode }}
+    outputs:
+      apkName: ${{ steps.apk.outputs.name }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with: { node-version: '${{ env.NODE_VERSION }}', cache: npm }
+      - uses: actions/setup-java@v6.1.0
+        with: { distribution: temurin, java-version: '21', cache: gradle }
+      - run: npm ci
+      - uses: actions/download-artifact@v8.0.2
+        with: { name: web-dist, path: apps/web/dist }
+      - name: Copy web assets into the Android project
+        run: npx cap sync android
+        working-directory: apps/web
+      - name: Decode release keystore (AND-04)
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::Signing secrets are not set. Add ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD (see docs/runbook.md)."
+            exit 1
+          fi
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.keystore"
+      - name: Build release APK
+        working-directory: apps/android
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/release.keystore
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+      - id: apk
+        name: Verify signature and checksum
+        run: |
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          NAME="aluthgama-daily-${VERSION_NAME}.apk"
+          mkdir -p out
+          cp apps/android/app/build/outputs/apk/release/app-release.apk "out/$NAME"
+          "$BT/apksigner" verify --verbose "out/$NAME"
+          (cd out && sha256sum "$NAME" > "$NAME.sha256")
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Android"
+            echo "| | |"
+            echo "|---|---|"
+            echo "| versionName | \`$VERSION_NAME\` |"
+            echo "| versionCode | \`$VERSION_CODE\` |"
+            echo "| APK | \`$NAME\` |"
+            echo "| SHA-256 | \`$(cut -d' ' -f1 "out/$NAME.sha256")\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: ${{ steps.apk.outputs.name }}
+          path: out/
+          retention-days: 14
+      - name: Remove keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.keystore"
+
+  deploy-pages:
+    name: 7 deploy-pages
+    needs: [android, build-web]
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/download-artifact@v8.0.2
+        with: { name: web-dist, path: site }
+      - name: version.json (tags only, AND-06)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          node scripts/version-json.mjs site/version.json "${{ needs.build-web.outputs.versionName }}" "${{ needs.build-web.outputs.versionCode }}" \
+            "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${{ needs.android.outputs.apkName }}"
+      - uses: actions/configure-pages@v6.0.0
+      - uses: actions/upload-pages-artifact@v5.0.0
+        with: { path: site }
+      - id: deploy
+        uses: actions/deploy-pages@v5.0.1
+
+  release:
+    name: 8 release
+    needs: android
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with: { fetch-depth: 0 }
+      - uses: actions/download-artifact@v8.0.2
+        with: { name: '${{ needs.android.outputs.apkName }}', path: out }
+      - name: Create GitHub Release with the signed APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/release-notes.mjs "${{ github.ref_name }}" > notes.md
+          gh release create "${{ github.ref_name }}" out/* --title "${{ github.ref_name }}" --notes-file notes.md

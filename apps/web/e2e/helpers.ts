@@ -25,7 +25,11 @@ export async function freezeTime(page: Page, iso = NOW) {
 }
 
 export async function enterPin(page: Page, pin: string) {
-  for (const d of pin) await page.getByRole('group', { name: 'PIN keypad' }).getByRole('button', { name: d, exact: true }).click();
+  for (const d of pin)
+    await page
+      .getByRole('group', { name: 'PIN keypad' })
+      .getByRole('button', { name: d, exact: true })
+      .click();
 }
 
 /** First run (S-01) and sign-in (S-02). */
@@ -38,7 +42,10 @@ export async function signIn(page: Page, pin = MANAGER_PIN, deviceName = 'Outlet
   await expect(page.getByRole('heading', { name: "Today's report" })).toBeVisible();
 }
 
-export async function fillRequired(page: Page, v: { total: string; bills: string; uber: string; pickme: string }) {
+export async function fillRequired(
+  page: Page,
+  v: { total: string; bills: string; uber: string; pickme: string },
+) {
   await page.getByLabel('Total net sales').fill(v.total);
   await page.getByLabel('Bills / tickets').fill(v.bills);
   await page.getByLabel('Uber Eats sales').fill(v.uber);

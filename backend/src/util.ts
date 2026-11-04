@@ -5,7 +5,7 @@ const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 function utf8Bytes(s: string): number[] {
   const out: number[] = [];
   for (const ch of s) {
-    let c = ch.codePointAt(0) as number;
+    const c = ch.codePointAt(0) as number;
     if (c < 0x80) out.push(c);
     else if (c < 0x800) out.push(0xc0 | (c >> 6), 0x80 | (c & 63));
     else if (c < 0x10000) out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));

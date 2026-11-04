@@ -64,7 +64,11 @@ export async function callApi<A extends ActionName>(
   try {
     res = await fetchWithTimeout(
       API_URL,
-      { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(envelope) },
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(envelope),
+      },
       opts.timeoutMs ?? REQUEST_TIMEOUT_MS,
     );
     body = (await res.json()) as ApiResponse<Actions[A]['data']>;

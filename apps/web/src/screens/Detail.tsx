@@ -25,7 +25,19 @@ import { t, type MessageKey } from '../i18n';
 import { STEP_LONG } from '../components/Stepper';
 import { FIELD_STEP } from '@aluthgama/shared';
 
-const MONEY = new Set(['total', 'dineIn', 'takeaway', 'uber', 'pickme', 'cash', 'card', 'qr', 'discounts', 'comps', 'voids']);
+const MONEY = new Set([
+  'total',
+  'dineIn',
+  'takeaway',
+  'uber',
+  'pickme',
+  'cash',
+  'card',
+  'qr',
+  'discounts',
+  'comps',
+  'voids',
+]);
 
 function fmt(f: string, v: unknown): string {
   if (Array.isArray(v)) return v.join(', ');
@@ -48,7 +60,11 @@ export function Detail({ date }: { date: string }) {
       .catch(() => setError(true));
   }, [date, reload]);
 
-  const back = { icon: 'back' as const, label: t('common.back'), onClick: () => (history.length > 1 ? history.back() : navigate('/history')) };
+  const back = {
+    icon: 'back' as const,
+    label: t('common.back'),
+    onClick: () => (history.length > 1 ? history.back() : navigate('/history')),
+  };
   const title = t('detail.title', { date: formatDateShort(date) });
   if (error)
     return (
@@ -80,17 +96,26 @@ export function Detail({ date }: { date: string }) {
     );
 
   const rec = r as unknown as Record<string, unknown>;
+  const submittedAt = `${formatDateShort(r.updatedAt.slice(0, 10))} ${r.updatedAt.slice(11, 16)}`;
   const editable = canEditDate(role, r.businessDate, todayColombo(Date.now()), cfg.EDIT_WINDOW_DAYS);
   const w = state.weather;
   const groups = [1, 2, 3, 4].map((step) => ({
     step,
-    fields: REPORT_FIELDS.filter((f) => f !== 'businessDate' && FIELD_STEP[f] === step && rec[f] !== undefined && rec[f] !== null && rec[f] !== ''),
+    fields: REPORT_FIELDS.filter(
+      (f) =>
+        f !== 'businessDate' &&
+        FIELD_STEP[f] === step &&
+        rec[f] !== undefined &&
+        rec[f] !== null &&
+        rec[f] !== '',
+    ),
   }));
 
   return (
     <div className="screen">
       <AppBar title={title} leading={back} />
-      <main className="body">
+      {/* Focusable so keyboard users can scroll a report with no links in it (WCAG 2.1.1). */}
+      <main className="body" tabIndex={0}>
         {groups.map((g) =>
           g.fields.length ? (
             <section key={g.step} className="card stack-sm" aria-labelledby={`dg-${g.step}`}>
@@ -101,7 +126,10 @@ export function Detail({ date }: { date: string }) {
                 {g.fields.map((f) => (
                   <div key={f} style={{ display: 'contents' }}>
                     <dt>{t(`field.${f}` as MessageKey)}</dt>
-                    <dd className={typeof rec[f] === 'number' ? undefined : 'txt'} data-testid={`detail-${f}`}>
+                    <dd
+                      className={typeof rec[f] === 'number' ? undefined : 'txt'}
+                      data-testid={`detail-${f}`}
+                    >
                       {fmt(f, rec[f])}
                     </dd>
                   </div>
@@ -160,21 +188,27 @@ export function Detail({ date }: { date: string }) {
               {r.version}
             </dd>
             <dt>{t('detail.lastSubmitted')}</dt>
-            <dd>{`${formatDateShort(r.updatedAt.slice(0, 10))} ${r.updatedAt.slice(11, 16)}`}</dd>
+            <dd>{submittedAt}</dd>
             <dt>{t('detail.device')}</dt>
             <dd>{r.updatedByDevice}</dd>
             <dt>{t('detail.source')}</dt>
             <dd>{t(`detail.source.${r.source}` as MessageKey)}</dd>
           </dl>
         </section>
-        {!editable ? <Banner tone="info" icon="lock"><p>{t('detail.editLocked')}</p></Banner> : null}
+        {!editable ? (
+          <Banner tone="info" icon="lock">
+            <p>{t('detail.editLocked')}</p>
+          </Banner>
+        ) : null}
       </main>
       <div className="actionbar">
         <Button
           variant="secondary"
           icon="share"
           onClick={() =>
-            void shareText(whatsappSummary(r)).then((x) => showToast(x === 'copied' ? t('success.copied') : t('success.shareOpened')))
+            void shareText(whatsappSummary(r)).then((x) =>
+              showToast(x === 'copied' ? t('success.copied') : t('success.shareOpened')),
+            )
           }
         >
           {t('detail.share')}

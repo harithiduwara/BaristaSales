@@ -68,7 +68,9 @@ describe('FR-REP-05 warnings', () => {
   const r = { businessDate: '2026-11-04', total: 148320, bills: 52, uber: 4640, pickme: 4400 };
   it('none for a clean report with no splits', () => expect(reportWarnings(r, [])).toEqual([]));
   it('channel and payment splits', () => {
-    expect(reportWarnings({ ...r, dineIn: 96500, takeaway: 42280, cash: 61200, card: 72620, qr: 14000 }, [])).toEqual([
+    expect(
+      reportWarnings({ ...r, dineIn: 96500, takeaway: 42280, cash: 61200, card: 72620, qr: 14000 }, []),
+    ).toEqual([
       { code: 'channelSplit', diff: -500, direction: 'under' },
       { code: 'paymentSplit', diff: -500, direction: 'under' },
     ]);
@@ -128,7 +130,15 @@ describe('E2E-09 dashboardSummary', () => {
   const reports: DashboardReport[] = [
     { date: '2026-11-03', total: 129849.85, bills: 46, uber: 0, pickme: 1900 },
     { date: '2026-11-02', total: 231874.9, bills: 82, uber: 0, pickme: 0 },
-    { date: '2026-11-04', total: 148320, bills: 52, uber: 4640, pickme: 4400, dineIn: 96500, takeaway: 42780 },
+    {
+      date: '2026-11-04',
+      total: 148320,
+      bills: 52,
+      uber: 4640,
+      pickme: 4400,
+      dineIn: 96500,
+      takeaway: 42780,
+    },
     { date: '2026-12-01', total: 1, bills: 1, uber: 0, pickme: 0 },
   ];
   const weather = new Map([['2026-11-03', { rainTradingMm: 6.8, avgTempTrading: 28.1 }]]);
@@ -150,7 +160,12 @@ describe('E2E-09 dashboardSummary', () => {
     expect(d.kpis.deliveryShare).toBeCloseTo(10940 / 510044.75, 10);
     expect(d.kpis.benchmarkDailyAvg).toBeCloseTo(190666.6667, 3);
     expect(d.series.map((s) => s.date)).toEqual(['2026-11-02', '2026-11-03', '2026-11-04']);
-    expect(d.series[1]).toMatchObject({ rainMm: 6.8, avgTemp: 28.1, dineIn: null, ma7: (231874.9 + 129849.85) / 2 });
+    expect(d.series[1]).toMatchObject({
+      rainMm: 6.8,
+      avgTemp: 28.1,
+      dineIn: null,
+      ma7: (231874.9 + 129849.85) / 2,
+    });
     expect(d.series[2]).toMatchObject({ rainMm: null, dineIn: 96500, takeaway: 42780 });
     expect(d.weekdays.map((w) => w.weekday)).toEqual(['Mon', 'Tue', 'Wed']);
   });
@@ -166,7 +181,13 @@ describe('E2E-09 dashboardSummary', () => {
     const d = dashboardSummary('2026-10', reports, weather, { ...DEFAULT_CONFIG, MONTHLY_TARGET: 100 });
     expect(d.daysInPeriod).toBe(0);
     expect(d.daysElapsed).toBe(0);
-    expect(d.kpis).toMatchObject({ mtdSales: 0, avgBill: null, deliveryShare: null, projectedMonthEnd: null, targetDailyAvg: null });
+    expect(d.kpis).toMatchObject({
+      mtdSales: 0,
+      avgBill: null,
+      deliveryShare: null,
+      projectedMonthEnd: null,
+      targetDailyAvg: null,
+    });
     expect(d.series).toEqual([]);
   });
 

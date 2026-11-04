@@ -26,7 +26,10 @@ export function Conflict({ date }: { date: string }) {
   if (!c || c.mine.businessDate !== date) {
     return (
       <div className="screen">
-        <AppBar title={t('conflict.title')} leading={{ icon: 'back', label: t('common.back'), onClick: () => navigate('/') }} />
+        <AppBar
+          title={t('conflict.title')}
+          leading={{ icon: 'back', label: t('common.back'), onClick: () => navigate('/') }}
+        />
       </div>
     );
   }
@@ -61,11 +64,19 @@ export function Conflict({ date }: { date: string }) {
 
   return (
     <div className="screen">
-      <AppBar title={t('conflict.title')} leading={{ icon: 'back', label: t('common.back'), onClick: () => navigate(`/report/${date}/5`) }} />
+      <AppBar
+        title={t('conflict.title')}
+        leading={{ icon: 'back', label: t('common.back'), onClick: () => navigate(`/report/${date}/5`) }}
+      />
       <main className="body">
         <Banner tone="warning">
           <p>{t('conflict.body')}</p>
-          <p className="text-sm">{t('conflict.savedBy', { time: c.current.updatedAt.slice(11, 16), device: c.current.updatedByDevice })}</p>
+          <p className="text-sm">
+            {t('conflict.savedBy', {
+              time: c.current.updatedAt.slice(11, 16),
+              device: c.current.updatedByDevice,
+            })}
+          </p>
         </Banner>
         {error ? <ErrorState message={error} /> : null}
         <div className="table-wrap card flat" style={{ padding: 0 }}>

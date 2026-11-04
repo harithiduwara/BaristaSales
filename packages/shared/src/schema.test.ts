@@ -3,7 +3,13 @@ import { cleanText, validateReport, schemaContextFor, type ValidationResult } fr
 import { DEFAULT_CONFIG, SEED_REPORTS } from './constants';
 
 const ctx = schemaContextFor(DEFAULT_CONFIG, '2026-11-04');
-const base = { businessDate: '2026-11-04', total: '148,320.00', bills: '52', uber: '4640', pickme: 'Rs 4,400/=' };
+const base = {
+  businessDate: '2026-11-04',
+  total: '148,320.00',
+  bills: '52',
+  uber: '4640',
+  pickme: 'Rs 4,400/=',
+};
 const rules = (r: ValidationResult) => (r.ok ? [] : r.issues.map((i) => `${i.field}:${i.rule}`).sort());
 
 describe('report schema (8.1, 8.2)', () => {
@@ -83,9 +89,15 @@ describe('report schema (8.1, 8.2)', () => {
   });
 
   it('V-01 date validity, opening date and future', () => {
-    expect(rules(validateReport({ ...base, businessDate: '2026-02-30' }, ctx))).toEqual(['businessDate:date']);
-    expect(rules(validateReport({ ...base, businessDate: '2026-11-01' }, ctx))).toEqual(['businessDate:beforeOpening']);
-    expect(rules(validateReport({ ...base, businessDate: '2026-11-05' }, ctx))).toEqual(['businessDate:future']);
+    expect(rules(validateReport({ ...base, businessDate: '2026-02-30' }, ctx))).toEqual([
+      'businessDate:date',
+    ]);
+    expect(rules(validateReport({ ...base, businessDate: '2026-11-01' }, ctx))).toEqual([
+      'businessDate:beforeOpening',
+    ]);
+    expect(rules(validateReport({ ...base, businessDate: '2026-11-05' }, ctx))).toEqual([
+      'businessDate:future',
+    ]);
   });
 
   it('V-02 money bounds and decimals', () => {
@@ -108,19 +120,21 @@ describe('report schema (8.1, 8.2)', () => {
   });
 
   it('V-05 and V-06 channel amounts within total', () => {
-    expect(rules(validateReport({ ...base, total: 100, uber: 150, pickme: 0, dineIn: 200, takeaway: 101 }, ctx))).toEqual([
-      'dineIn:exceedsTotal',
-      'takeaway:exceedsTotal',
-      'uber:exceedsTotal',
+    expect(
+      rules(validateReport({ ...base, total: 100, uber: 150, pickme: 0, dineIn: 200, takeaway: 101 }, ctx)),
+    ).toEqual(['dineIn:exceedsTotal', 'takeaway:exceedsTotal', 'uber:exceedsTotal']);
+    expect(rules(validateReport({ ...base, total: 100, uber: 80, pickme: 30 }, ctx))).toEqual([
+      'pickme:deliveryExceedsTotal',
     ]);
-    expect(rules(validateReport({ ...base, total: 100, uber: 80, pickme: 30 }, ctx))).toEqual(['pickme:deliveryExceedsTotal']);
-    expect(rules(validateReport({ ...base, total: 100, uber: 0, pickme: 130 }, ctx))).toEqual(['pickme:exceedsTotal']);
+    expect(rules(validateReport({ ...base, total: 100, uber: 0, pickme: 130 }, ctx))).toEqual([
+      'pickme:exceedsTotal',
+    ]);
   });
 
   it('V-07 quiet period is not also busy', () => {
-    expect(rules(validateReport({ ...base, busyPeriods: ['After 9pm'], quietPeriod: 'After 9pm' }, ctx))).toEqual([
-      'quietPeriod:alsoBusy',
-    ]);
+    expect(
+      rules(validateReport({ ...base, busyPeriods: ['After 9pm'], quietPeriod: 'After 9pm' }, ctx)),
+    ).toEqual(['quietPeriod:alsoBusy']);
   });
 
   it('V-08 times', () => {
@@ -131,7 +145,9 @@ describe('report schema (8.1, 8.2)', () => {
 
   it('V-09 text length after trimming', () => {
     expect(validateReport({ ...base, comments: ` ${'a'.repeat(1000)} ` }, ctx).ok).toBe(true);
-    expect(rules(validateReport({ ...base, comments: 'a'.repeat(1001) }, ctx))).toEqual(['comments:maxLength']);
+    expect(rules(validateReport({ ...base, comments: 'a'.repeat(1001) }, ctx))).toEqual([
+      'comments:maxLength',
+    ]);
     expect(rules(validateReport({ ...base, topItems: 42 }, ctx))).toEqual(['topItems:maxLength']);
   });
 
@@ -147,7 +163,9 @@ describe('report schema (8.1, 8.2)', () => {
   });
 
   it('labels non-object input', () => {
-    expect(rules(validateReport('nope', ctx))).toEqual(['report:Invalid input: expected object, received string']);
+    expect(rules(validateReport('nope', ctx))).toEqual([
+      'report:Invalid input: expected object, received string',
+    ]);
   });
 
   it('cleanText strips control characters and trims', () => expect(cleanText('\u0000 hi\r\n')).toBe('hi'));

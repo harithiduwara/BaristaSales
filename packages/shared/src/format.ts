@@ -24,13 +24,16 @@ export const formatInt = (n: number): string => String(Math.round(n)).replace(/\
 export const formatDateLong = (date: string): string => `${formatDateShort(date)} ${date.slice(0, 4)}`;
 
 /** "Tue 3 Nov" */
-export const formatDateShort = (date: string): string => `${weekday(date)} ${Number(date.slice(8, 10))} ${monthShort(date)}`;
+export const formatDateShort = (date: string): string =>
+  `${weekday(date)} ${Number(date.slice(8, 10))} ${monthShort(date)}`;
 
 /** "03/11/2026" */
-export const formatDateDmy = (date: string): string => `${date.slice(8, 10)}/${date.slice(5, 7)}/${date.slice(0, 4)}`;
+export const formatDateDmy = (date: string): string =>
+  `${date.slice(8, 10)}/${date.slice(5, 7)}/${date.slice(0, 4)}`;
 
 /** "2026-11" → "November 2026" */
-export const formatMonth = (month: string): string => `${MONTH_NAMES[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
+export const formatMonth = (month: string): string =>
+  `${MONTH_NAMES[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
 
 export interface WhatsAppInput {
   businessDate: string;

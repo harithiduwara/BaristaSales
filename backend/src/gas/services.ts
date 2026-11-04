@@ -37,7 +37,9 @@ export function dateCell(date: string): Date {
 }
 
 function withDates(headers: readonly string[], row: Cell[]): (Cell | Date)[] {
-  return row.map((v, i) => (DATE_COLUMNS.has(headers[i] as string) && typeof v === 'string' && v ? dateCell(v) : v));
+  return row.map((v, i) =>
+    DATE_COLUMNS.has(headers[i] as string) && typeof v === 'string' && v ? dateCell(v) : v,
+  );
 }
 
 export function openSpreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
@@ -96,7 +98,11 @@ export class SheetStore implements Store {
     const sh = this.sheet(SHEETS.log);
     const last = sh.getLastRow();
     if (last < 2) return null;
-    const hits = sh.getRange(2, 2, last - 1, 1).createTextFinder(id).matchEntireCell(true).findAll();
+    const hits = sh
+      .getRange(2, 2, last - 1, 1)
+      .createTextFinder(id)
+      .matchEntireCell(true)
+      .findAll();
     for (const h of hits) {
       const row = sh.getRange(h.getRow(), 1, 1, LOG_HEADERS.length).getValues()[0]?.map(normaliseCell) ?? [];
       const o = rowToObject<SubmissionLogRow>(LOG_HEADERS, row, new Set());
@@ -131,7 +137,8 @@ export class SheetStore implements Store {
 
   readConfig() {
     const out: Record<string, string | number | null> = {};
-    for (const [k, v] of rows(this.sheet(SHEETS.config))) if (k) out[String(k)] = v === '' ? null : (v as string | number);
+    for (const [k, v] of rows(this.sheet(SHEETS.config)))
+      if (k) out[String(k)] = v === '' ? null : (v as string | number);
     return out;
   }
 
@@ -161,9 +168,12 @@ const scriptLock = (): Lock => {
 };
 
 export const gasCrypto: Crypto = {
-  sha256Hex: (t) => bytesToHex(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, t, Utilities.Charset.UTF_8)),
+  sha256Hex: (t) =>
+    bytesToHex(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, t, Utilities.Charset.UTF_8)),
   hmacSha256B64u: (d, k) =>
-    Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(d, k, Utilities.Charset.UTF_8)).replace(/=+$/, ''),
+    Utilities.base64EncodeWebSafe(
+      Utilities.computeHmacSha256Signature(d, k, Utilities.Charset.UTF_8),
+    ).replace(/=+$/, ''),
   uuid: () => Utilities.getUuid(),
   randomHex: (n) => {
     let out = '';

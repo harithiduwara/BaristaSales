@@ -33,7 +33,12 @@ export function Setup() {
 
   return (
     <main className="screen">
-      <form className="body body-narrow" style={{ paddingTop: 48 }} onSubmit={(e) => void submit(e)} noValidate>
+      <form
+        className="body body-narrow"
+        style={{ paddingTop: 48 }}
+        onSubmit={(e) => void submit(e)}
+        noValidate
+      >
         <div className="stack-sm">
           <span className="badge" style={{ alignSelf: 'flex-start' }}>
             {t('app.title')}

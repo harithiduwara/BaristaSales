@@ -13,7 +13,15 @@ interface BaseProps {
   onBlur?: () => void;
 }
 
-function Label({ htmlFor, label, required }: { htmlFor: string; label: string; required?: boolean | undefined }) {
+function Label({
+  htmlFor,
+  label,
+  required,
+}: {
+  htmlFor: string;
+  label: string;
+  required?: boolean | undefined;
+}) {
   return (
     <label htmlFor={htmlFor}>
       {label}
@@ -23,7 +31,7 @@ function Label({ htmlFor, label, required }: { htmlFor: string; label: string; r
           <span className="req" aria-hidden="true">
             *
           </span>
-          <span className="sr-only">({t('field.required')})</span>
+          <span className="sr-only">{t('field.requiredSr')}</span>
         </>
       ) : null}
     </label>
@@ -45,7 +53,16 @@ function describedBy(hintId: string, errId: string, hint: unknown, error: unknow
 }
 
 /** Shows the raw value while focused and 129,849.85 on blur (MoneyField). Accepts "Rs 1,900/=" (V-02). */
-export function MoneyField({ id, label, hint, error, required, value, onChange, onBlur }: BaseProps & { value: string; onChange: (v: string) => void }) {
+export function MoneyField({
+  id,
+  label,
+  hint,
+  error,
+  required,
+  value,
+  onChange,
+  onBlur,
+}: BaseProps & { value: string; onChange: (v: string) => void }) {
   const [focused, setFocused] = useState(false);
   const hintId = `${id}-hint`;
   const errId = `${id}-err`;
@@ -99,7 +116,16 @@ export function MoneyField({ id, label, hint, error, required, value, onChange, 
   );
 }
 
-export function IntegerField({ id, label, hint, error, required, value, onChange, onBlur }: BaseProps & { value: string; onChange: (v: string) => void }) {
+export function IntegerField({
+  id,
+  label,
+  hint,
+  error,
+  required,
+  value,
+  onChange,
+  onBlur,
+}: BaseProps & { value: string; onChange: (v: string) => void }) {
   const hintId = `${id}-hint`;
   const errId = `${id}-err`;
   return (
@@ -173,7 +199,15 @@ export function DateField({
   );
 }
 
-export function TimeField({ id, label, hint, error, value, onChange, onBlur }: BaseProps & { value: string; onChange: (v: string) => void }) {
+export function TimeField({
+  id,
+  label,
+  hint,
+  error,
+  value,
+  onChange,
+  onBlur,
+}: BaseProps & { value: string; onChange: (v: string) => void }) {
   const hintId = `${id}-hint`;
   const errId = `${id}-err`;
   return (
@@ -202,7 +236,16 @@ export function TimeField({ id, label, hint, error, value, onChange, onBlur }: B
   );
 }
 
-export function TextField({ id, label, hint, error, value, max, onChange, onBlur }: BaseProps & { value: string; max: number; onChange: (v: string) => void }) {
+export function TextField({
+  id,
+  label,
+  hint,
+  error,
+  value,
+  max,
+  onChange,
+  onBlur,
+}: BaseProps & { value: string; max: number; onChange: (v: string) => void }) {
   const hintId = `${id}-hint`;
   const errId = `${id}-err`;
   return (
@@ -234,7 +277,16 @@ export function TextField({ id, label, hint, error, value, max, onChange, onBlur
   );
 }
 
-export function TextAreaField({ id, label, hint, error, value, max, onChange, onBlur }: BaseProps & { value: string; max: number; onChange: (v: string) => void }) {
+export function TextAreaField({
+  id,
+  label,
+  hint,
+  error,
+  value,
+  max,
+  onChange,
+  onBlur,
+}: BaseProps & { value: string; max: number; onChange: (v: string) => void }) {
   const hintId = `${id}-hint`;
   const errId = `${id}-err`;
   const count = value.trim().length;
@@ -291,7 +343,12 @@ export function ChipGroup({
   return (
     <fieldset className="field" aria-describedby={error ? errId : undefined}>
       <legend className={hideLabel ? 'sr-only' : undefined}>{label}</legend>
-      <div className="chips" role={multiple ? 'group' : 'radiogroup'} aria-label={label}>
+      {/* The fieldset already groups multi-select chips; single select also needs radiogroup semantics. */}
+      <div
+        className="chips"
+        role={multiple ? undefined : 'radiogroup'}
+        aria-label={multiple ? undefined : label}
+      >
         {options.map((o) => {
           const on = selected.includes(o);
           return (
@@ -318,10 +375,26 @@ export function ChipGroup({
   );
 }
 
-export function Checkbox({ id, checked, onChange, children }: { id: string; checked: boolean; onChange: (v: boolean) => void; children: ReactNode }) {
+export function Checkbox({
+  id,
+  checked,
+  onChange,
+  children,
+}: {
+  id: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  children: ReactNode;
+}) {
   return (
     <label className="check" htmlFor={id}>
-      <input id={id} type="checkbox" className="sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <input
+        id={id}
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
       <span className={`box${checked ? ' on' : ''}`} aria-hidden="true">
         {checked ? <Icon name="check" size="sm" /> : null}
       </span>

@@ -1,10 +1,30 @@
 import type { ReactNode } from 'react';
-import { avgBill, deliveryShare, formatDateShort, formatMoney, formatPercent, walkInSales, type ListItem } from '@aluthgama/shared';
+import {
+  avgBill,
+  deliveryShare,
+  formatDateShort,
+  formatMoney,
+  formatPercent,
+  walkInSales,
+  type ListItem,
+} from '@aluthgama/shared';
 import { Icon, type IconName } from './Icon';
 import { Button } from './Button';
 import { t } from '../i18n';
 
-export function KpiCard({ label, value, detail, empty, span }: { label: string; value?: ReactNode; detail?: ReactNode; empty?: ReactNode; span?: boolean }) {
+export function KpiCard({
+  label,
+  value,
+  detail,
+  empty,
+  span,
+}: {
+  label: string;
+  value?: ReactNode;
+  detail?: ReactNode;
+  empty?: ReactNode;
+  span?: boolean;
+}) {
   return (
     <div className={`kpi${empty ? ' empty' : ''}`} style={span ? { gridColumn: '1 / -1' } : undefined}>
       <span className="k">{label}</span>
@@ -14,7 +34,15 @@ export function KpiCard({ label, value, detail, empty, span }: { label: string; 
   );
 }
 
-export function EmptyState({ icon = 'info', text, action }: { icon?: IconName; text: string; action?: ReactNode }) {
+export function EmptyState({
+  icon = 'info',
+  text,
+  action,
+}: {
+  icon?: IconName;
+  text: string;
+  action?: ReactNode;
+}) {
   return (
     <div className="empty">
       <Icon name={icon} />
@@ -38,7 +66,15 @@ export function Skeleton({ rows = 3 }: { rows?: number }) {
 }
 
 /** Plain message, retry, and the correlation ID for support (NFR-OBS-01). */
-export function ErrorState({ message, correlationId, onRetry }: { message: string; correlationId?: string | undefined; onRetry?: () => void }) {
+export function ErrorState({
+  message,
+  correlationId,
+  onRetry,
+}: {
+  message: string;
+  correlationId?: string | undefined;
+  onRetry?: () => void;
+}) {
   return (
     <div className="banner error" role="alert">
       <Icon name="alert" />
@@ -63,10 +99,21 @@ export function ErrorState({ message, correlationId, onRetry }: { message: strin
 }
 
 /** Live summary strip (FR-REP-04): "–" when inputs are missing. */
-export function SummaryStrip({ total, bills, uber, pickme }: { total: number | null; bills: number | null; uber: number | null; pickme: number | null }) {
+export function SummaryStrip({
+  total,
+  bills,
+  uber,
+  pickme,
+}: {
+  total: number | null;
+  bills: number | null;
+  uber: number | null;
+  pickme: number | null;
+}) {
   const none = t('summary.none');
   const ab = total !== null && bills !== null ? avgBill({ total, bills }) : null;
-  const ds = total !== null && uber !== null && pickme !== null ? deliveryShare({ total, uber, pickme }) : null;
+  const ds =
+    total !== null && uber !== null && pickme !== null ? deliveryShare({ total, uber, pickme }) : null;
   const wi = total !== null && uber !== null && pickme !== null ? walkInSales({ total, uber, pickme }) : null;
   return (
     <div className="strip" aria-live="polite">
@@ -94,7 +141,11 @@ export function ReportRow({ item, pending }: { item: ListItem; pending?: boolean
     <a className="list-row" href={`#/view/${item.businessDate}`}>
       <span className="date">{formatDateShort(item.businessDate)}</span>
       <span className="amt">Rs {formatMoney(item.total)}</span>
-      <span className="meta">{ab === null ? t('list.bills', { bills: item.bills }) : t('list.billsAvg', { bills: item.bills, avg: formatMoney(ab) })}</span>
+      <span className="meta">
+        {ab === null
+          ? t('list.bills', { bills: item.bills })
+          : t('list.billsAvg', { bills: item.bills, avg: formatMoney(ab) })}
+      </span>
       <span className="icons">
         {w ? (
           <>
@@ -121,10 +172,11 @@ export function ReportRow({ item, pending }: { item: ListItem; pending?: boolean
 export function WhatsAppPreview({ text }: { text: string }) {
   const [first, ...rest] = text.split('\n');
   const bold = first?.replace(/^\*(.*)\*$/, '$1') ?? '';
+  const body = `\n${rest.join('\n')}`;
   return (
     <div className="wa" data-testid="whatsapp-preview">
       <b>{bold}</b>
-      {`\n${rest.join('\n')}`}
+      {body}
     </div>
   );
 }

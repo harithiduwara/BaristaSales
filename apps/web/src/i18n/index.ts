@@ -10,6 +10,10 @@ export function t(key: MessageKey, vars: Record<string, string | number> = {}): 
 }
 
 /** For keys built at run time (e.g. `rule.${code}`); falls back when missing. */
-export function tDynamic(key: string, fallback: MessageKey, vars: Record<string, string | number> = {}): string {
+export function tDynamic(
+  key: string,
+  fallback: MessageKey,
+  vars: Record<string, string | number> = {},
+): string {
   return t((key in messages ? key : fallback) as MessageKey, vars);
 }

@@ -3,13 +3,27 @@ import { ensureConfigDefaults, ensureSecrets, handleGet, handlePost, readConfig,
 import { createMemoryServices } from './memory';
 import { call, errorCode, OWNER_PIN, setupServices, signIn } from './testkit';
 
-const report = { businessDate: '2026-11-04', total: '148,320.00', bills: 52, uber: 4640, pickme: 'Rs 4,400/=' };
-const up = (submissionId: string, r: object = report, baseVersion: number | null = null) => ({ submissionId, baseVersion, report: r });
+const report = {
+  businessDate: '2026-11-04',
+  total: '148,320.00',
+  bills: 52,
+  uber: 4640,
+  pickme: 'Rs 4,400/=',
+};
+const up = (submissionId: string, r: object = report, baseVersion: number | null = null) => ({
+  submissionId,
+  baseVersion,
+  report: r,
+});
 
 describe('FR-BE-06 health', () => {
   it('returns no data and needs no auth', () => {
     const s = setupServices();
-    expect(handleGet(s, { action: 'health' })).toEqual({ ok: true, apiVersion: 1, serverTime: '2026-11-04T21:42:00+05:30' });
+    expect(handleGet(s, { action: 'health' })).toEqual({
+      ok: true,
+      apiVersion: 1,
+      serverTime: '2026-11-04T21:42:00+05:30',
+    });
     expect(handleGet(s, {})).toMatchObject({ ok: false, error: { code: 'NOT_FOUND' } });
   });
 });
@@ -35,7 +49,10 @@ describe('7.2 envelope', () => {
     expect(r.ok).toBe(false);
     if (!r.ok) {
       expect(r.error).toMatchObject({ code: 'INTERNAL', correlationId: 'sub-err-0001' });
-      expect(s.store.audit.at(-1)).toMatchObject({ event: 'error', detail: 'sub-err-0001 Sheet unavailable' });
+      expect(s.store.audit.at(-1)).toMatchObject({
+        event: 'error',
+        detail: 'sub-err-0001 Sheet unavailable',
+      });
     }
   });
 
@@ -97,8 +114,13 @@ describe('FR-BE-02 report.upsert', () => {
     const s = setupServices();
     const t = signIn(s);
     const r = call(s, 'report.upsert', up('sub-0000001', { ...report, bills: 0 }), { token: t });
-    expect(r.ok === false && r.error).toMatchObject({ code: 'VALIDATION_FAILED', details: [{ field: 'bills', rule: 'billsRequired' }] });
-    expect(errorCode(call(s, 'report.upsert', { submissionId: 'x' }, { token: t }))).toBe('VALIDATION_FAILED');
+    expect(r.ok === false && r.error).toMatchObject({
+      code: 'VALIDATION_FAILED',
+      details: [{ field: 'bills', rule: 'billsRequired' }],
+    });
+    expect(errorCode(call(s, 'report.upsert', { submissionId: 'x' }, { token: t }))).toBe(
+      'VALIDATION_FAILED',
+    );
     expect(s.store.log.at(-1)).toMatchObject({ result: 'rejected', errorCode: 'VALIDATION_FAILED' });
   });
 
@@ -106,10 +128,15 @@ describe('FR-BE-02 report.upsert', () => {
     const s = setupServices('2026-11-13T10:00:00+05:30');
     seed(s);
     const m = signIn(s);
-    const r = call(s, 'report.upsert', up('sub-0000001', { ...report, businessDate: '2026-11-03' }, 1), { token: m });
+    const r = call(s, 'report.upsert', up('sub-0000001', { ...report, businessDate: '2026-11-03' }, 1), {
+      token: m,
+    });
     expect(errorCode(r)).toBe('EDIT_WINDOW_CLOSED');
     const o = signIn(s, OWNER_PIN, 'dev-o');
-    const r2 = call(s, 'report.upsert', up('sub-0000002', { ...report, businessDate: '2026-11-03' }, 1), { token: o, deviceId: 'dev-o' });
+    const r2 = call(s, 'report.upsert', up('sub-0000002', { ...report, businessDate: '2026-11-03' }, 1), {
+      token: o,
+      deviceId: 'dev-o',
+    });
     expect(r2.ok && r2.data.report.updatedByRole).toBe('Owner');
   });
 
@@ -174,7 +201,10 @@ describe('report.get and report.list', () => {
     expect(errorCode(call(s, 'report.get', {}, { token: t }))).toBe('VALIDATION_FAILED');
 
     const list = call(s, 'report.list', {}, { token: t });
-    expect(list.ok && list.data.items.map((i: { businessDate: string }) => i.businessDate)).toEqual(['2026-11-03', '2026-11-02']);
+    expect(list.ok && list.data.items.map((i: { businessDate: string }) => i.businessDate)).toEqual([
+      '2026-11-03',
+      '2026-11-02',
+    ]);
     expect(list.ok && list.data.items[0].weather.rainTradingMm).toBe(6.8);
     expect(list.ok && list.data.items[1].weather).toBeNull();
     expect(list.ok && list.data.nextCursor).toBeNull();
@@ -187,7 +217,12 @@ describe('report.get and report.list', () => {
     const o = signIn(s, OWNER_PIN);
     for (let d = 0; d < 40; d++) {
       const date = new Date(Date.UTC(2026, 10, 2 + d)).toISOString().slice(0, 10);
-      const r = call(s, 'report.upsert', up(`sub-${String(d).padStart(8, '0')}`, { ...report, businessDate: date }), { token: o });
+      const r = call(
+        s,
+        'report.upsert',
+        up(`sub-${String(d).padStart(8, '0')}`, { ...report, businessDate: date }),
+        { token: o },
+      );
       expect(r.ok).toBe(true);
     }
     const p1 = call(s, 'report.list', {}, { token: o });
@@ -213,7 +248,9 @@ describe('dashboard and config (FR-DSH-01, FR-SET-03)', () => {
     const o = signIn(s, OWNER_PIN, 'dev-o');
     const d = call(s, 'dashboard.summary', { month: '2026-11' }, { token: o, deviceId: 'dev-o' });
     expect(d.ok && d.data.kpis.totalBills).toBe(128);
-    expect(errorCode(call(s, 'dashboard.summary', { month: '2026-13' }, { token: o, deviceId: 'dev-o' }))).toBe('VALIDATION_FAILED');
+    expect(
+      errorCode(call(s, 'dashboard.summary', { month: '2026-13' }, { token: o, deviceId: 'dev-o' })),
+    ).toBe('VALIDATION_FAILED');
   });
 
   it('config.update is Owner only, validated and audited', () => {
@@ -225,9 +262,14 @@ describe('dashboard and config (FR-DSH-01, FR-SET-03)', () => {
     const cleared = call(s, 'config.update', { MONTHLY_TARGET: null }, { token: o });
     expect(cleared.ok && cleared.data.MONTHLY_TARGET).toBeNull();
     const bad = call(s, 'config.update', { MONTHLY_TARGET: -1, PIN: 1 }, { token: o });
-    expect(bad.ok === false && bad.error.details?.map((d) => d.field).sort()).toEqual(['MONTHLY_TARGET', 'payload']);
+    expect(bad.ok === false && bad.error.details?.map((d) => d.field).sort()).toEqual([
+      'MONTHLY_TARGET',
+      'payload',
+    ]);
     const m = signIn(s, '111111', 'dev-m');
-    expect(errorCode(call(s, 'config.update', { MONTHLY_TARGET: 1 }, { token: m, deviceId: 'dev-m' }))).toBe('FORBIDDEN');
+    expect(errorCode(call(s, 'config.update', { MONTHLY_TARGET: 1 }, { token: m, deviceId: 'dev-m' }))).toBe(
+      'FORBIDDEN',
+    );
     const g = call(s, 'config.get', {}, { token: m, deviceId: 'dev-m' });
     expect(g.ok && g.data.OPENING_DATE).toBe('2026-11-02');
   });
@@ -235,7 +277,12 @@ describe('dashboard and config (FR-DSH-01, FR-SET-03)', () => {
   it('readConfig parses numbers and falls back to defaults', () => {
     const s = createMemoryServices();
     s.store.config = { EDIT_WINDOW_DAYS: '10', OUTLET_NAME: 'X', LATITUDE: '' };
-    expect(readConfig(s)).toMatchObject({ EDIT_WINDOW_DAYS: 10, OUTLET_NAME: 'X', LATITUDE: 6.4333, MONTHLY_TARGET: null });
+    expect(readConfig(s)).toMatchObject({
+      EDIT_WINDOW_DAYS: 10,
+      OUTLET_NAME: 'X',
+      LATITUDE: 6.4333,
+      MONTHLY_TARGET: null,
+    });
   });
 });
 
@@ -254,7 +301,12 @@ describe('FR-BE-01 setup helpers and 8.6 seed', () => {
     expect(seed(s)).toEqual(['2026-11-02', '2026-11-03']);
     expect(seed(s)).toEqual([]);
     const r = s.store.getReport('ALU-01', '2026-11-03');
-    expect(r).toMatchObject({ source: 'whatsapp-backfill', busyPeriods: ['After 9pm'], wxEvening: 'Light rain', version: 1 });
+    expect(r).toMatchObject({
+      source: 'whatsapp-backfill',
+      busyPeriods: ['After 9pm'],
+      wxEvening: 'Light rain',
+      version: 1,
+    });
   });
 
   it('refuses invalid seed data', () => {

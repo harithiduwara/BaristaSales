@@ -21,7 +21,13 @@ export const session = createStore<Session>({
   expiresAt: null,
 });
 
-const K = { deviceId: 'deviceId', deviceName: 'deviceName', token: 'token', role: 'role', expiresAt: 'expiresAt' } as const;
+const K = {
+  deviceId: 'deviceId',
+  deviceName: 'deviceName',
+  token: 'token',
+  role: 'role',
+  expiresAt: 'expiresAt',
+} as const;
 
 export async function loadSession(now = Date.now()): Promise<Session> {
   const [deviceId, deviceName, token, role, expiresAt] = await Promise.all([

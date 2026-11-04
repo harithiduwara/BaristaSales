@@ -51,7 +51,11 @@ export function Settings() {
       showToast(t('settings.targetsSaved'));
     } catch (e) {
       const err = e instanceof ApiCallError ? e : null;
-      showToast(err?.isNetwork ? t('error.NETWORK_GENERIC') : tDynamic(`error.${err?.code ?? 'INTERNAL'}`, 'error.INTERNAL'));
+      showToast(
+        err?.isNetwork
+          ? t('error.NETWORK_GENERIC')
+          : tDynamic(`error.${err?.code ?? 'INTERNAL'}`, 'error.INTERNAL'),
+      );
     } finally {
       setSaving(false);
     }
@@ -94,14 +98,21 @@ export function Settings() {
           ) : (
             <ul className="stack-sm" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {outbox.items.map((i) => (
-                <li key={i.submissionId} className="stack-sm" style={{ borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+                <li
+                  key={i.submissionId}
+                  className="stack-sm"
+                  style={{ borderTop: '1px solid var(--border)', paddingTop: 8 }}
+                >
                   <div className="row" style={{ justifyContent: 'space-between' }}>
                     <b>{formatDateShort(i.businessDate)}</b>
-                    <span className={`state ${i.status === 'failed' ? '' : 'wait'}`}>{t(`outbox.status.${i.status}`)}</span>
+                    <span className={`state ${i.status === 'failed' ? '' : 'wait'}`}>
+                      {t(`outbox.status.${i.status}`)}
+                    </span>
                   </div>
                   {i.lastError ? (
                     <p className="text-sm muted">
-                      {tDynamic(`error.${i.lastError.code}`, 'error.INTERNAL')} {t('outbox.attempts', { count: i.attempts })}
+                      {tDynamic(`error.${i.lastError.code}`, 'error.INTERNAL')}{' '}
+                      {t('outbox.attempts', { count: i.attempts })}
                     </p>
                   ) : null}
                   <div className="btn-row">
@@ -126,8 +137,21 @@ export function Settings() {
             <h2 className="h3" id="st-targets">
               {t('settings.targets')}
             </h2>
-            <MoneyField id="monthlyTarget" label={t('settings.monthlyTarget')} hint={t('settings.monthlyTargetHint')} value={target} error={targetErr.target} onChange={setTarget} />
-            <MoneyField id="benchmark" label={t('settings.benchmark')} value={bench} error={targetErr.bench} onChange={setBench} />
+            <MoneyField
+              id="monthlyTarget"
+              label={t('settings.monthlyTarget')}
+              hint={t('settings.monthlyTargetHint')}
+              value={target}
+              error={targetErr.target}
+              onChange={setTarget}
+            />
+            <MoneyField
+              id="benchmark"
+              label={t('settings.benchmark')}
+              value={bench}
+              error={targetErr.bench}
+              onChange={setBench}
+            />
             <Button busy={saving} onClick={() => void saveTargets()}>
               {t('settings.saveTargets')}
             </Button>
@@ -140,7 +164,12 @@ export function Settings() {
           </h2>
           <div className="segmented" role="group" aria-labelledby="st-theme">
             {(['system', 'light', 'dark'] as Theme[]).map((m) => (
-              <button key={m} type="button" aria-pressed={currentTheme === m} onClick={() => void saveTheme(m)}>
+              <button
+                key={m}
+                type="button"
+                aria-pressed={currentTheme === m}
+                onClick={() => void saveTheme(m)}
+              >
                 {t(`settings.theme.${m}`)}
               </button>
             ))}
@@ -185,7 +214,9 @@ export function Settings() {
       >
         {unsent > 0 ? (
           <Banner tone="warning">
-            <p>{t(unsent === 1 ? 'settings.signOutUnsent' : 'settings.signOutUnsentPlural', { count: unsent })}</p>
+            <p>
+              {t(unsent === 1 ? 'settings.signOutUnsent' : 'settings.signOutUnsentPlural', { count: unsent })}
+            </p>
           </Banner>
         ) : (
           t('settings.signOutBody')

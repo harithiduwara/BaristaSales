@@ -60,7 +60,12 @@ export const WEATHER_HEADERS = [
   'fetchedAt',
 ] as const satisfies readonly (keyof Weather)[];
 
-export const AUDIT_HEADERS = ['at', 'event', 'deviceId', 'detail'] as const satisfies readonly (keyof AuditRow)[];
+export const AUDIT_HEADERS = [
+  'at',
+  'event',
+  'deviceId',
+  'detail',
+] as const satisfies readonly (keyof AuditRow)[];
 
 export const CONFIG_HEADERS = ['key', 'value'] as const;
 
@@ -82,7 +87,12 @@ export const MONEY_COLUMNS = new Set<string>([
 ]);
 export const SHARE_COLUMNS = new Set<string>(['deliveryShare']);
 export const DATE_COLUMNS = new Set<string>(['businessDate', 'date']);
-export const TEXT_COLUMNS = new Set<string>(['openTime', 'closeTime', ...Object.keys(TEXT_LIMITS), 'comments']);
+export const TEXT_COLUMNS = new Set<string>([
+  'openTime',
+  'closeTime',
+  ...Object.keys(TEXT_LIMITS),
+  'comments',
+]);
 const LIST_COLUMNS = new Set<string>(['busyPeriods', 'conditions']);
 const NUMERIC_COLUMNS = new Set<string>([
   ...MONEY_COLUMNS,
@@ -122,7 +132,11 @@ export function rowToRecord(row: readonly Cell[]): ReportRecord {
       if (['avgBill', 'deliveryShare'].includes(h)) out[h] = null;
       return;
     }
-    if (LIST_COLUMNS.has(h)) out[h] = String(v).split(';').map((x) => x.trim()).filter(Boolean);
+    if (LIST_COLUMNS.has(h))
+      out[h] = String(v)
+        .split(';')
+        .map((x) => x.trim())
+        .filter(Boolean);
     else if (NUMERIC_COLUMNS.has(h)) out[h] = Number(v);
     else out[h] = typeof v === 'string' ? unguard(v) : String(v);
   });
@@ -132,13 +146,25 @@ export function rowToRecord(row: readonly Cell[]): ReportRecord {
 export const objectToRow = <T extends object>(headers: readonly (keyof T & string)[], o: T): Cell[] =>
   headers.map((h) => toCell((o as Record<string, unknown>)[h]));
 
-export function rowToObject<T>(headers: readonly string[], row: readonly Cell[], numeric: ReadonlySet<string>): T {
+export function rowToObject<T>(
+  headers: readonly string[],
+  row: readonly Cell[],
+  numeric: ReadonlySet<string>,
+): T {
   const out: Record<string, unknown> = {};
   headers.forEach((h, i) => {
     const v = row[i];
-    out[h] = numeric.has(h) ? Number(v) : typeof v === 'string' ? unguard(v) : v === null || v === undefined ? '' : String(v);
+    out[h] = numeric.has(h)
+      ? Number(v)
+      : typeof v === 'string'
+        ? unguard(v)
+        : v === null || v === undefined
+          ? ''
+          : String(v);
   });
   return out as T;
 }
 
-export const WEATHER_NUMERIC = new Set<string>(WEATHER_HEADERS.filter((h) => !['date', 'source', 'fetchedAt'].includes(h)));
+export const WEATHER_NUMERIC = new Set<string>(
+  WEATHER_HEADERS.filter((h) => !['date', 'source', 'fetchedAt'].includes(h)),
+);

@@ -1,6 +1,6 @@
 # ADR-0009: Monorepo tooling
 
-- Status: Proposed (Phase 1)
+- Status: Accepted (Phase 2)
 - Date: 2026-11-04
 - Requirements: 5.3, CICD-02, CICD-05
 

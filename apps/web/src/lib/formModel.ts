@@ -36,7 +36,19 @@ export interface FormValues {
   comments: string;
 }
 
-export const MONEY_KEYS = ['total', 'dineIn', 'takeaway', 'uber', 'pickme', 'cash', 'card', 'qr', 'discounts', 'comps', 'voids'] as const;
+export const MONEY_KEYS = [
+  'total',
+  'dineIn',
+  'takeaway',
+  'uber',
+  'pickme',
+  'cash',
+  'card',
+  'qr',
+  'discounts',
+  'comps',
+  'voids',
+] as const;
 export const INT_KEYS = ['bills', 'uberOrders', 'pickmeOrders', 'foreignCustomers', 'staffOnDuty'] as const;
 
 export function emptyForm(businessDate: string): FormValues {
@@ -84,7 +96,8 @@ export function reportToForm(r: Report | ReportRecord): FormValues {
     const v = src[k];
     if (v === undefined || v === null) continue;
     if (Array.isArray(f[k])) (f as unknown as Record<string, unknown>)[k] = [...(v as string[])];
-    else if ((MONEY_KEYS as readonly string[]).includes(k)) (f as unknown as Record<string, unknown>)[k] = formatMoney(v as number);
+    else if ((MONEY_KEYS as readonly string[]).includes(k))
+      (f as unknown as Record<string, unknown>)[k] = formatMoney(v as number);
     else (f as unknown as Record<string, unknown>)[k] = String(v);
   }
   return f;

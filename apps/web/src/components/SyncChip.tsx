@@ -7,7 +7,12 @@ import { t } from '../i18n';
 export function SyncChip() {
   const s = useSyncExternalStore(outboxState.subscribe, outboxState.get);
   const tone = s.failed > 0 ? 'err' : s.waiting > 0 ? 'wait' : 'ok';
-  const text = s.failed > 0 ? t('sync.failed') : s.waiting > 0 ? t('sync.waiting', { count: s.waiting }) : t('sync.allSent');
+  const text =
+    s.failed > 0
+      ? t('sync.failed')
+      : s.waiting > 0
+        ? t('sync.waiting', { count: s.waiting })
+        : t('sync.allSent');
   return (
     <button
       type="button"

@@ -12,7 +12,17 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 }
 
-export function Button({ variant = 'primary', block, icon, busy = false, children, className, disabled, type = 'button', ...rest }: ButtonProps) {
+export function Button({
+  variant = 'primary',
+  block,
+  icon,
+  busy = false,
+  children,
+  className,
+  disabled,
+  type = 'button',
+  ...rest
+}: ButtonProps) {
   const [showSpinner, setShowSpinner] = useState(false);
   useEffect(() => {
     if (!busy) {

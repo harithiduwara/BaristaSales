@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { guardFormula, objectToRow, recordToRow, REPORT_HEADERS, rowToObject, rowToRecord, WEATHER_HEADERS, WEATHER_NUMERIC } from './rows';
+import {
+  guardFormula,
+  objectToRow,
+  recordToRow,
+  REPORT_HEADERS,
+  rowToObject,
+  rowToRecord,
+  WEATHER_HEADERS,
+  WEATHER_NUMERIC,
+} from './rows';
 import { buildRecord } from './core';
 import type { Weather } from '@aluthgama/shared';
 
@@ -29,7 +38,13 @@ const record = buildRecord(
 
 describe('8.3 Reports sheet layout', () => {
   it('starts with keys, has every 8.1 field, then computed and meta columns', () => {
-    expect(REPORT_HEADERS.slice(0, 5)).toEqual(['outletId', 'businessDate', 'dayOfWeek', 'daysSinceOpening', 'total']);
+    expect(REPORT_HEADERS.slice(0, 5)).toEqual([
+      'outletId',
+      'businessDate',
+      'dayOfWeek',
+      'daysSinceOpening',
+      'total',
+    ]);
     expect(REPORT_HEADERS.slice(-11)).toEqual([
       'avgBill',
       'deliverySales',

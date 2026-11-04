@@ -46,7 +46,11 @@ export function createMock(opts: { redirect?: boolean; now?: string | null } = {
   }
 
   function send(res: ServerResponse, status: number, body?: unknown, headers: Record<string, string> = {}) {
-    res.writeHead(status, { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', ...headers });
+    res.writeHead(status, {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json; charset=utf-8',
+      ...headers,
+    });
     res.end(body === undefined ? '' : typeof body === 'string' ? body : JSON.stringify(body));
   }
 
@@ -62,7 +66,8 @@ export function createMock(opts: { redirect?: boolean; now?: string | null } = {
         return { ok: true, now: colomboIso(s.now()) };
       case 'fail': {
         const times = typeof p.times === 'number' ? p.times : 1;
-        for (let i = 0; i < times; i++) controls.failNext.push({ code: p.code as ErrorCode, drop: p.drop === true });
+        for (let i = 0; i < times; i++)
+          controls.failNext.push({ code: p.code as ErrorCode, drop: p.drop === true });
         return { ok: true };
       }
       case 'latency':
@@ -117,7 +122,12 @@ export function createMock(opts: { redirect?: boolean; now?: string | null } = {
       return;
     }
     const out = forced?.code
-      ? { ok: false, error: { code: forced.code, message: `Forced ${forced.code}` }, serverTime: colomboIso(s.now()), apiVersion: API_VERSION }
+      ? {
+          ok: false,
+          error: { code: forced.code, message: `Forced ${forced.code}` },
+          serverTime: colomboIso(s.now()),
+          apiVersion: API_VERSION,
+        }
       : handlePost(s, body);
     const text = JSON.stringify(out);
     if (controls.redirect) {

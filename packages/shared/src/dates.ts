@@ -100,6 +100,11 @@ export function defaultBusinessDate(epochMs: number, cutoffHour: number, opening
 }
 
 /** Whether a role may create or change a report for this date (FR-HIS-03, OQ-19). */
-export function canEditDate(role: 'Manager' | 'Owner', businessDate: string, today: string, windowDays: number): boolean {
+export function canEditDate(
+  role: 'Manager' | 'Owner',
+  businessDate: string,
+  today: string,
+  windowDays: number,
+): boolean {
   return role === 'Owner' || daysBetween(businessDate, today) <= windowDays;
 }

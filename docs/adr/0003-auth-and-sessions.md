@@ -1,6 +1,6 @@
 # ADR-0003: Authentication and sessions
 
-- Status: Proposed (Phase 1)
+- Status: Accepted (Phase 2)
 - Date: 2026-11-04
 - Requirements: FR-AUTH-01…05, NFR-SEC-01, NFR-SEC-02, OPS-03, C-02
 

@@ -50,11 +50,22 @@ describe('FR-SHR-01 WhatsApp summary', () => {
     );
   });
   it('ends after Avg bill when there are no comments', () => {
-    expect(whatsappSummary({ businessDate: '2026-11-04', total: 148320, bills: 52, uber: 4640, pickme: 4400, comments: '  ' })).toBe(
+    expect(
+      whatsappSummary({
+        businessDate: '2026-11-04',
+        total: 148320,
+        bills: 52,
+        uber: 4640,
+        pickme: 4400,
+        comments: '  ',
+      }),
+    ).toBe(
       '*Aluthgama*\n\nDate - 04/11/2026\nSale - 148,320.00/=\nUber - 4,640.00/=\nPick me - 4,400.00/=\nTicket - 52\nAvg bill - 2,852.31/=',
     );
   });
   it('OQ-13 leaves out Avg bill when there are no bills', () => {
-    expect(whatsappSummary({ businessDate: '2026-11-05', total: 0, bills: 0, uber: 0, pickme: 0 })).not.toContain('Avg bill');
+    expect(
+      whatsappSummary({ businessDate: '2026-11-05', total: 0, bills: 0, uber: 0, pickme: 0 }),
+    ).not.toContain('Avg bill');
   });
 });

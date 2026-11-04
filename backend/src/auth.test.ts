@@ -100,8 +100,16 @@ describe('tokens', () => {
       return `${part}.${s.crypto.hmacSha256B64u(part, secret)}`;
     };
     expect(verifyToken(s, forged('not json'), 'dev-1')).toEqual({ ok: false, code: 'UNAUTHORIZED' });
-    expect(verifyToken(s, forged('{"role":"Admin","deviceId":"dev-1","ver":2,"exp":9999999999}'), 'dev-1').ok).toBe(false);
-    expect(verifyToken(s, signToken(s.crypto, secret, { role: 'Owner', deviceId: 'dev-1', ver: 2, exp: 9999999999 }), 'dev-1')).toEqual({
+    expect(
+      verifyToken(s, forged('{"role":"Admin","deviceId":"dev-1","ver":2,"exp":9999999999}'), 'dev-1').ok,
+    ).toBe(false);
+    expect(
+      verifyToken(
+        s,
+        signToken(s.crypto, secret, { role: 'Owner', deviceId: 'dev-1', ver: 2, exp: 9999999999 }),
+        'dev-1',
+      ),
+    ).toEqual({
       ok: true,
       role: 'Owner',
     });
