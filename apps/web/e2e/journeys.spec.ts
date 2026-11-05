@@ -32,6 +32,9 @@ test('E2E-01 FR-REP-08 FR-SHR-01 required fields, submit, success, share', async
   await toReview(page);
   await page.getByRole('button', { name: 'Submit report' }).click();
   await expect(page.getByRole('heading', { name: 'Report for Wed 4 Nov saved.' })).toBeVisible();
+  // CR-01: Claude's take appears after the report is saved (stub model in the mock API).
+  await expect(page.getByRole('heading', { name: "Claude's take" })).toBeVisible();
+  await expect(page.getByTestId('insight-text')).toContainText('Sales on 2026-11-04');
   await page.getByRole('button', { name: 'Share to WhatsApp' }).click();
   await expect(page.getByText('Share sheet opened')).toBeVisible();
   const shared = await page.evaluate(() => (window as unknown as { __shared: string }).__shared);

@@ -135,6 +135,8 @@ export interface Config {
   EDIT_WINDOW_DAYS: number;
   MONTHLY_TARGET: number | null;
   BENCHMARK_MONTHLY_AVG: number;
+  /** CR-01: model used for insights. */
+  CLAUDE_MODEL: string;
 }
 
 export const DEFAULT_CONFIG: Config = {
@@ -149,6 +151,7 @@ export const DEFAULT_CONFIG: Config = {
   EDIT_WINDOW_DAYS: 7,
   MONTHLY_TARGET: null,
   BENCHMARK_MONTHLY_AVG: 5_720_000,
+  CLAUDE_MODEL: 'claude-opus-5-5',
 };
 
 /** Days of history the Manager sees (FR-HIS-01, OQ-17). */

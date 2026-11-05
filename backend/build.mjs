@@ -2,7 +2,15 @@
 import { build } from 'esbuild';
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
-export const ENTRY_POINTS = ['doGet', 'doPost', 'onOpen', 'setup', 'setPinsPrompt', 'loadSeedData'];
+export const ENTRY_POINTS = [
+  'doGet',
+  'doPost',
+  'onOpen',
+  'setup',
+  'setPinsPrompt',
+  'loadSeedData',
+  'setClaudeKeyPrompt',
+];
 
 mkdirSync('dist', { recursive: true });
 await build({

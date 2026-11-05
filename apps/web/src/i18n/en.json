@@ -303,6 +303,16 @@
   "error.details": "Details",
   "error.reference": "Reference: {id}",
 
+  "insight.title": "Claude's take",
+  "insight.get": "Ask Claude about this day",
+  "insight.loading": "Claude is reading the day's figures…",
+  "insight.waiting": "Claude's take appears once the report is sent.",
+  "insight.disclaimer": "Written by Claude from the report figures. Check anything important.",
+  "insight.noReport": "There's no saved report for this day yet.",
+  "insight.notConfigured": "Claude isn't set up yet. The administrator adds the API key from the Sheet's Admin menu.",
+  "insight.unavailable": "Claude couldn't answer just now. Try again in a few minutes.",
+  "insight.offline": "You're offline. Try again when you're back online.",
+
   "common.loading": "Loading…",
   "common.close": "Close",
   "common.save": "Save",

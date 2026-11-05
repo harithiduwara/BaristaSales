@@ -5,6 +5,7 @@ import { ensureConfigDefaults, ensureSecrets, seed } from '../core';
 import {
   AUDIT_HEADERS,
   CONFIG_HEADERS,
+  INSIGHT_HEADERS,
   LOG_HEADERS,
   MONEY_COLUMNS,
   REPORT_HEADERS,
@@ -14,6 +15,7 @@ import {
   WEATHER_HEADERS,
 } from '../rows';
 import { gasServices, TZ } from './services';
+import { ANTHROPIC_API_KEY_PROP } from './claude';
 
 function ensureSheet(
   ss: GoogleAppsScript.Spreadsheet.Spreadsheet,
@@ -50,6 +52,7 @@ export function setup(): void {
   ensureSheet(ss, SHEETS.weather, WEATHER_HEADERS);
   ensureSheet(ss, SHEETS.config, CONFIG_HEADERS);
   ensureSheet(ss, SHEETS.audit, AUDIT_HEADERS);
+  ensureSheet(ss, SHEETS.insights, INSIGHT_HEADERS);
   const blank = ss.getSheetByName('Sheet1');
   if (blank && blank.getLastRow() === 0 && ss.getSheets().length > 1) ss.deleteSheet(blank);
   const s = gasServices(ss);
@@ -87,6 +90,30 @@ export function setPinsPrompt(): void {
   ui.alert('PINs saved. Every device must sign in again.');
 }
 
+/** Admin → Set Claude API key (CR-01). The key is stored in Script Properties only and never shown again. */
+export function setClaudeKeyPrompt(): void {
+  const ui = SpreadsheetApp.getUi();
+  const r = ui.prompt(
+    'Set Claude API key',
+    'Paste the Anthropic API key (starts with sk-ant-). Leave empty to turn insights off.',
+    ui.ButtonSet.OK_CANCEL,
+  );
+  if (r.getSelectedButton() !== ui.Button.OK) return;
+  const key = r.getResponseText().trim();
+  const props = PropertiesService.getScriptProperties();
+  if (!key) {
+    props.deleteProperty(ANTHROPIC_API_KEY_PROP);
+    ui.alert('Claude insights are off.');
+    return;
+  }
+  if (!/^sk-ant-/.test(key)) {
+    ui.alert('That does not look like an Anthropic API key. Nothing was saved.');
+    return;
+  }
+  props.setProperty(ANTHROPIC_API_KEY_PROP, key);
+  ui.alert('Saved. Claude insights are on.');
+}
+
 /** Admin → Load seed data (8.6). */
 export function loadSeedData(): void {
   const written = seed(gasServices());
@@ -101,5 +128,6 @@ export function onOpen(): void {
     .addItem('Run setup', 'setup')
     .addItem('Set PINs', 'setPinsPrompt')
     .addItem('Load seed data', 'loadSeedData')
+    .addItem('Set Claude API key', 'setClaudeKeyPrompt')
     .addToUi();
 }

@@ -5,17 +5,22 @@ import { Banner } from '../components/Banner';
 import { Button } from '../components/Button';
 import { WhatsAppPreview } from '../components/misc';
 import { Icon } from '../components/Icon';
+import { InsightCard } from '../components/InsightCard';
 import { showToast } from '../components/Toast';
 import { copyText, shareText } from '../lib/platform';
 import { db } from '../lib/db';
 import { navigate } from '../router';
 import { lastSubmission, useStore } from '../state/app';
+import { outboxState } from '../lib/outbox';
 import { t } from '../i18n';
 
 export function Success({ date }: { date: string }) {
   const last = useStore(lastSubmission);
   const [report, setReport] = useState<Report | null>(last?.date === date ? last.report : null);
   const queued = last?.date === date ? last.queued : false;
+  const outbox = useStore(outboxState);
+  // Once a queued report has been sent, Claude's take can load.
+  const stillWaiting = queued && outbox.items.some((i) => i.businessDate === date);
 
   useEffect(() => {
     if (report) return;
@@ -69,6 +74,7 @@ export function Success({ date }: { date: string }) {
           <WhatsAppPreview text={text} />
           <p className="hint">{t('success.boldHint')}</p>
         </section>
+        <InsightCard date={date} auto waiting={stillWaiting} />
       </main>
       <div className="actionbar" style={{ flexDirection: 'column', gap: 8 }}>
         <Button block icon="share" onClick={() => void share()}>

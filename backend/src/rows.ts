@@ -1,6 +1,6 @@
 // Sheet layout (8.3) and row mapping. Pure: dates and times are YYYY-MM-DD / HH:mm strings here;
 // the Apps Script adapter converts Sheet Date cells to these strings when reading.
-import { REPORT_FIELDS, TEXT_LIMITS, type ReportRecord, type Weather } from '@aluthgama/shared';
+import { REPORT_FIELDS, TEXT_LIMITS, type Insight, type ReportRecord, type Weather } from '@aluthgama/shared';
 import type { AuditRow, SubmissionLogRow } from './ports';
 
 export const SHEETS = {
@@ -9,6 +9,7 @@ export const SHEETS = {
   weather: 'Weather',
   config: 'Config',
   audit: 'Audit',
+  insights: 'Insights',
 } as const;
 
 const REPORT_BODY = REPORT_FIELDS.filter((f) => f !== 'businessDate');
@@ -59,6 +60,15 @@ export const WEATHER_HEADERS = [
   'source',
   'fetchedAt',
 ] as const satisfies readonly (keyof Weather)[];
+
+export const INSIGHT_HEADERS = [
+  'businessDate',
+  'reportVersion',
+  'generatedAt',
+  'model',
+  'text',
+] as const satisfies readonly (keyof Insight)[];
+export const INSIGHT_NUMERIC = new Set<string>(['reportVersion']);
 
 export const AUDIT_HEADERS = [
   'at',

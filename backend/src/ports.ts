@@ -1,6 +1,6 @@
 // The backend core talks to Google services only through these ports (ADR-0006),
 // so it runs unchanged in unit tests and in the mock API (ADR-0007).
-import type { ListItem, ReportRecord, Role, Weather } from '@aluthgama/shared';
+import type { Insight, ListItem, ReportRecord, Role, Weather } from '@aluthgama/shared';
 
 export interface SubmissionLogRow {
   loggedAt: string;
@@ -18,7 +18,8 @@ export interface SubmissionLogRow {
 
 export interface AuditRow {
   at: string;
-  event: 'auth_fail' | 'lockout' | 'config_update' | 'forbidden' | 'error' | 'pins_set' | 'setup';
+  event:
+    'auth_fail' | 'lockout' | 'config_update' | 'forbidden' | 'error' | 'pins_set' | 'setup' | 'ai_error';
   deviceId: string;
   detail: string;
 }
@@ -36,6 +37,9 @@ export interface Store {
   listWeather(from: string, to: string): Weather[];
   putWeather(w: Weather): void;
   /** Raw key/value pairs from the Config sheet. */
+  /** CR-01: cached insight for one report version. */
+  getInsight(businessDate: string, reportVersion: number): Insight | null;
+  putInsight(insight: Insight): void;
   readConfig(): Record<string, string | number | null>;
   writeConfig(key: string, value: string | number | null): void;
 }
@@ -65,6 +69,21 @@ export interface Crypto {
   randomHex(bytes: number): string;
 }
 
+export interface AiRequest {
+  model: string;
+  system: string;
+  user: string;
+}
+
+export type AiResult =
+  | { ok: true; text: string; model: string }
+  | { ok: false; reason: 'notConfigured' | 'refused' | 'error'; detail: string };
+
+/** CR-01: a large language model behind the backend (Claude API in Apps Script, a stub in tests). */
+export interface Ai {
+  complete(req: AiRequest): AiResult;
+}
+
 export interface Services {
   now(): number;
   store: Store;
@@ -72,6 +91,7 @@ export interface Services {
   cache: Cache;
   lock: Lock;
   crypto: Crypto;
+  ai: Ai;
 }
 
 export type { ListItem };

@@ -82,6 +82,13 @@ The pipeline creates the GitHub Release with `aluthgama-daily-1.0.0.apk` and its
 
 On the outlet phone: open the Release page in Chrome, download the APK, allow **Install unknown apps** for Chrome when asked, install, open, enter the device name, then the Manager PIN.
 
+### 1.7 Turn on Claude's take (CR-01)
+
+1. Create an API key at <https://platform.claude.com> (Settings → API keys) and add a payment method. This is separate from a claude.ai subscription.
+2. In the spreadsheet: **Admin → Set Claude API key**, paste the key (`sk-ant-…`). To turn the feature off, run it again and leave the box empty.
+3. Optional: change the model in the **Config** tab, row `CLAUDE_MODEL` (default `claude-opus-5-5`).
+4. Check: submit a report; the Success screen shows "Claude's take" and a row appears in the **Insights** tab. Problems are logged in the Audit tab as `ai_error`.
+
 ## 2. Updating the backend (OPS-02)
 
 ```sh

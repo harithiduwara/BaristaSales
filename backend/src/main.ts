@@ -2,7 +2,7 @@
 import { handleGet, handlePost } from './core';
 import { gasServices } from './gas/services';
 
-export { onOpen, setup, setPinsPrompt, loadSeedData } from './gas/admin';
+export { onOpen, setup, setPinsPrompt, loadSeedData, setClaudeKeyPrompt } from './gas/admin';
 
 const json = (o: unknown) =>
   ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);

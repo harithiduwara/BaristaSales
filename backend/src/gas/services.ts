@@ -1,11 +1,13 @@
 // Apps Script implementations of the ports (ADR-0006). Not unit-tested: covered by the integration suite.
-import type { ReportRecord, Weather } from '@aluthgama/shared';
+import type { Insight, ReportRecord, Weather } from '@aluthgama/shared';
 import { PROP } from '../auth';
 import type { AuditRow, Cache, Crypto, KeyValue, Lock, Services, Store, SubmissionLogRow } from '../ports';
 import {
   AUDIT_HEADERS,
   CONFIG_HEADERS,
   DATE_COLUMNS,
+  INSIGHT_HEADERS,
+  INSIGHT_NUMERIC,
   LOG_HEADERS,
   REPORT_HEADERS,
   SHEETS,
@@ -18,6 +20,7 @@ import {
   type Cell,
 } from '../rows';
 import { bytesToHex } from '../util';
+import { ClaudeAi } from './claude';
 
 export const TZ = 'Asia/Colombo';
 
@@ -135,6 +138,15 @@ export class SheetStore implements Store {
     sh.appendRow(withDates(WEATHER_HEADERS, objectToRow(WEATHER_HEADERS, w)));
   }
 
+  getInsight(date: string, version: number) {
+    const row = rows(this.sheet(SHEETS.insights)).find((r) => r[0] === date && Number(r[1]) === version);
+    return row ? rowToObject<Insight>(INSIGHT_HEADERS, row, INSIGHT_NUMERIC) : null;
+  }
+
+  putInsight(i: Insight) {
+    this.sheet(SHEETS.insights).appendRow(withDates(INSIGHT_HEADERS, objectToRow(INSIGHT_HEADERS, i)));
+  }
+
   readConfig() {
     const out: Record<string, string | number | null> = {};
     for (const [k, v] of rows(this.sheet(SHEETS.config)))
@@ -190,6 +202,7 @@ export function gasServices(ss = openSpreadsheet()): Services {
     cache: scriptCache(),
     lock: scriptLock(),
     crypto: gasCrypto,
+    ai: new ClaudeAi(),
   };
 }
 

@@ -30,6 +30,7 @@ import {
 } from '@aluthgama/shared';
 import { clearFailures, isLockedOut, issueToken, recordFailure, roleForPin, verifyToken } from './auth';
 import type { Services, SubmissionLogRow } from './ports';
+import { getOrCreateInsight } from './insight';
 
 export const LOCK_TIMEOUT_MS = 30_000;
 
@@ -193,6 +194,15 @@ const handlers: { [A in ActionName]: Handler<A> } = {
       .map((r) => ({ ...r, date: r.businessDate }));
     const weather = new Map(s.store.listWeather(`${month}-01`, to).map((w) => [w.date, w]));
     return dashboardSummary(month, reports, weather, config);
+  },
+
+  'report.insight'({ s, config }, payload) {
+    const p = z.object({ businessDate: z.string() }).safeParse(payload);
+    if (!p.success)
+      throw new ApiFailure('VALIDATION_FAILED', 'Bad request.', {
+        details: [{ field: 'businessDate', rule: 'date' }],
+      });
+    return getOrCreateInsight(s, config, p.data.businessDate);
   },
 
   'config.get'({ config }) {

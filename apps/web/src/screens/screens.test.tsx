@@ -166,6 +166,8 @@ describe('S-03 Home and S-04/S-05 wizard', () => {
     await userEvent.click(screen.getByRole('button', { name: /Step 5/ }));
     await userEvent.click(await screen.findByRole('button', { name: 'Submit report' }));
     expect(await screen.findByRole('heading', { name: 'Report for Wed 4 Nov saved.' })).toBeInTheDocument();
+    // CR-01: Claude's take loads once the report is saved
+    expect(await screen.findByTestId('insight-text')).toHaveTextContent('Sales on 2026-11-04');
     expect(server.s.store.getReport('ALU-01', '2026-11-04')).toMatchObject({
       total: 148320,
       dineIn: 96500,

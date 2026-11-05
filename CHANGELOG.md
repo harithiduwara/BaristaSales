@@ -4,6 +4,10 @@ All notable changes are listed here. Format based on Keep a Changelog; versions 
 
 ## [Unreleased]
 
+### Added (CR-01)
+
+- "Claude's take": a short analysis from Claude on the Success screen after each report, and on demand in report detail. Called by the backend; key in Script Properties; one stored answer per report version (ADR-0013).
+
 ### Added (Phase 2 – Build core)
 
 - Monorepo with npm workspaces, strict TypeScript, ESLint (jsx-a11y, no hard-coded UI text), Prettier.

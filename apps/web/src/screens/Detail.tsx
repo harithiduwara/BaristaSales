@@ -15,6 +15,7 @@ import { AppBar } from '../components/AppBar';
 import { Banner } from '../components/Banner';
 import { Button } from '../components/Button';
 import { EmptyState, ErrorState, Skeleton } from '../components/misc';
+import { InsightCard } from '../components/InsightCard';
 import { showToast } from '../components/Toast';
 import { shareText } from '../lib/platform';
 import { getReport } from '../lib/reports';
@@ -178,6 +179,7 @@ export function Detail({ date }: { date: string }) {
             <p className="muted text-sm">{t('detail.weatherPending')}</p>
           )}
         </section>
+        <InsightCard date={r.businessDate} version={r.version} auto={false} />
         <section className="card stack-sm" aria-labelledby="da-h">
           <h2 className="h3" id="da-h">
             {t('detail.audit')}

@@ -77,6 +77,17 @@ export type ReportRecord = Report &
     source: 'app' | 'whatsapp-backfill';
   };
 
+/** CR-01: Claude's short analysis of a saved report. */
+export interface Insight {
+  businessDate: string;
+  reportVersion: number;
+  text: string;
+  model: string;
+  generatedAt: string;
+}
+
+export type InsightStatus = 'ready' | 'noReport' | 'notConfigured' | 'unavailable';
+
 export interface ListItem extends ReportRecord {
   weather: Weather | null;
 }
@@ -99,6 +110,10 @@ export interface Actions {
     data: { items: ListItem[]; nextCursor: string | null };
   };
   'dashboard.summary': { payload: { month: string }; data: DashboardSummary };
+  'report.insight': {
+    payload: { businessDate: string };
+    data: { status: InsightStatus; insight: Insight | null };
+  };
   'config.get': { payload: Record<string, never>; data: Config };
   'config.update': {
     payload: Partial<Pick<Config, 'MONTHLY_TARGET' | 'BENCHMARK_MONTHLY_AVG'>>;
@@ -114,6 +129,7 @@ export const ACTION_ROLES: Record<ActionName, readonly Role[] | 'none'> = {
   'report.get': ['Manager', 'Owner'],
   'report.list': ['Manager', 'Owner'],
   'dashboard.summary': ['Owner'],
+  'report.insight': ['Manager', 'Owner'],
   'config.get': ['Manager', 'Owner'],
   'config.update': ['Owner'],
 };

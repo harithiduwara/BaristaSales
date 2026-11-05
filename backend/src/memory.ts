@@ -1,7 +1,19 @@
 // In-memory implementation of the ports: used by unit tests and the mock API (ADR-0007).
 import { createHash, createHmac, randomBytes, randomUUID } from 'node:crypto';
-import type { ReportRecord, Weather } from '@aluthgama/shared';
-import type { AuditRow, Cache, Crypto, KeyValue, Lock, Services, Store, SubmissionLogRow } from './ports';
+import type { Insight, ReportRecord, Weather } from '@aluthgama/shared';
+import type {
+  Ai,
+  AiRequest,
+  AiResult,
+  AuditRow,
+  Cache,
+  Crypto,
+  KeyValue,
+  Lock,
+  Services,
+  Store,
+  SubmissionLogRow,
+} from './ports';
 import { guardFormula } from './rows';
 
 export class MemoryStore implements Store {
@@ -10,6 +22,7 @@ export class MemoryStore implements Store {
   audit: AuditRow[] = [];
   weather = new Map<string, Weather>();
   config: Record<string, string | number | null> = {};
+  insights = new Map<string, Insight>();
 
   private key = (o: string, d: string) => `${o}|${d}`;
   getReport(outletId: string, date: string) {
@@ -44,6 +57,12 @@ export class MemoryStore implements Store {
   }
   putWeather(w: Weather) {
     if (!this.weather.has(w.date)) this.weather.set(w.date, w);
+  }
+  getInsight(date: string, version: number) {
+    return this.insights.get(`${date}|${version}`) ?? null;
+  }
+  putInsight(i: Insight) {
+    this.insights.set(`${i.businessDate}|${i.reportVersion}`, i);
   }
   readConfig() {
     return { ...this.config };
@@ -99,6 +118,23 @@ export class MemoryLock implements Lock {
   }
 }
 
+/** Deterministic stand-in for Claude, used by tests and the mock API. */
+export class StubAi implements Ai {
+  calls: AiRequest[] = [];
+  /** Set to make the next calls fail. */
+  next: AiResult | null = null;
+  complete(req: AiRequest): AiResult {
+    this.calls.push(req);
+    if (this.next) return this.next;
+    const date = /Write the insight for (\d{4}-\d{2}-\d{2})/.exec(req.user)?.[1] ?? '';
+    return {
+      ok: true,
+      model: req.model,
+      text: `Sales on ${date} were in line with the first days of trading.\n• Delivery apps are still a small share of sales.\nNext: keep an eye on the evening rush.`,
+    };
+  }
+}
+
 export const nodeCrypto: Crypto = {
   sha256Hex: (t) => createHash('sha256').update(t, 'utf8').digest('hex'),
   hmacSha256B64u: (d, k) => createHmac('sha256', k).update(d, 'utf8').digest('base64url'),
@@ -111,6 +147,7 @@ export interface MemoryServices extends Services {
   props: MemoryKeyValue;
   cache: MemoryCache;
   lock: MemoryLock;
+  ai: StubAi;
   /** Change "now" for tests. */
   clock: { now: number | null; offsetMs: number };
 }
@@ -126,5 +163,6 @@ export function createMemoryServices(): MemoryServices {
     cache: new MemoryCache(now),
     lock: new MemoryLock(),
     crypto: nodeCrypto,
+    ai: new StubAi(),
   };
 }
